@@ -8,7 +8,7 @@ name: "test-utils"
 author: "[accent]MEEP of Faith"
 
 #the fully qualified main class of the mod
-main: "testing.TestingUtilities"
+main: "testing.TestUtils"
 
 #the mod description as seen in the mod dialog
 description:

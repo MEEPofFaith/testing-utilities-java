@@ -1,26 +1,20 @@
-package testing;
+package testing.util;
 
 import arc.util.async.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.mod.*;
 import testing.content.*;
 
-import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class TestingUtilities extends Mod{
-    public float longPress = 30f;
+public class TUVars{
+    public static float longPress = 30f;
 
-    public Team curTeam = Team.sharded;
-    public boolean folded;
+    public static Team curTeam = Team.sharded;
+    public static boolean folded;
 
-    public float TCOffset;
-    public float buttonHeight = 60f, buttonWidth = 56f, iconSize = 40f;
-
-    public TestingUtilities(){
-        TCOffset = settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
-    }
+    public static float TCOffset;
+    public static float buttonHeight = 60f, buttonWidth = 56f, iconSize = 40f;
 
     public static void spawnIconEffect(String sprite){
         TUFx.iconEffect.at(player.x, player.y, 0, sprite);
@@ -47,10 +41,4 @@ public class TestingUtilities extends Mod{
         code += ":0})";
         Call.sendChatMessage("/js" + code);
     }
-
-    @Override
-    public void loadContent(){
-        //There is no content to load
-    }
-
 }
