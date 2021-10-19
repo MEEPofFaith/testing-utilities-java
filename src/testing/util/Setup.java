@@ -41,5 +41,14 @@ public class Setup{
 
         TeamChanger.add(team);
         add(team);
+
+        //TODO self
+
+        Sandbox.add(sandbox);
+        add(sandbox);
+
+        //TODO status table
+
+        //TODO heal/invincibility
     }
 }

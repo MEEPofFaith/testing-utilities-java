@@ -8,7 +8,7 @@ import static mindustry.Vars.*;
 
 public class Utils{
     public static void spawnIconEffect(String sprite){
-        TUFx.iconEffect.at(player.x, player.y, 0, sprite);
+        TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
     }
 
     public static void check(){
@@ -25,11 +25,15 @@ public class Utils{
     }
 
     public static void runCommand(String command){
+        Call.sendChatMessage("/js " + command);
+    }
+
+    public static void runCommandPlayer(String command){
         String code = "Groups.player.each(p=>{p.name.includes(\"";
         code += player.name;
         code += "\")?";
         code += command;
         code += ":0})";
-        Call.sendChatMessage("/js" + code);
+        runCommand(code);
     }
 }

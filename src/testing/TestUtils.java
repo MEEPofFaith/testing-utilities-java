@@ -1,7 +1,6 @@
 package testing;
 
 import arc.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
@@ -15,6 +14,7 @@ public class TestUtils extends Mod{
         if(!Vars.headless){
             TUVars.TCOffset = settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
             Events.on(ClientLoadEvent.class, e -> {
+                TUIcons.init();
                 TUStyles.init();
                 Setup.init();
             });

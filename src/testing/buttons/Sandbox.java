@@ -1,0 +1,112 @@
+package testing.buttons;
+
+import arc.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
+import arc.util.*;
+import mindustry.gen.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
+import testing.ui.*;
+import testing.util.*;
+
+import static mindustry.Vars.*;
+
+public class Sandbox{
+    static boolean fillMode = true;
+    static float timer;
+    static boolean swap;
+
+    public static void toggle(){
+        Utils.check();
+        Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
+        if(net.client()){
+            Utils.runCommand("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
+        }
+        state.rules.infiniteResources =! state.rules.infiniteResources;
+    }
+
+    public static void coreItems(){
+        Utils.check();
+        Utils.spawnIconEffect(fillMode ? "core" : "dump");
+        if(net.client()){
+            String code =
+                "Vars.content.items().each(i=>{p.core().items.set(i," +
+                (fillMode ? "p.core().storageCapacity" : "0") +
+                ");})";
+            Utils.runCommand(code);
+        }else{
+            CoreBuild core = player.core();
+            if(core != null){
+                content.items().each(i -> {
+                    core.items.set(i, fillMode ? core.storageCapacity : 0);
+                });
+            }
+        }
+    }
+
+    public static Cell<ImageButton> toggling(Table t, boolean label){
+        Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuRedImageStyle, Sandbox::toggle)
+            .color(TUVars.curTeam.color).growX();
+        ImageButton b = i.get();
+        if(label && !mobile){
+            b.label(() ->
+                (b.isDisabled() ? "[gray]" : "[white]") +
+                (state.rules.infiniteResources ? "Survival" : "Sandbox")
+            ).growX();
+        }
+        b.setDisabled(() -> state.isCampaign());
+        b.update(() -> {
+            if(!headless){
+                b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
+                b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
+            }
+        });
+
+        return i;
+    }
+
+    public static Cell<ImageButton> filling(Table t, boolean label){
+        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
+            if(!swap) coreItems();
+        }).color(TUVars.curTeam.color).growX().center();
+        ImageButton b = i.get();
+        if(label && !mobile){
+            b.label(() ->
+                (b.isDisabled() ? "[gray]" : "[white]") +
+                (fillMode ? "Fill" : "Dump") + " Core"
+            ).growX();
+        }
+
+        b.update(() -> {
+            if(b.isPressed() && !b.isDisabled()){
+                timer += Core.graphics.getDeltaTime() * 60;
+                if(timer >= TUVars.longPress && !swap){
+                    fillMode = !fillMode;
+                    swap = true;
+                }
+            }else{
+                timer = 0;
+                swap = false;
+            }
+
+            if(!headless){
+                b.getStyle().imageUp = fillMode ? TUIcons.core : TUIcons.dump;
+                b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
+            }
+        });
+
+        return i;
+    }
+
+    public static void add(Table[] tables){
+        tables[0].table(Tex.buttonEdge3, t -> {
+            toggling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 108), 40);
+            filling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 120), 40);
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(mobile ? 60 : 186);
+
+        tables[1].table(Tex.buttonEdge3, t -> {
+            toggling(t, false).size(TUVars.iconWidth, 40);
+            filling(t, false).size(TUVars.iconWidth, 40);
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(TUVars.iconWidth + 20);
+    }
+}

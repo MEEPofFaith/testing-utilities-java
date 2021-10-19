@@ -8,7 +8,7 @@ import testing.util.*;
 
 public class Folding{
     public static void folding(Table t){
-        t.button(Icon.resize, TUStyles.tuButtonStyle, () -> {
+        t.button(Icon.resize, TUStyles.tuImageStyle, () -> {
             TUVars.folded = !TUVars.folded;
         }).size(40).pad(0);
     }

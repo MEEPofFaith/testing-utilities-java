@@ -3,7 +3,7 @@ package testing.buttons;
 import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -18,11 +18,12 @@ import static mindustry.Vars.*;
 
 public class TeamChanger{
     public static int mode;
-    static IntSeq mainTeams = IntSeq.with(0, 1, 2); //Derelict, Sharded, Crux
+    static Integer[] mainTeams = {0, 1, 2}; //Derelict, Sharded, Crux
 
     public static void changeTeam(){
+        Utils.check();
         if(Vars.net.client()){
-            Utils.runCommand("p.team(Team." + TUVars.curTeam.name + ")");
+            Utils.runCommandPlayer("p.team(Team." + TUVars.curTeam.name + ")");
         }else{
             player.team(TUVars.curTeam);
         }
@@ -42,7 +43,7 @@ public class TeamChanger{
         }).size(40).color(team.color);
     }
 
-    public static Cell<Button> addMini(Table t, IntSeq teams){
+    public static Cell<Button> addMini(Table t, Integer[] teams){
         return t.button(b -> {
             b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
             b.update(() -> b.setColor(Team.baseTeams[mode].color));
@@ -55,7 +56,7 @@ public class TeamChanger{
         }, TUStyles.redButtonStyle, () -> {
             do{
                 mode = (mode + 1) % 5;
-            }while(!teams.contains(mode));
+            }while(!Structs.contains(teams, mode));
             TUVars.curTeam = Team.baseTeams[mode];
             changeTeam();
         }).size(40).color(Team.baseTeams[mode].color);
@@ -76,7 +77,7 @@ public class TeamChanger{
 
         Events.on(WorldLoadEvent.class, e -> {
             for(int i = 0; i < 6; i++){
-                if(mainTeams.contains(i) && player.team() == Team.baseTeams[i]){
+                if(Structs.contains(mainTeams, i) && player.team() == Team.baseTeams[i]){
                     mode = i;
                     break;
                 }
