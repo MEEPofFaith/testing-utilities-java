@@ -1,6 +1,7 @@
 package testing.util;
 
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import testing.buttons.*;
@@ -17,13 +18,28 @@ public class Setup{
     status = newTables();
 
     public static Table[] newTables(){
-        return new Table[]{new Table().bottom().left(), new Table().bottom().left()};
+        Table t1 = new Table().bottom().left();
+        t1.fillParent = true;
+        t1.visibility = ButtonVisibility.unfoldedVisibility;
+
+        Table t2 = new Table().bottom().left();
+        t2.fillParent = true;
+        t2.visibility = ButtonVisibility.foldedVisibility;
+
+        return new Table[]{t1, t2};
+    }
+
+    public static void add(Table[] tables){
+        ui.hudGroup.addChild(tables[0]);
+        ui.hudGroup.addChild(tables[1]);
     }
 
     public static void init(){
         //welp since you can't just make a class as one of a method's inputs and run something from that class my code will be a few lines of duplicated code longer.
         Folding.add(folder);
-        ui.hudGroup.addChild(folder[0]);
-        ui.hudGroup.addChild(folder[1]);
+        add(folder);
+
+        TeamChanger.add(team);
+        add(team);
     }
 }

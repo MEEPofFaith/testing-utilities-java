@@ -8,8 +8,8 @@ import static mindustry.Vars.*;
 public class ButtonVisibility{
     public static Boolp unfoldedVisibility = () -> {
         if(
-            !TUVars.folded ||
-            ui.hudfrag.shown ||
+            TUVars.folded ||
+            !ui.hudfrag.shown ||
             ui.minimapfrag.shown()
         ) return false;
 
@@ -26,8 +26,8 @@ public class ButtonVisibility{
 
     public static Boolp foldedVisibility = () -> {
         if(
-            TUVars.folded ||
-            ui.hudfrag.shown ||
+            !TUVars.folded ||
+            !ui.hudfrag.shown ||
             ui.minimapfrag.shown()
         ) return false;
 
