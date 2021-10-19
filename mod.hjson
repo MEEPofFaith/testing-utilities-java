@@ -37,3 +37,6 @@ minGameVersion: 133
 
 #this is a java mod
 java: true
+
+#doesn't have content, can be used in multiplayer
+hidden: true
