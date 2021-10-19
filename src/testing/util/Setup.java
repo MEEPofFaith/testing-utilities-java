@@ -20,16 +20,8 @@ public class Setup{
         return new Table[]{new Table().bottom().left(), new Table().bottom().left()};
     }
 
-    /*public static <T extends TUButton> void add(T source, Table[] tables){
-        source.add(tables);
-        ui.hudGroup.addChild(tables[0]);
-        ui.hudGroup.addChild(tables[1]);
-    }*/
-
     public static void init(){
-        //Yea I have no idea how to get this to work
-        //add(Folding, folder);
-
+        //welp since you can't just make a class as one of a method's inputs and run something from that class my code will be a few lines of duplicated code longer.
         Folding.add(folder);
         ui.hudGroup.addChild(folder[0]);
         ui.hudGroup.addChild(folder[1]);

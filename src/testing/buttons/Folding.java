@@ -5,7 +5,7 @@ import mindustry.gen.*;
 import testing.ui.*;
 import testing.util.*;
 
-public class Folding extends TUButton{
+public class Folding{
     public static void folding(Table t){
         t.button(Icon.resize, TUStyles.tuButtonStyle, () -> {
             TUVars.folded = !TUVars.folded;
