@@ -1,23 +1,39 @@
 #the mod name as displayed in-game
-displayName: "Java Mod Template"
+displayName: "Testing Utilities"
 
 #the internal name of your mod
-name: "example-java-mod"
+name: "test-utils"
 
 #your name
-author: "You"
+author: "[accent]MEEP of Faith"
 
 #the fully qualified main class of the mod
-main: "example.ExampleJavaMod"
+main: "testing.TestingUtilities"
 
 #the mod description as seen in the mod dialog
-description: "A Mindustry Java mod template."
+description:
+    '''
+    Utilities for testing stuff.
+
+    Team Changer: Change teams easilty. (Disabled in campaign)
+    Seppuku Button: Kill yourself. Press and hold to mass kill. A setting to make the death instant can be found in game settings.
+    Clone Button: Instantly clones your player unit. Press and hold to mass clone. (Disabled in campaign)
+    Heal Button: Sets your player unit's hp to its max. (Disabled in campaign)
+    Invincibility Button: Sets your player unit's hp to infinity. (Disabled in campaign)
+    Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
+    Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
+    Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
+
+    A setting for making the menu folded by default can be found in game settings.
+
+    Also increases zooming range.
+    '''
 
 #the mod version
-version: 1.0
+version: 17
 
 #the minimum game build required to run this mod
-minGameVersion: 129
+minGameVersion: 133
 
 #this is a java mod
 java: true

@@ -1,5 +1,18 @@
-# Mindustry Java Mod Template
-A Java Mindustry mod template that works on Android and PC. The Kotlin version of this mod can be seen [here](https://github.com/Anuken/MindustryKotlinModTemplate).
+# Testing Utilities
+Just some small utilities for sandbox/modding
+
+- Team Changer: Change teams easilty. (Disabled in campaign)
+- Seppuku Button: Kill yourself. Press and hold to commit crawler. A setting to make the death instant can be found in game settings.
+- Clone Button: Instantly clones your player unit. Press and hold to mass clone. (Disabled in campaign)
+- Heal Button: Sets your player unit's hp to its max. (Disabled in campaign)
+- Invincibility Button: Sets your player unit's hp to infinity. (Disabled in campaign)
+- Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
+- Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
+- Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
+
+A setting for making the menu folded by default can be found in game settings.
+
+Also increases zooming range.
 
 ## Building for Desktop Testing
 
@@ -21,7 +34,7 @@ To get a jar file that works for every platform, do the following:
 Building locally takes more time to set up, but shouldn't be a problem if you've done Android development before.
 1. Download the Android SDK, unzip it and set the `ANDROID_HOME` environment variable to its location.
 2. Make sure you have API level 30 installed, as well as any recent version of build tools (e.g. 30.0.1)
-3. Add a build-tools folder to your PATH. For example, if you have `30.0.1` installed, that would be `$ANDROID_HOME/build-tools/30.0.1`.
+3. Add a build-tools folder to your PATH. For testing, if you have `30.0.1` installed, that would be `$ANDROID_HOME/build-tools/30.0.1`.
 4. Run `gradlew deploy`. If you did everything correctlly, this will create a jar file in the `build/libs` directory that can be run on both Android and desktop. 
 
 ## Adding Dependencies
