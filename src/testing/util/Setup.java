@@ -1,19 +1,19 @@
 package testing.util;
 
+import arc.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
-import mindustry.gen.*;
-import mindustry.type.*;
+import mindustry.game.EventType.*;
 import testing.buttons.*;
 
 import static mindustry.Vars.*;
 
 public class Setup{
+    static boolean selfInit;
+
     public static Table[]
 
     folder = newTables(),
     team = newTables(),
-    self = newTables(),
     sandbox = newTables(),
     status = newTables();
 
@@ -42,13 +42,20 @@ public class Setup{
         TeamChanger.add(team);
         add(team);
 
-        //TODO self
-
         Sandbox.add(sandbox);
         add(sandbox);
 
         //TODO status table
 
-        //TODO heal/invincibility
+        Events.on(WorldLoadEvent.class, e -> {
+            if(!selfInit){
+                //lmao
+                Table healthUI = ((Table)(((Table)(((Table)(((Stack)(((Table)(ui.hudGroup.getChildren().get(5))).getChildren().get(mobile ? 2 : 0))).getChildren().get(0))).getChildren().get(0))).getChildren().get(0)));
+                healthUI.row();
+                Self.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
+                Self.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
+                selfInit = true;
+            }
+        });
     }
 }

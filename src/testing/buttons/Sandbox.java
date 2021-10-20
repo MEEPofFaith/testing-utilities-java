@@ -56,10 +56,8 @@ public class Sandbox{
         }
         b.setDisabled(() -> state.isCampaign());
         b.update(() -> {
-            if(!headless){
-                b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
-                b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
-            }
+            b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
+            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
         return i;
@@ -68,7 +66,7 @@ public class Sandbox{
     public static Cell<ImageButton> filling(Table t, boolean label){
         Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
             if(!swap) coreItems();
-        }).color(TUVars.curTeam.color).growX().center();
+        }).color(TUVars.curTeam.color).growX();
         ImageButton b = i.get();
         if(label && !mobile){
             b.label(() ->
@@ -89,10 +87,8 @@ public class Sandbox{
                 swap = false;
             }
 
-            if(!headless){
-                b.getStyle().imageUp = fillMode ? TUIcons.core : TUIcons.dump;
-                b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
-            }
+            b.getStyle().imageUp = fillMode ? TUIcons.core : TUIcons.dump;
+            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
         return i;
