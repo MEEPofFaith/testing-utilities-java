@@ -4,6 +4,7 @@ import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.game.EventType.*;
 import testing.buttons.*;
+import testing.buttons.dialogs.*;
 
 import static mindustry.Vars.*;
 
@@ -14,6 +15,7 @@ public class Setup{
 
     folder = newTables(),
     team = newTables(),
+    death = newTables(),
     sandbox = newTables(),
     status = newTables();
 
@@ -41,6 +43,10 @@ public class Setup{
 
         TeamChanger.add(team);
         add(team);
+
+        Death.init();
+        Death.add(death);
+        add(death);
 
         Sandbox.add(sandbox);
         add(sandbox);

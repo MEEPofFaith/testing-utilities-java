@@ -70,7 +70,7 @@ public class Sandbox{
         ImageButton b = i.get();
         if(label && !mobile){
             b.label(() ->
-                (b.isDisabled() ? "[gray]" : "[white]") +
+                "[" + (b.isDisabled() ? "gray" : "white") + "]" +
                 (fillMode ? "Fill" : "Dump") + " Core"
             ).growX();
         }
