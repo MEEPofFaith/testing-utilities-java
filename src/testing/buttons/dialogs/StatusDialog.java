@@ -28,7 +28,7 @@ public class StatusDialog extends BaseDialog{
     float minDur = 0.125f, maxDur = 60f;
 
     public StatusDialog(){
-        super("@tu-status-menu");
+        super("@tu-status-menu.name");
 
         shouldPause = false;
         addCloseButton();
@@ -45,7 +45,7 @@ public class StatusDialog extends BaseDialog{
 
         cont.pane(all);
 
-        buttons.button("$tu.clear-effects", Icon.cancel, this::clearStatus);
+        buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus);
     }
 
     void rebuild(){
@@ -63,12 +63,12 @@ public class StatusDialog extends BaseDialog{
         all.table(list -> {
             list.left();
 
-            int cols = (int)Mathf.clamp((Core.graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10), 1, 22);
+            int cols = (int)Mathf.clamp((Core.graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / 2, 1, 22);
             int count = 0;
 
             for(StatusEffect s : array){
                 Image image = new Image(s.uiIcon).setScaling(Scaling.fit);
-                list.add(image).size(8 * 4).pad(3);
+                list.add(image).size(8 * 8).pad(3);
 
                 ClickListener listener = new ClickListener();
                 image.addListener(listener);
@@ -100,7 +100,7 @@ public class StatusDialog extends BaseDialog{
                 duration = n;
                 dField.setText(String.valueOf(n));
             }).get();
-            d.add("Duration (seconds: ").padLeft(8);
+            d.add("Duration (seconds): ").padLeft(8);
             d.add(dField);
             dField.changed(() -> {
                 if(dField.isValid()){
@@ -121,8 +121,8 @@ public class StatusDialog extends BaseDialog{
         all.table(null, b -> {
             b.defaults().size(210, 64);
 
-            b.button("$tu.apply-effect", Icon.add, () -> apply(false)).padRight(8);
-            b.button("$tu.apply-perma", Icon.add, () -> apply(true));
+            b.button("$tu-status-menu.apply", Icon.add, () -> apply(false)).padRight(8);
+            b.button("$tu-status-menu.perma", Icon.add, () -> apply(true));
         });
     }
 
