@@ -36,7 +36,8 @@ public class Setup{
     }
 
     public static void init(){
-        //welp since you can't just make a class as one of a method's inputs and run something from that class my code will be a few lines of duplicated code longer.
+        TUVars.folded = Core.settings.getBool("tu-startfolded", false);
+
         Folding.add(folder);
         add(folder);
 

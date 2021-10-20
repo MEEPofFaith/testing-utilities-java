@@ -40,11 +40,16 @@ public class Death{
     public static void spontaniumCombustum(){
         Utils.check();
         if(net.client()){
+            if(Core.settings.getBool("tu-instakill")){
+                Utils.runCommandPlayer("p.unit().elevation=0");
+                Utils.runCommandPlayer("p.unit().health=-1");
+                Utils.runCommandPlayer("p.unit().dead=true");
+            }
             Utils.runCommandPlayer("p.unit().kill()");
         }else{
             Unit u = player.unit();
             if(u != null){
-                if(Core.settings.getBool("instakill")){
+                if(Core.settings.getBool("tu-instakill")){
                     Effect.shake(u.type.hitSize, u.type.hitSize, u);
                     u.elevation(0);
                     u.health(-1);

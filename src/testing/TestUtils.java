@@ -4,6 +4,7 @@ import arc.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
+import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -16,6 +17,7 @@ public class TestUtils extends Mod{
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
                 TUStyles.init();
+                TUSettings.init();
                 Setup.init();
             });
         }

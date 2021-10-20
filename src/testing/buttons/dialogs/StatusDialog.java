@@ -100,8 +100,8 @@ public class StatusDialog extends BaseDialog{
                 duration = n;
                 dField.setText(String.valueOf(n));
             }).get();
-            d.add("Duration (seconds): ").padLeft(8);
-            d.add(dField);
+            d.add("@tu-status-menu.duration");
+            d.add(dField).padLeft(8);
             dField.changed(() -> {
                 if(dField.isValid()){
                     String s = Utils.extractNumber(dField.getText());
