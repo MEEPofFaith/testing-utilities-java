@@ -8,8 +8,7 @@ import testing.buttons.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static mindustry.Vars.mobile;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class StatusMenu{
     static StatusDialog statusDialog;

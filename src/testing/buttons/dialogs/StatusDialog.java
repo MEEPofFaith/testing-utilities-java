@@ -18,7 +18,6 @@ import mindustry.ui.dialogs.*;
 import testing.util.*;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.player;
 
 public class StatusDialog extends BaseDialog{
     TextField search;

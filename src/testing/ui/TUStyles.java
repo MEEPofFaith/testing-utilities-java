@@ -1,7 +1,6 @@
 package testing.ui;
 
 import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import mindustry.gen.*;
