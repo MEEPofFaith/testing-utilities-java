@@ -27,10 +27,10 @@ assignees: ''
 
 *Place an X (no spaces) between the brackets to confirm that you have read the line below.*
 - [ ] **I have searched the closed and open issues to make sure that this problem has not already been reported.**
-  - [ ] **I am playing with the latest release (https://github.com/MEEPofFaith/prog-mats-java/releases) to make sure my issue has not been fixed.**
+  - [ ] **I am playing with the latest release (https://github.com/MEEPofFaith/testing-utilities-java/releases) to make sure my issue has not been fixed.**
    
     or
-  - [ ] **I am playing with the latest action (https://github.com/MEEPofFaith/prog-mats-java/actions) to make sure my issue has not been fixed.**
+  - [ ] **I am playing with the latest action (https://github.com/MEEPofFaith/testing-utilities-java/actions) to make sure my issue has not been fixed.**
 
 ---
 
