@@ -4,7 +4,6 @@ import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.game.EventType.*;
 import testing.buttons.*;
-import testing.buttons.dialogs.*;
 
 import static mindustry.Vars.*;
 
@@ -51,7 +50,9 @@ public class Setup{
         Sandbox.add(sandbox);
         add(sandbox);
 
-        //TODO status table
+        StatusMenu.init();
+        StatusMenu.add(status);
+        add(status);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){

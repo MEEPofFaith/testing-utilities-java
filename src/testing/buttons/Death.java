@@ -1,4 +1,4 @@
-package testing.buttons.dialogs;
+package testing.buttons;
 
 import arc.*;
 import arc.scene.ui.*;

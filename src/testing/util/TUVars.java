@@ -1,11 +1,6 @@
 package testing.util;
 
-import arc.util.async.*;
 import mindustry.game.*;
-import mindustry.gen.*;
-import testing.content.*;
-
-import static mindustry.Vars.*;
 
 public class TUVars{
     public static float longPress = 30f;

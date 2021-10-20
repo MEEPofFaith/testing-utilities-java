@@ -14,6 +14,8 @@ A setting for making the menu folded by default can be found in game settings.
 
 Also increases zooming range.
 
+Original repo here: [MEEPofFaith/testing-utilities-js](https://github.com/MEEPofFaith/testing-utilities-js).
+
 ## Building for Desktop Testing
 
 1. Install JDK **16**.
