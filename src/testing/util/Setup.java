@@ -63,12 +63,20 @@ public class Setup{
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
                 //lmao
-                Table healthUI = ((Table)(((Table)(((Table)(((Stack)(((Table)(ui.hudGroup.getChildren().get(5))).getChildren().get(mobile ? 2 : 0))).getChildren().get(0))).getChildren().get(0))).getChildren().get(0)));
+                Table healthUI = placement();
                 healthUI.row();
                 Self.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
                 Self.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
                 selfInit = true;
             }
         });
+    }
+
+    public static Table placement(){
+        return ui.hudGroup
+            .<Table>find("overlaymarker")
+            .<Stack>find("waves/editor")
+            .<Table>find("waves")
+            .find("status");
     }
 }
