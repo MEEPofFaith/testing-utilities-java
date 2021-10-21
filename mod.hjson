@@ -10,6 +10,9 @@ author: "[accent]MEEP of Faith"
 #the fully qualified main class of the mod
 main: "testing.TestUtils"
 
+#mod repo on github
+repo: MEEPofFaith/testing-utilities-java
+
 #the mod description as seen in the mod dialog
 description:
     '''
