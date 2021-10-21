@@ -6,6 +6,17 @@ import mindustry.input.*;
 import static mindustry.Vars.*;
 
 public class ButtonVisibility{
+    /** Extra checks for mobile (disappear when the cancel button appears) */
+    public static Boolp mobileChecks = () -> {
+        if(player.unit().isBuilding()) return false;
+        if(control.input instanceof MobileInput m){
+            return m.block == null &&
+                m.mode != PlaceMode.breaking &&
+                (m.selectRequests.isEmpty() || m.lastSchematic == null);
+        }
+        return true;
+    };
+
     public static Boolp unfoldedVisibility = () -> {
         if(
             TUVars.folded ||
@@ -13,15 +24,9 @@ public class ButtonVisibility{
             ui.minimapfrag.shown()
         ) return false;
 
-        //if desktop, then all is set. mobile needs some extra conditions checked.
         if(!mobile) return true;
 
-        if(control.input instanceof MobileInput m){
-            return !player.unit().isBuilding() &&
-                !m.selectedBlock() && !m.isBreaking() &&
-                (!m.selectRequests.isEmpty() && m.lastSchematic != null);
-        }
-        return true;
+        return mobileChecks.get();
     };
 
     public static Boolp foldedVisibility = () -> {
@@ -31,14 +36,6 @@ public class ButtonVisibility{
             ui.minimapfrag.shown()
         ) return false;
 
-        //if desktop, then all is set. mobile needs some extra conditions checked.
-        if(!mobile) return true;
-
-        if(control.input instanceof MobileInput m){
-            return !player.unit().isBuilding() &&
-                !m.selectedBlock() && !m.isBreaking() &&
-                (!m.selectRequests.isEmpty() && m.lastSchematic != null);
-        }
-        return true;
+        return mobileChecks.get();
     };
 }
