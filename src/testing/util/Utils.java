@@ -17,7 +17,7 @@ public class Utils{
         TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
     }
 
-    public static void check(){
+    public static void noCheat(){
         /* lmao
         Groups.build.each(b -> {
             if(b.team == state.rules.defaultTeam){
@@ -35,11 +35,10 @@ public class Utils{
     }
 
     public static void runCommandPlayer(String command){
-        String code = "Groups.player.each(p=>{p.name.includes(\"";
-        code += player.name;
-        code += "\")?";
-        code += command;
-        code += ":0})";
+        String code =
+            "Groups.player.each(p => p.name === " + player.name +
+            ", p => " + command +
+            ")";
         runCommand(code);
     }
 }

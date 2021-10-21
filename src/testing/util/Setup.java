@@ -16,7 +16,8 @@ public class Setup{
     team = newTables(),
     death = newTables(),
     sandbox = newTables(),
-    status = newTables();
+    status = newTables(),
+    units = newTables();
 
     public static Table[] newTables(){
         Table t1 = new Table().bottom().left();
@@ -54,6 +55,10 @@ public class Setup{
         StatusMenu.init();
         StatusMenu.add(status);
         add(status);
+
+        UnitMenu.init();
+        UnitMenu.add(units);
+        add(units);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){

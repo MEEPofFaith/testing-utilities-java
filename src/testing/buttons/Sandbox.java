@@ -16,7 +16,7 @@ public class Sandbox{
     static boolean swap;
 
     public static void toggle(){
-        Utils.check();
+        Utils.noCheat();
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
         if(net.client()){
             Utils.runCommand("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
@@ -25,7 +25,7 @@ public class Sandbox{
     }
 
     public static void coreItems(){
-        Utils.check();
+        Utils.noCheat();
         Utils.spawnIconEffect(fillMode ? "core" : "dump");
         if(net.client()){
             String code =
@@ -102,6 +102,6 @@ public class Sandbox{
         tables[1].table(Tex.buttonEdge3, t -> {
             toggling(t, false).size(TUVars.iconWidth, 40);
             filling(t, false).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(TUVars.iconWidth + 20);
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(2 * (TUVars.iconWidth + 20));
     }
 }

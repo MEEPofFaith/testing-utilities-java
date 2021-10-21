@@ -38,7 +38,7 @@ public class Death{
     }
 
     public static void spontaniumCombustum(){
-        Utils.check();
+        Utils.noCheat();
         if(net.client()){
             if(Core.settings.getBool("tu-instakill")){
                 Utils.runCommandPlayer("p.unit().elevation=0");
@@ -61,7 +61,7 @@ public class Death{
     }
 
     public static void mitosis(){
-        Utils.check();
+        Utils.noCheat();
         if(net.client()){
             Utils.runCommandPlayer("p.unit().type.spawn(p.team(),p.x,p.y)");
         }else{
@@ -134,7 +134,7 @@ public class Death{
         tables[0].table(Tex.buttonEdge3, t -> {
             clone(t, true).size(mobile ? TUVars.iconWidth : 104, 40);
             seppuku(t, true).size(mobile ? TUVars.iconWidth : 140, 40);
-        }).padBottom(2 * TUVars.buttonHeight + TUVars.TCOffset);
+        }).padBottom(2 * TUVars.buttonHeight + TUVars.TCOffset).padLeft(176);
 
         tables[1].table(Tex.pane, t -> {
             clone(t, false).size(TUVars.iconWidth, 40);

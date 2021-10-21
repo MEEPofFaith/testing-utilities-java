@@ -53,9 +53,9 @@ public class StatusDialog extends BaseDialog{
         String text = search.getText();
 
         all.label(
-            () -> "[accent]Current selection: [#" + status.color + "]" +
+            () -> Core.bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
             status.localizedName +
-            (status.permanent ? " [accent](Permanent Effect)" : "")
+            (status.permanent ? Core.bundle.get("tu-status-menu.permaeff") : "")
         ).padBottom(6);
         all.row();
 
@@ -63,12 +63,13 @@ public class StatusDialog extends BaseDialog{
         all.table(list -> {
             list.left();
 
-            int cols = (int)Mathf.clamp((Core.graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / 2, 1, 22);
+            float iconMul = 1.5f;
+            int cols = (int)Mathf.clamp((Core.graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / iconMul, 1, 22 / iconMul);
             int count = 0;
 
             for(StatusEffect s : array){
                 Image image = new Image(s.uiIcon).setScaling(Scaling.fit);
-                list.add(image).size(8 * 8).pad(3);
+                list.add(image).size(8 * 4 * iconMul).pad(3);
 
                 ClickListener listener = new ClickListener();
                 image.addListener(listener);
@@ -99,9 +100,9 @@ public class StatusDialog extends BaseDialog{
             d.slider(minDur, maxDur, 0.125f, duration, n -> {
                 duration = n;
                 dField.setText(String.valueOf(n));
-            }).get();
-            d.add("@tu-status-menu.duration");
-            d.add(dField).padLeft(8);
+            }).right();
+            d.add("@tu-status-menu.duration").left().padLeft(6);
+            d.add(dField).left().padLeft(6);
             dField.changed(() -> {
                 if(dField.isValid()){
                     String s = Utils.extractNumber(dField.getText());
@@ -127,7 +128,7 @@ public class StatusDialog extends BaseDialog{
     }
 
     void apply(boolean perma){
-        Utils.check();
+        Utils.noCheat();
         if(net.client()){
             Utils.runCommand("let tempEff=Vars.content.statusEffects().find(b=>b.name===" + status.name + ")");
             Utils.runCommandPlayer("(p.unit()!=null?p.unit().apply(tempEff," + (perma ? "Number.MAX_VALUE" : duration * 60) + "):0));");
@@ -137,7 +138,7 @@ public class StatusDialog extends BaseDialog{
     }
 
     void clearStatus(){
-        Utils.check();
+        Utils.noCheat();
         if(net.client()){
             Utils.runCommandPlayer("(p.unit()!=null?p.unit().clearStatuses():0)");
         }else if(player.unit() != null){

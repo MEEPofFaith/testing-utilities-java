@@ -1,5 +1,6 @@
 package testing.buttons;
 
+import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -19,7 +20,7 @@ public class StatusMenu{
 
     public static Cell<ImageButton> addButton(Table t, boolean label){
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Status Menu").growX();
+        if(!mobile && label) b.label(() -> Core.bundle.format("tu-status-menu.button", b.isDisabled() ? "gray" : "white")).growX();
         b.clicked(statusDialog::show);
         b.setDisabled(() -> state.isCampaign());
         b.update(() -> {

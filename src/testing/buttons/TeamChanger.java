@@ -21,7 +21,7 @@ public class TeamChanger{
     static Integer[] mainTeams = {0, 1, 2}; //Derelict, Sharded, Crux
 
     public static void changeTeam(){
-        Utils.check();
+        Utils.noCheat();
         if(Vars.net.client()){
             Utils.runCommandPlayer("p.team(Team." + TUVars.curTeam.name + ")");
         }else{
