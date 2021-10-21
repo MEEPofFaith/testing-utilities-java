@@ -73,7 +73,7 @@ public class TeamChanger{
 
         tables[1].table(Tex.pane, t -> {
             addMini(t, mainTeams).width(mobile ? 24 : 100);
-        }).padBottom(TUVars.TCOffset);
+        }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0));
 
         Events.on(WorldLoadEvent.class, e -> {
             for(int i = 0; i < 6; i++){
