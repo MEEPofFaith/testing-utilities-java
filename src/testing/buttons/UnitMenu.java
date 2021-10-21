@@ -33,7 +33,7 @@ public class UnitMenu{
     public static void add(Table[] tables){
         tables[0].table(Tex.pane, t -> {
             addButton(t, !mobile).size(TUVars.iconWidth + (mobile ? 0 : 116), 40f);
-        }).padBottom(TUVars.buttonHeight * 2 + TUVars.TCOffset);
+        }).padBottom(TUVars.buttonHeight * 2);
 
         tables[1].table(Tex.pane, t -> {
             addButton(t, false).size(TUVars.iconWidth, 40f);

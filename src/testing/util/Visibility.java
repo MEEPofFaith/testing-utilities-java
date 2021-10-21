@@ -5,7 +5,7 @@ import mindustry.input.*;
 
 import static mindustry.Vars.*;
 
-public class ButtonVisibility{
+public class Visibility{
     /** Extra checks for mobile (disappear when the cancel button appears) */
     public static Boolp mobileChecks = () -> {
         if(player.unit().isBuilding()) return false;

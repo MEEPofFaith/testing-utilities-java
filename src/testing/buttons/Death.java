@@ -134,11 +134,11 @@ public class Death{
         tables[0].table(Tex.buttonEdge3, t -> {
             clone(t, true).size(mobile ? TUVars.iconWidth : 104, 40);
             seppuku(t, true).size(mobile ? TUVars.iconWidth : 140, 40);
-        }).padBottom(2 * TUVars.buttonHeight + TUVars.TCOffset).padLeft(mobile ? TUVars.iconWidth + 20 : 176);
+        }).padBottom(2 * TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 176);
 
         tables[1].table(Tex.pane, t -> {
             clone(t, false).size(TUVars.iconWidth, 40);
             seppuku(t, false).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0)).padLeft(mobile ? 44 : 120);
+        }).padBottom(mobile ? TUVars.buttonHeight : 0).padLeft(mobile ? 44 : 120);
     }
 }

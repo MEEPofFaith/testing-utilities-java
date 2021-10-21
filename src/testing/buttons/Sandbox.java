@@ -97,11 +97,11 @@ public class Sandbox{
         tables[0].table(mobile ? Tex.pane : Tex.buttonEdge3, t -> {
             toggling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 108), 40);
             filling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 120), 40);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 186);
+        }).padBottom(TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 186);
 
         tables[1].table(Tex.buttonEdge3, t -> {
             toggling(t, false).size(TUVars.iconWidth, 40);
             filling(t, false).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + (mobile ? 0 : TUVars.buttonHeight)).padLeft(2 * (TUVars.iconWidth + 20));
+        }).padBottom(mobile ? 0 : TUVars.buttonHeight).padLeft(2 * (TUVars.iconWidth + 20));
     }
 }

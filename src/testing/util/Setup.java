@@ -10,6 +10,10 @@ import static mindustry.Vars.*;
 public class Setup{
     static boolean selfInit;
 
+    static Table
+        unfolded = new Table().bottom().left(),
+        folded = new Table().bottom().left();
+
     public static Table[]
 
     folder = newTables(),
@@ -20,20 +24,12 @@ public class Setup{
     units = newTables();
 
     public static Table[] newTables(){
-        Table t1 = new Table().bottom().left();
-        t1.fillParent = true;
-        t1.visibility = ButtonVisibility.unfoldedVisibility;
-
-        Table t2 = new Table().bottom().left();
-        t2.fillParent = true;
-        t2.visibility = ButtonVisibility.foldedVisibility;
-
-        return new Table[]{t1, t2};
+        return new Table[]{new Table().bottom().left(), new Table().bottom().left()};
     }
 
     public static void add(Table[] tables){
-        ui.hudGroup.addChild(tables[0]);
-        ui.hudGroup.addChild(tables[1]);
+        unfolded.addChild(tables[0]);
+        folded.addChild(tables[1]);
     }
 
     public static void init(){
@@ -59,6 +55,13 @@ public class Setup{
         UnitMenu.init();
         UnitMenu.add(units);
         add(units);
+
+        unfolded.moveBy(0, TUVars.TCOffset);
+        unfolded.visibility = Visibility.unfoldedVisibility;
+        ui.hudGroup.addChild(unfolded);
+        folded.moveBy(0, TUVars.TCOffset);
+        folded.visibility = Visibility.foldedVisibility;
+        ui.hudGroup.addChild(folded);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
