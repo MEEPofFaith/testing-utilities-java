@@ -186,11 +186,11 @@ public class UnitDialog extends BaseDialog{
 
     void spawn(){
         Utils.noCheat();
+        if(net.client()) Utils.runCommand("let tempUnit=Vars.content.units().find(b=>b.name===\"" + spawnUnit.name + "\")");
         for(int i = 0; i < amount; i++){
             float r = radius * tilesize * Mathf.sqrt(Mathf.random());
             Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
             if(net.client()){
-                Utils.runCommand("let tempUnit=Vars.content.units().find(b=>b.name===" + spawnUnit.name + ")");
                 Utils.runCommand("tempUnit.spawn(Team.get(" + spawnTeam().id + "), " + Tmp.v1.x + ", " + Tmp.v1.y + ")");
             }else{
                 spawnUnit.spawn(spawnTeam(), Tmp.v1);
@@ -201,10 +201,9 @@ public class UnitDialog extends BaseDialog{
     void transform(){
         Utils.noCheat();
         if(net.client()){
-            Utils.runCommand("let tempUnit=Vars.content.units().find(b=>b.name===" + spawnUnit.name + ")");
-            Utils.runCommandPlayer("{let tempX = p.unit().x;let tempY = p.unit().y;}");
+            Utils.runCommand("let tempUnit=Vars.content.units().find(b=>b.name===\"" + spawnUnit.name + "\")");
             Utils.runCommandPlayer("Call.unitDespawn(p.unit())");
-            Utils.runCommandPlayer("Call.unitControl(p, tempUnit.spawn(Team.get(" + spawnTeam().id + "), tempX, tempY))");
+            Utils.runCommandPlayer("Call.unitControl(p, tempUnit.spawn(Team.get(" + spawnTeam().id + "), p.unit().x, p.unit().y))");
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(spawnTeam(), player.unit());
             float rot = player.unit().rotation;

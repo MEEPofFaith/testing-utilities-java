@@ -130,8 +130,8 @@ public class StatusDialog extends BaseDialog{
     void apply(boolean perma){
         Utils.noCheat();
         if(net.client()){
-            Utils.runCommand("let tempEff=Vars.content.statusEffects().find(b=>b.name===" + status.name + ")");
-            Utils.runCommandPlayer("(p.unit()!=null?p.unit().apply(tempEff," + (perma ? "Number.MAX_VALUE" : duration * 60) + "):0));");
+            Utils.runCommand("let tempEff=Vars.content.statusEffects().find(b=>b.name===\"" + status.name + "\")");
+            Utils.runCommandPlayer("p.unit().apply(tempEff," + (perma ? "Number.MAX_VALUE" : duration * 60) + ")");
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }

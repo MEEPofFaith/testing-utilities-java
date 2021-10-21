@@ -41,9 +41,7 @@ public class Death{
         Utils.noCheat();
         if(net.client()){
             if(Core.settings.getBool("tu-instakill")){
-                Utils.runCommandPlayer("p.unit().elevation=0");
-                Utils.runCommandPlayer("p.unit().health=-1");
-                Utils.runCommandPlayer("p.unit().dead=true");
+                Utils.runCommandPlayer("{p.unit().elevation=0;p.unit().health=-1;p.unit().dead=true;}");
             }
             Utils.runCommandPlayer("p.unit().kill()");
         }else{

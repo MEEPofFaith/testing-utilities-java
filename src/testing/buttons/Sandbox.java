@@ -32,7 +32,7 @@ public class Sandbox{
                 "Vars.content.items().each(i=>{p.core().items.set(i," +
                 (fillMode ? "p.core().storageCapacity" : "0") +
                 ");})";
-            Utils.runCommand(code);
+            Utils.runCommandPlayer(code);
         }else{
             CoreBuild core = player.core();
             if(core != null){

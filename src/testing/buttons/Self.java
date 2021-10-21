@@ -19,8 +19,8 @@ public class Self{
             u.dead = false;
             u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u.type.health);
             u.health = u.maxHealth;
-            Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
         }
+        Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
     }
 
     public static Cell<ImageButton> healing(Table t){
