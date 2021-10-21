@@ -36,6 +36,8 @@ public class ButtonVisibility{
             ui.minimapfrag.shown()
         ) return false;
 
+        if(!mobile) return true;
+
         return mobileChecks.get();
     };
 }
