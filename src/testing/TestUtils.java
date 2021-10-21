@@ -13,7 +13,7 @@ import static arc.Core.*;
 public class TestUtils extends Mod{
     public TestUtils(){
         if(!Vars.headless){
-            TUVars.TCOffset = settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
+            TUVars.TCOffset = settings.getBool("mod-time-control-enabled", false) ? 46 : 0;
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
                 TUStyles.init();
