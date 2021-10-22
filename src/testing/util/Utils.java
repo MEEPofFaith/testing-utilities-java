@@ -37,9 +37,9 @@ public class Utils{
 
     public static void runCommandPlayer(String command){
         String code =
-            "Groups.player.each(p => p.name === \"" + fixQuotes(player.name) + "\"" +
-            ", p => {" + command +
-            "})";
+            "Groups.player.each(p => p.name == \"" + fixQuotes(player.name) + "\", " +
+            "p => {" + command + "}" +
+            ")";
         runCommand(code);
     }
 

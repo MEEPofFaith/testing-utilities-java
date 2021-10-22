@@ -23,7 +23,7 @@ public class StatusDialog extends BaseDialog{
     TextField search;
     Table all = new Table();
     StatusEffect status = StatusEffects.burning;
-    float duration = 0.125f;
+    float duration = 10f;
 
     float minDur = 0.125f, maxDur = 60f;
 
@@ -130,8 +130,8 @@ public class StatusDialog extends BaseDialog{
     void apply(boolean perma){
         Utils.noCheat();
         if(net.client()){
-            Utils.runCommand("let tempEff=Vars.content.statusEffects().find(b=>b.name===\"" + status.name + "\")");
-            Utils.runCommandPlayer("p.unit().apply(tempEff," + (perma ? "Number.MAX_VALUE" : duration * 60) + ")");
+            Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
+            Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
@@ -140,7 +140,7 @@ public class StatusDialog extends BaseDialog{
     void clearStatus(){
         Utils.noCheat();
         if(net.client()){
-            Utils.runCommandPlayer("(p.unit()!=null?p.unit().clearStatuses():0)");
+            Utils.runCommandPlayer("p.unit().clearStatuses();");
         }else if(player.unit() != null){
             player.unit().clearStatuses();
         }

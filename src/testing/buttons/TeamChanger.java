@@ -23,7 +23,7 @@ public class TeamChanger{
     public static void changeTeam(){
         Utils.noCheat();
         if(Vars.net.client()){
-            Utils.runCommandPlayer("p.team(Team." + TUVars.curTeam.name + ")");
+            Utils.runCommandPlayer("p.team(Team." + TUVars.curTeam.name + ");");
         }else{
             player.team(TUVars.curTeam);
         }

@@ -19,28 +19,26 @@ public class Sandbox{
         Utils.noCheat();
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
         if(net.client()){
-            Utils.runCommand("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
+            Utils.runCommand("Vars.state.rules.infiniteResources != Vars.state.rules.infiniteResources");
         }
         state.rules.infiniteResources =! state.rules.infiniteResources;
     }
 
     public static void coreItems(){
         Utils.noCheat();
-        Utils.spawnIconEffect(fillMode ? "core" : "dump");
         if(net.client()){
-            String code =
-                "Vars.content.items().each(i=>{p.core().items.set(i," +
+            Utils.runCommandPlayer(
+                "Vars.content.items().each(i => p.core().items.set(i, " +
                 (fillMode ? "p.core().storageCapacity" : "0") +
-                ");})";
-            Utils.runCommandPlayer(code);
+                "));"
+            );
         }else{
             CoreBuild core = player.core();
             if(core != null){
-                content.items().each(i -> {
-                    core.items.set(i, fillMode ? core.storageCapacity : 0);
-                });
+                content.items().each(i -> core.items.set(i, fillMode ? core.storageCapacity : 0));
             }
         }
+        Utils.spawnIconEffect(fillMode ? "core" : "dump");
     }
 
     public static Cell<ImageButton> toggling(Table t, boolean label){
