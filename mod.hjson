@@ -33,7 +33,7 @@ description:
     '''
 
 #the mod version
-version: 23
+version: 24
 
 #the minimum game build required to run this mod
 minGameVersion: 133
