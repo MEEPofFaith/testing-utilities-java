@@ -9,10 +9,11 @@ Just some small utilities for sandbox/modding
 - Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
 - Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
 - Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
+- Unit Spawn & Swap Menu: Allows you to both spawn units and transform into a different unit. (Disabled in campaign)
 
 A setting for making the menu folded by default can be found in game settings.
 
-Also increases zooming range.
+Also enables devmode and increases zooming range.
 
 Original repo here: [MEEPofFaith/testing-utilities-js](https://github.com/MEEPofFaith/testing-utilities-js).
 
