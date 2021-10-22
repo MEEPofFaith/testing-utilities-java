@@ -203,7 +203,13 @@ public class UnitDialog extends BaseDialog{
         if(net.client()){
             Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
             Utils.runCommandPlayer(
-                "Call.unitControl(p, tempUnit.spawn(p.team(), p.x, p.y));"
+                //Don't use let/var/etc., it breaks the command and makes nothing happen on use. Idk why, it makes no sense. I need a js expert for this.
+                "spawned = tempUnit.spawn(p.team(), p.x, p.y); " +
+                //These don't work. I assume that trying to modify parts of the unit just straight up break.
+                //Because uncommenting either of these makes nothing happen in game when used.
+                //"spawned.spawnedByCore = true; " +
+                //"spawned.rotation = p.unit().rotation; " +
+                "Call.unitControl(p, spawned);"
             );
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
