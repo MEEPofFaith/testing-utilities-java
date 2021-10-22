@@ -1,5 +1,6 @@
 package testing.util;
 
+import arc.util.*;
 import arc.util.async.*;
 import mindustry.gen.*;
 import testing.content.*;
@@ -36,9 +37,13 @@ public class Utils{
 
     public static void runCommandPlayer(String command){
         String code =
-            "Groups.player.each(p => p.name === \"" + player.name +
-            "\", p => " + command +
-            ")";
+            "Groups.player.each(p => p.name === \"" + fixQuotes(player.name) + "\"" +
+            ", p => {" + command +
+            "})";
         runCommand(code);
+    }
+
+    public static String fixQuotes(String s){
+        return s.replaceAll("\"", "\\\\\"");
     }
 }
