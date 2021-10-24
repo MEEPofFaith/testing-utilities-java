@@ -128,21 +128,23 @@ public class StatusDialog extends BaseDialog{
     }
 
     void apply(boolean perma){
-        Utils.noCheat();
-        if(net.client()){
-            Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
-            Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
-        }else if(player.unit() != null){
-            player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
+                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+            }else if(player.unit() != null){
+                player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
+            }
         }
     }
 
     void clearStatus(){
-        Utils.noCheat();
-        if(net.client()){
-            Utils.runCommandPlayer("p.unit().clearStatuses();");
-        }else if(player.unit() != null){
-            player.unit().clearStatuses();
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommandPlayer("p.unit().clearStatuses();");
+            }else if(player.unit() != null){
+                player.unit().clearStatuses();
+            }
         }
     }
 

@@ -187,41 +187,44 @@ public class UnitDialog extends BaseDialog{
     }
 
     void spawn(){
-        Utils.noCheat();
-        if(net.client()) Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
-        for(int i = 0; i < amount; i++){
-            float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-            Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-            if(net.client()){
-                Utils.runCommand("tempUnit.spawn(Team.get(" + spawnTeam().id + "), " + Tmp.v1.x + ", " + Tmp.v1.y + ")");
-            }else{
-                spawnUnit.spawn(spawnTeam(), Tmp.v1);
+        if(Utils.noCheat()){
+            if(net.client())
+                Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
+            for(int i = 0; i < amount; i++){
+                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
+                if(net.client()){
+                    Utils.runCommand("tempUnit.spawn(Team.get(" + spawnTeam().id + "), " + Tmp.v1.x + ", " + Tmp.v1.y + ")");
+                }else{
+                    spawnUnit.spawn(spawnTeam(), Tmp.v1);
+                }
             }
         }
     }
 
     void transform(){
-        Utils.noCheat();
-        if(net.client()){
-            Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
-            Utils.runCommandPlayer(
-                //Don't use let/var/etc., it breaks the command and makes nothing happen on use. Idk why, it makes no sense. I need a js expert for this.
-                "spawned = tempUnit.spawn(p.team(), p.x, p.y); " +
-                //These don't work. I assume that trying to modify parts of the unit just straight up break.
-                //Because uncommenting either of these makes nothing happen in game when used.
-                //"spawned.spawnedByCore = true; " +
-                //"spawned.rotation = p.unit().rotation; " +
-                "Call.unitControl(p, spawned);"
-            );
-        }else if(player.unit() != null){
-            Unit u = spawnUnit.spawn(player.team(), player);
-            float rot = player.unit().rotation;
-            u.controller(player);
-            u.rotation(rot);
-            u.spawnedByCore(true);
-            Fx.unitControl.at(u, true);
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
+                Utils.runCommandPlayer(
+                    //Don't use let/var/etc., it breaks the command and makes nothing happen on use. Idk why, it makes no sense. I need a js expert for this.
+                    "spawned = tempUnit.spawn(p.team(), p.x, p.y); " +
+                        //These don't work. I assume that trying to modify parts of the unit just straight up break.
+                        //Because uncommenting either of these makes nothing happen in game when used.
+                        //"spawned.spawnedByCore = true; " +
+                        //"spawned.rotation = p.unit().rotation; " +
+                        "Call.unitControl(p, spawned);"
+                );
+            }else if(player.unit() != null){
+                Unit u = spawnUnit.spawn(player.team(), player);
+                float rot = player.unit().rotation;
+                u.controller(player);
+                u.rotation(rot);
+                u.spawnedByCore(true);
+                Fx.unitControl.at(u, true);
+            }
+            hide();
         }
-        hide();
     }
 
     Team spawnTeam(){

@@ -18,17 +18,19 @@ public class Utils{
         TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
     }
 
-    public static void noCheat(){
-        /* lmao
-        Groups.build.each(b -> {
-            if(b.team == state.rules.defaultTeam){
-                b.kill();
-            }
-        });
-        */
+    public static boolean noCheat(){
         if(!net.client() && state.isCampaign()){
+            /* lmao
+            Groups.build.each(b -> {
+                if(b.team == state.rules.defaultTeam){
+                    b.kill();
+                }
+            });
+            */
             Threads.throwAppException(new Throwable("No cheating! Don't use Testing Utilities in campaign!"));
+            return false;
         }
+        return true;
     }
 
     public static void runCommand(String command){

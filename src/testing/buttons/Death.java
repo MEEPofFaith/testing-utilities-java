@@ -38,35 +38,37 @@ public class Death{
     }
 
     public static void spontaniumCombustum(){
-        Utils.noCheat();
-        if(net.client()){
-            if(Core.settings.getBool("tu-instakill")){
-                Utils.runCommandPlayer("p.unit().elevation = 0; p.unit().health = -1; p.unit().dead = true;");
-            }
-            Utils.runCommandPlayer("p.unit().kill();");
-        }else{
-            Unit u = player.unit();
-            if(u != null){
+        if(Utils.noCheat()){
+            if(net.client()){
                 if(Core.settings.getBool("tu-instakill")){
-                    Effect.shake(u.type.hitSize, u.type.hitSize, u);
-                    u.elevation(0);
-                    u.health(-1);
-                    u.dead(true);
+                    Utils.runCommandPlayer("p.unit().elevation = 0; p.unit().health = -1; p.unit().dead = true;");
                 }
-                u.kill();
+                Utils.runCommandPlayer("p.unit().kill();");
+            }else{
+                Unit u = player.unit();
+                if(u != null){
+                    if(Core.settings.getBool("tu-instakill")){
+                        Effect.shake(u.type.hitSize, u.type.hitSize, u);
+                        u.elevation(0);
+                        u.health(-1);
+                        u.dead(true);
+                    }
+                    u.kill();
+                }
             }
         }
     }
 
     public static void mitosis(){
-        Utils.noCheat();
-        if(net.client()){
-            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
-        }else{
-            Unit u = player.unit();
-            if(u != null){
-                u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
-                Fx.spawn.at(u);
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+            }else{
+                Unit u = player.unit();
+                if(u != null){
+                    u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+                    Fx.spawn.at(u);
+                }
             }
         }
     }
