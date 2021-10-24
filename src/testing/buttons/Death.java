@@ -105,7 +105,7 @@ public class Death{
             mitosis();
         }).growX();
         ImageButton b = i.get();
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
+        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
         if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Clone").growX().padLeft(6);
         b.update(() -> {
             if(b.isPressed()){

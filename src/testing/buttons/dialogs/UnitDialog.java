@@ -179,7 +179,9 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(b -> {
-            b.button(Icon.add, this::transform).get().label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
+            ImageButton ib = b.button(Icon.add, this::transform).get();
+            ib.setDisabled(() -> player.unit().type == UnitTypes.block);
+            ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
             b.button(Icon.add, this::spawn).get().label(() -> "@tu-unit-menu.spawn").padLeft(6).growX();
         });
     }

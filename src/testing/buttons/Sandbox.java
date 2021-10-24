@@ -71,7 +71,7 @@ public class Sandbox{
                 (fillMode ? "Fill" : "Dump") + " Core"
             ).growX();
         }
-
+        b.setDisabled(() -> state.isCampaign());
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 timer += Core.graphics.getDeltaTime() * 60;
