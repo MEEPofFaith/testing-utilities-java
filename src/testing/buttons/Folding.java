@@ -15,8 +15,8 @@ public class Folding{
 
     public static void add(Table[] tables){
         tables[0].table(TUVars.TCOffset == 0 ? Tex.buttonEdge3 : TUStyles.buttonEdgeCap, Folding::folding)
-            .padLeft(Vars.mobile ? 164 : 479);
+            .padBottom(TUVars.TCOffset).padLeft(Vars.mobile ? 164 : 479);
         tables[1].table(TUVars.TCOffset == 0 || Vars.mobile ? Tex.buttonEdge3 : TUStyles.buttonEdgeCap, Folding::folding)
-            .padBottom(Vars.mobile ? TUVars.buttonHeight : 0).padLeft(Vars.mobile ? 144 : 220);
+            .padBottom(TUVars.TCOffset + (Vars.mobile ? TUVars.buttonHeight : 0)).padLeft(Vars.mobile ? 144 : 220);
     }
 }

@@ -17,7 +17,7 @@ public class TestUtils extends Mod{
             renderer.minZoom = 0.667f; //Zoom out farther
             renderer.maxZoom = 24f; //Get a closer look at yourself
 
-            TUVars.TCOffset = settings.getBool("mod-time-control-enabled", false) ? 46 : 0;
+            TUVars.TCOffset = settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
                 TUStyles.init();

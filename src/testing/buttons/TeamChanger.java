@@ -70,11 +70,11 @@ public class TeamChanger{
             for(int i = 0; i < 6; i++){
                 addSingle(t, Team.baseTeams[i], i).width(widths[i]);
             }
-        });
+        }).padBottom(TUVars.TCOffset);
 
         tables[1].table(Tex.pane, t -> {
             addMini(t, mainTeams).width(mobile ? 24 : 100);
-        }).padBottom(mobile ? TUVars.buttonHeight : 0);
+        }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0));
 
         Events.on(WorldLoadEvent.class, e -> {
             for(int i = 0; i < 6; i++){

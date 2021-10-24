@@ -56,10 +56,8 @@ public class Setup{
         UnitMenu.add(units);
         add(units);
 
-        unfolded.moveBy(0, TUVars.TCOffset);
         unfolded.visibility = Visibility.unfoldedVisibility;
         ui.hudGroup.addChild(unfolded);
-        folded.moveBy(0, TUVars.TCOffset);
         folded.visibility = Visibility.foldedVisibility;
         ui.hudGroup.addChild(folded);
 
@@ -68,8 +66,8 @@ public class Setup{
                 //lmao
                 Table healthUI = placement();
                 healthUI.row();
-                Self.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
-                Self.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
+                Health.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
+                Health.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
                 selfInit = true;
             }
         });
