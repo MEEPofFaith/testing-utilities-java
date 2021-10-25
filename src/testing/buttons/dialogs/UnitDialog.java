@@ -11,6 +11,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -18,6 +19,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
@@ -64,10 +66,10 @@ public class UnitDialog extends BaseDialog{
                 }else if(input.justTouched()){
                     if(!scene.hasMouse()){
                         spawnPos.set(Mathf.round(input.mouseWorld().x), Mathf.round(input.mouseWorld().y));
-                        ui.showInfoFade(bundle.format("tu-unit-menu.setpos", spawnPos.x / 8f, spawnPos.y / 8f));
+                        ui.showInfoToast(bundle.format("tu-unit-menu.setpos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
                         show();
                     }else{
-                        ui.showInfoFade("@tu-unit-menu.cancel");
+                        ui.showInfoToast("@tu-unit-menu.cancel", 4f);
                     }
                     expectingPos = false;
                 }
@@ -179,11 +181,25 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(b -> {
-            ImageButton ib = b.button(Icon.add, this::transform).get();
+            ImageButton ib = b.button(Icon.add, () -> {
+                if(spawnUnit.constructor.get().canPass(player.tileX(), player.tileY())){
+                    //For some reason spider units also return false even though they can stand on blocks
+                    transform();
+                }else{
+                    ui.showInfoToast("@tu-unit-menu.canttransform", 4f);
+                }
+            }).get();
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
             ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
-            b.button(Icon.add, this::spawn).get().label(() -> "@tu-unit-menu.spawn").padLeft(6).growX();
+
+            ImageButton db = b.button(Icon.units, TUStyles.togglei, () -> TUVars.despawns = !TUVars.despawns).growX().get();
+            db.update(() -> db.setChecked(TUVars.despawns));
+            db.label(() -> "@tu-unit-menu.despawns").padLeft(6).growX();
         });
+
+        all.row();
+        all.button(Icon.add, this::spawn).get()
+            .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
     }
 
     void spawn(){
@@ -207,20 +223,20 @@ public class UnitDialog extends BaseDialog{
             if(net.client()){
                 Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
                 Utils.runCommandPlayer(
-                    //Don't use let/var/etc., it breaks the command and makes nothing happen on use. Idk why, it makes no sense. I need a js expert for this.
+                    //Don't use let/var/etc., it breaks the command and makes nothing happen on use. Idk why, it makes no sense. I need a js expert for this qmelz help.
                     "spawned = tempUnit.spawn(p.team(), p.x, p.y); " +
-                        //These don't work. I assume that trying to modify parts of the unit just straight up break.
-                        //Because uncommenting either of these makes nothing happen in game when used.
-                        //"spawned.spawnedByCore = true; " +
-                        //"spawned.rotation = p.unit().rotation; " +
-                        "Call.unitControl(p, spawned);"
+                    //These don't work. I assume that trying to modify parts of the unit just straight up break.
+                    //Because uncommenting either of these makes nothing happen in game when used.
+                    //"spawned.spawnedByCore = " + TUVars.despawns + "; " +
+                    //"spawned.rotation = p.unit().rotation; " +
+                    "Call.unitControl(p, spawned);"
                 );
             }else if(player.unit() != null){
                 Unit u = spawnUnit.spawn(player.team(), player);
                 float rot = player.unit().rotation;
                 u.controller(player);
                 u.rotation(rot);
-                u.spawnedByCore(true);
+                u.spawnedByCore(TUVars.despawns);
                 Fx.unitControl.at(u, true);
             }
             hide();

@@ -33,7 +33,7 @@ public class Setup{
     }
 
     public static void init(){
-        TUVars.folded = Core.settings.getBool("tu-startfolded", false);
+        TUVars.setDefaults();
 
         Folding.add(folder);
         add(folder);

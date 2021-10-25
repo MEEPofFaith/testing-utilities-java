@@ -15,6 +15,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import testing.ui.*;
 import testing.util.*;
 
 import static mindustry.Vars.*;
@@ -120,20 +121,21 @@ public class StatusDialog extends BaseDialog{
         all.row();
 
         all.table(null, b -> {
-            ImageButton ab = b.button(Icon.add, () -> apply(false)).padRight(8).get();
+            ImageButton ab = b.button(Icon.add, this::apply).padRight(8).get();
             ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
-            ImageButton pb = b.button(Icon.add, () -> apply(true)).get();
+            ImageButton pb = b.button(Icon.play, TUStyles.togglei, () -> TUVars.perma = !TUVars.perma).get();
             pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX();
+            pb.update(() -> pb.setChecked(TUVars.perma));
         });
     }
 
-    void apply(boolean perma){
+    void apply(){
         if(Utils.noCheat()){
             if(net.client()){
                 Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
-                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (TUVars.perma ? "Number.MAX_VALUE" : duration * 60) + ");");
             }else if(player.unit() != null){
-                player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
+                player.unit().apply(status, TUVars.perma ? Float.MAX_VALUE : duration * 60);
             }
         }
     }

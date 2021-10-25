@@ -12,7 +12,7 @@ import static arc.graphics.Color.*;
 public class TUStyles{
     public static Drawable redBack, buttonEdgeCap;
     public static ButtonStyle redButtonStyle;
-    public static ImageButtonStyle tuImageStyle, tuRedImageStyle;
+    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, togglei;
 
     public static void init(){
         redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
@@ -31,6 +31,10 @@ public class TUStyles{
 
         tuRedImageStyle = new ImageButtonStyle(tuImageStyle){{
             disabled = redBack;
+        }};
+
+        togglei = new ImageButtonStyle(Styles.defaulti){{
+            checked = Tex.buttonOver;
         }};
     }
 }
