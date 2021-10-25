@@ -120,8 +120,6 @@ public class StatusDialog extends BaseDialog{
         all.row();
 
         all.table(null, b -> {
-            b.defaults().size(210, 64);
-
             b.button("$tu-status-menu.apply", Icon.add, () -> apply(false)).padRight(8);
             b.button("$tu-status-menu.perma", Icon.add, () -> apply(true));
         });
