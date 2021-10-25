@@ -121,9 +121,9 @@ public class StatusDialog extends BaseDialog{
 
         all.table(null, b -> {
             ImageButton ab = b.button(Icon.add, () -> apply(false)).padRight(8).get();
-            ab.label(() -> "@tu-status-menu.apply").growX();
+            ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
             ImageButton pb = b.button(Icon.add, () -> apply(true)).get();
-            pb.label(() -> "@tu-status-menu.perma").growX();
+            pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX();
         });
     }
 
