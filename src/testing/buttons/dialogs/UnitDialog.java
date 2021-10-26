@@ -34,7 +34,7 @@ public class UnitDialog extends BaseDialog{
     Vec2 spawnPos = new Vec2();
     int amount = 1;
     float radius = 2;
-    static boolean despawns = true;
+    static boolean despawns = true, initialized;
 
     boolean expectingPos;
 
@@ -61,22 +61,25 @@ public class UnitDialog extends BaseDialog{
 
         cont.pane(all);
 
-        Events.run(Trigger.update, () -> {
-            if(expectingPos){
-                if(!state.isGame()){
-                    expectingPos = false;
-                }else if(input.justTouched()){
-                    if(!scene.hasMouse()){
-                        spawnPos.set(Mathf.round(input.mouseWorld().x), Mathf.round(input.mouseWorld().y));
-                        ui.showInfoToast(bundle.format("tu-unit-menu.setpos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
-                        show();
-                    }else{
-                        ui.showInfoToast("@tu-unit-menu.cancel", 4f);
+        if(!initialized){
+            Events.run(Trigger.update, () -> {
+                if(expectingPos){
+                    if(!state.isGame()){
+                        expectingPos = false;
+                    }else if(input.justTouched()){
+                        if(!scene.hasMouse()){
+                            spawnPos.set(Mathf.round(input.mouseWorld().x), Mathf.round(input.mouseWorld().y));
+                            ui.showInfoToast(bundle.format("tu-unit-menu.setpos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
+                            show();
+                        }else{
+                            ui.showInfoToast("@tu-unit-menu.cancel", 4f);
+                        }
+                        expectingPos = false;
                     }
-                    expectingPos = false;
                 }
-            }
-        });
+            });
+            initialized = true;
+        }
     }
 
     void rebuild(){
@@ -178,8 +181,8 @@ public class UnitDialog extends BaseDialog{
             t.button(Icon.map, 32, () -> {
                 hide();
                 expectingPos = true;
-            }).get().label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).growX();
-        });
+            }).padLeft(6).get().label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).growX();
+        }).padTop(6);
         all.row();
 
         all.table(b -> {
@@ -194,13 +197,13 @@ public class UnitDialog extends BaseDialog{
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
             ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
 
-            ImageButton db = b.button(TUIcons.shard, TUStyles.togglei, 32, () -> despawns = !despawns).growX().get();
+            ImageButton db = b.button(TUIcons.shard, TUStyles.togglei, 32, () -> despawns = !despawns).padLeft(6).growX().get();
             db.update(() -> db.setChecked(despawns));
             db.label(() -> "@tu-unit-menu.despawns").padLeft(6).growX();
-        });
+        }).padTop(6);
 
         all.row();
-        all.button(Icon.add, 32, this::spawn).get()
+        all.button(Icon.add, 32, this::spawn).padTop(6).get()
             .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
     }
 
