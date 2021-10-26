@@ -47,6 +47,8 @@ public class TUSettings{
         };
         tuSettings.checkPref("tu-startfolded", false);
         tuSettings.checkPref("tu-instakill", true);
+        tuSettings.checkPref("tu-despawns", true);
+        tuSettings.checkPref("tu-permanent", false);
 
         dialog.cont.center().add(tuSettings);
 

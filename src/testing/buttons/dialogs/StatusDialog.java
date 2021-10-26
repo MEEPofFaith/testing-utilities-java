@@ -25,6 +25,7 @@ public class StatusDialog extends BaseDialog{
     Table all = new Table();
     StatusEffect status = StatusEffects.burning;
     float duration = 10f;
+    static boolean perma;
 
     float minDur = 0.125f, maxDur = 60f;
 
@@ -35,6 +36,7 @@ public class StatusDialog extends BaseDialog{
         addCloseButton();
         shown(this::rebuild);
         onResize(this::rebuild);
+        perma = Core.settings.getBool("tu-permanent", false);
 
         all.margin(20).marginTop(0f);
 
@@ -123,9 +125,14 @@ public class StatusDialog extends BaseDialog{
         all.table(null, b -> {
             ImageButton ab = b.button(Icon.add, this::apply).padRight(8).get();
             ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
-            ImageButton pb = b.button(Icon.play, TUStyles.togglei, () -> TUVars.perma = !TUVars.perma).get();
-            pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX();
-            pb.update(() -> pb.setChecked(TUVars.perma));
+
+            ImageButton pb = b.button(Icon.refresh, TUStyles.togglei, () -> perma = !perma).get();
+            Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
+            pb.setDisabled(() -> status.permanent);
+            pb.update(() -> {
+                pb.setChecked(perma);
+                pl.setColor(pb.isDisabled() ? Color.gray : Color.white);
+            });
         });
     }
 
@@ -133,9 +140,9 @@ public class StatusDialog extends BaseDialog{
         if(Utils.noCheat()){
             if(net.client()){
                 Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
-                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (TUVars.perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
             }else if(player.unit() != null){
-                player.unit().apply(status, TUVars.perma ? Float.MAX_VALUE : duration * 60);
+                player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
             }
         }
     }

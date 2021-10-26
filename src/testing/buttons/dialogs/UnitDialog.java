@@ -34,6 +34,7 @@ public class UnitDialog extends BaseDialog{
     Vec2 spawnPos = new Vec2();
     int amount = 1;
     float radius = 2;
+    static boolean despawns = true;
 
     boolean expectingPos;
 
@@ -48,6 +49,7 @@ public class UnitDialog extends BaseDialog{
         addCloseButton();
         shown(this::rebuild);
         onResize(this::rebuild);
+        despawns = Core.settings.getBool("tu-despawns", true);
 
         all.margin(20).marginTop(0f);
 
@@ -181,9 +183,9 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(b -> {
-            ImageButton ib = b.button(Icon.add, () -> {
+            ImageButton ib = b.button(Icon.units, () -> {
                 if(spawnUnit.constructor.get().canPass(player.tileX(), player.tileY())){
-                    //For some reason spider units also return false even though they can stand on blocks
+                    //For some reason spider units also return false even though they can stand on blocks.
                     transform();
                 }else{
                     ui.showInfoToast("@tu-unit-menu.canttransform", 4f);
@@ -192,8 +194,8 @@ public class UnitDialog extends BaseDialog{
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
             ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
 
-            ImageButton db = b.button(Icon.units, TUStyles.togglei, () -> TUVars.despawns = !TUVars.despawns).growX().get();
-            db.update(() -> db.setChecked(TUVars.despawns));
+            ImageButton db = b.button(TUIcons.shard, TUStyles.togglei, 37, () -> despawns = !despawns).growX().get();
+            db.update(() -> db.setChecked(despawns));
             db.label(() -> "@tu-unit-menu.despawns").padLeft(6).growX();
         });
 
@@ -227,7 +229,7 @@ public class UnitDialog extends BaseDialog{
                     "spawned = tempUnit.spawn(p.team(), p.x, p.y); " +
                     //These don't work. I assume that trying to modify parts of the unit just straight up break.
                     //Because uncommenting either of these makes nothing happen in game when used.
-                    //"spawned.spawnedByCore = " + TUVars.despawns + "; " +
+                    //"spawned.spawnedByCore = " + despawns + "; " +
                     //"spawned.rotation = p.unit().rotation; " +
                     "Call.unitControl(p, spawned);"
                 );
@@ -236,7 +238,7 @@ public class UnitDialog extends BaseDialog{
                 float rot = player.unit().rotation;
                 u.controller(player);
                 u.rotation(rot);
-                u.spawnedByCore(TUVars.despawns);
+                u.spawnedByCore(despawns);
                 Fx.unitControl.at(u, true);
             }
             hide();
