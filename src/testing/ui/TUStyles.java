@@ -10,13 +10,18 @@ import mindustry.ui.*;
 import static arc.graphics.Color.*;
 
 public class TUStyles{
-    public static Drawable redBack, buttonEdgeCap;
+    public static Drawable redBack, buttonLeft, buttonLeftDown, buttonLeftOver, buttonRight, buttonRightOver, buttonRightDown;
     public static ButtonStyle redButtonStyle;
-    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, togglei;
+    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti;
 
     public static void init(){
         redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
-        buttonEdgeCap = Core.atlas.getDrawable("test-utils-button-edge-cap");
+        buttonLeft = Core.atlas.getDrawable("test-utils-button-left");
+        buttonLeftDown = Core.atlas.getDrawable("test-utils-button-left-down");
+        buttonLeftOver = Core.atlas.getDrawable("test-utils-button-left-over");
+        buttonRight = Core.atlas.getDrawable("test-utils-button-right");
+        buttonRightDown = Core.atlas.getDrawable("test-utils-button-right-down");
+        buttonRightOver = Core.atlas.getDrawable("test-utils-button-right-over");
 
         redButtonStyle = new ButtonStyle(Styles.logict){{
             disabled = redBack;
@@ -33,8 +38,24 @@ public class TUStyles{
             disabled = redBack;
         }};
 
-        togglei = new ImageButtonStyle(Styles.defaulti){{
-            checked = Tex.buttonOver;
+        lefti = new ImageButtonStyle(Styles.defaulti){{
+            up = buttonLeft;
+            down = buttonLeftDown;
+            over = buttonLeftOver;
+        }};
+
+        toggleLefti = new ImageButtonStyle(lefti){{
+            checked = buttonLeftOver;
+        }};
+
+        righti = new ImageButtonStyle(Styles.defaulti){{
+            up = buttonRight;
+            down = buttonRightDown;
+            over = buttonRightOver;
+        }};
+
+        toggleRighti = new ImageButtonStyle(righti){{
+            checked = buttonRightOver;
         }};
     }
 }

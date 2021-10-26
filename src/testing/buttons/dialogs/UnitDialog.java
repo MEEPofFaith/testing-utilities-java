@@ -186,7 +186,7 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(b -> {
-            ImageButton ib = b.button(Icon.units, 32, () -> {
+            ImageButton ib = b.button(Icon.units, TUStyles.lefti, 32, () -> {
                 if(spawnUnit.constructor.get().canPass(player.tileX(), player.tileY())){
                     //For some reason spider units also return false even though they can stand on blocks.
                     transform();
@@ -197,7 +197,7 @@ public class UnitDialog extends BaseDialog{
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
             ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
 
-            ImageButton db = b.button(TUIcons.shard, TUStyles.togglei, 32, () -> despawns = !despawns).padLeft(6).growX().get();
+            ImageButton db = b.button(TUIcons.shard, TUStyles.toggleRighti, 32, () -> despawns = !despawns).growX().get();
             db.update(() -> db.setChecked(despawns));
             db.label(() -> "@tu-unit-menu.despawns").padLeft(6).growX();
         }).padTop(6);
