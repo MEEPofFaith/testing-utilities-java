@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Platform**: *Android//Windows/Linux*
+**Platform**: *Android/Windows/Linux*
 
 **Build**: *The build number under the title in the main menu. Required.*
 
@@ -17,9 +17,7 @@ assignees: ''
 
 **Steps to reproduce**: *How you happened across the issue, and what exactly you did to make the bug happen.*
 
-**Save file**: *The (zipped) save file you were playing on when the bug happened. Not required, but you will be asked for it in certain bugs.*
-
-**Last log**: *The `last_log.txt` from your game folder (.../Mindustry). REQUIRED if a certain block is not working at ALL, usually the case in headless servers.*
+**Last log**: *The `last_log.txt` from your game folder (.../Mindustry). REQUIRED if a certain button is not working at ALL, usually the case in headless servers.*
 
 **Crash logs**: *Either crash reports from the crash folder, or the file you get when you go into Settings -> Game Data -> Export Crash logs. REQUIRED if you are reporting a crash.*
 
