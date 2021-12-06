@@ -37,6 +37,7 @@ public class Death{
         });
     }
 
+    /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public static void spontaniumCombustum(){
         if(Utils.noCheat()){
             if(net.client()){
@@ -81,6 +82,7 @@ public class Death{
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
         if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Seppuku").growX().padLeft(6);
+        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
                 sTimer += Core.graphics.getDeltaTime() * 60f;
@@ -109,6 +111,7 @@ public class Death{
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
         if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Clone").growX().padLeft(6);
+        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
                 cTimer += Core.graphics.getDeltaTime() * 60f;

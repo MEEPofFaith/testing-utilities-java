@@ -23,6 +23,7 @@ public class UnitMenu{
         if(!mobile && label) b.label(() -> Core.bundle.format("tu-unit-menu.button", b.isDisabled() ? "gray" : "white")).growX();
         b.clicked(unitDialog::show);
         b.setDisabled(() -> state.isCampaign());
+        b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
         });

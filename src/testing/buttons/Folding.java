@@ -10,7 +10,7 @@ public class Folding{
     public static void folding(Table t){
         t.button(Icon.resize, TUStyles.tuImageStyle, () -> {
             TUVars.folded = !TUVars.folded;
-        }).size(40).pad(0);
+        }).size(40).pad(0).get().resizeImage(40f);
     }
 
     public static void add(Table[] tables){

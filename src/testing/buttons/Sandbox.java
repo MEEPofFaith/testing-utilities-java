@@ -74,6 +74,7 @@ public class Sandbox{
             ).growX();
         }
         b.setDisabled(() -> state.isCampaign());
+        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 timer += Core.graphics.getDeltaTime() * 60;

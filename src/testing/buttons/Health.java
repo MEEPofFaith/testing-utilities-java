@@ -32,6 +32,7 @@ public class Health{
         ImageButton b = i.get();
         b.setDisabled(() -> state.isCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Heal").growX();
+        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
@@ -46,6 +47,7 @@ public class Health{
         ImageButton b = i.get();
         b.setDisabled(() -> state.isCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Invincibility").growX();
+        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
