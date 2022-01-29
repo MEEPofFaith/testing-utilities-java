@@ -1,6 +1,7 @@
 package testing.util;
 
 import arc.*;
+import mindustry.*;
 import mindustry.game.*;
 
 import static arc.Core.*;
@@ -17,7 +18,7 @@ public class TUVars{
     public static float buttonHeight = 60f, miniWidth = 56f, iconWidth = 40f;
 
     public static void setDefaults(){
-        TCOffset = settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
+        TCOffset = settings.getBool("mod-time-control-enabled", false) && Vars.mods.getMod("time-control") != null ? 62 : 0;
         folded = settings.getBool("tu-startfolded", false);
     }
 }
