@@ -34,7 +34,7 @@ public class TeamChanger{
         return t.button(b -> {
             b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
 
-            String s = team.name;
+            String s = team.localized();
             String name = s.substring(0, 1).toUpperCase() + (!mobile ? s.substring(1) : "");
             b.label(() -> "[#" + team.color + "]" + name);
         }, TUStyles.redButtonStyle, () -> {
@@ -50,7 +50,7 @@ public class TeamChanger{
             b.update(() -> b.setColor(Team.baseTeams[mode].color));
 
             b.label(() -> {
-                String s = Team.baseTeams[mode].name;
+                String s = Team.baseTeams[mode].localized();
                 s = s.substring(0, 1).toUpperCase() + (!mobile ? s.substring(1) : "");
                 return "[#" + Team.baseTeams[mode].color + "]" + s;
             });
