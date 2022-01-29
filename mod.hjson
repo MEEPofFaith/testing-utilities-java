@@ -18,7 +18,7 @@ description:
     '''
     Utilities for testing stuff.
 
-    Team Changer: Change teams easilty. (Disabled in campaign)
+    Team Changer: Change teams easily. (Disabled in campaign)
     Seppuku Button: Kill yourself. Press and hold to mass kill. A setting to make the death instant can be found in game settings.
     Clone Button: Instantly clones your player unit. Press and hold to mass clone. (Disabled in campaign)
     Heal Button: Sets your player unit's hp to its max. (Disabled in campaign)
@@ -34,7 +34,7 @@ description:
     '''
 
 #the mod version
-version: 28
+version: 29
 
 #the minimum game build required to run this mod
 minGameVersion: 135
