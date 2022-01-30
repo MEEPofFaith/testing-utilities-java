@@ -81,7 +81,7 @@ public class Death{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Seppuku").growX().padLeft(6);
+        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.death")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
@@ -110,7 +110,7 @@ public class Death{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]Clone").growX().padLeft(6);
+        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.clone")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){

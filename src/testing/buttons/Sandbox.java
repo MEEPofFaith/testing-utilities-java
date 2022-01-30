@@ -50,7 +50,7 @@ public class Sandbox{
         if(label && !mobile){
             b.label(() ->
                 (b.isDisabled() ? "[gray]" : "[white]") +
-                (state.rules.infiniteResources ? "Survival" : "Sandbox")
+                (state.rules.infiniteResources ? Core.bundle.get("mode.survival.name") : Core.bundle.get("mode.sandbox.name"))
             ).growX();
         }
         b.setDisabled(() -> state.isCampaign());
@@ -70,7 +70,7 @@ public class Sandbox{
         if(label && !mobile){
             b.label(() ->
                 "[" + (b.isDisabled() ? "gray" : "white") + "]" +
-                (fillMode ? "Fill" : "Dump") + " Core"
+                (fillMode ? Core.bundle.get("tu-ui-button.fill"): Core.bundle.get("tu-ui-button.dump")) + " " + Core.bundle.get("tu-ui-button.core")
             ).growX();
         }
         b.setDisabled(() -> state.isCampaign());
