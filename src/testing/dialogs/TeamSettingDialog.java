@@ -12,6 +12,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
+import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
@@ -38,17 +39,20 @@ public class TeamSettingDialog extends BaseDialog{
 
         all.table(t -> {
             t.add("@tu-unit-menu.teams-id").right().color(Pal.accent);
-            TextField tField = t.field(String.valueOf(settings.getInt("tu-default-team", 1)), s -> {
-                String team = Utils.extractNumber(s);
-                if(!team.isEmpty()){
-                    settings.put("tu-default-team", Team.get(Integer.parseInt(team)));
-                }
-            }).left().padLeft(6).get();
-            tField.update(() -> {
-                Scene stage = tField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == tField))
-                    tField.setText(String.valueOf(settings.getInt("tu-default-team", 1)));
-            });
+
+            TextField tField = TUElements.textField(
+                String.valueOf(settings.getInt("tu-default-team", 1)),
+                field -> {
+                    if(field.isValid()){
+                        String team = Utils.extractNumber(field.getText());
+                        if(!team.isEmpty()){
+                            settings.put("tu-default-team", Team.get(Integer.parseInt(team)));
+                        }
+                    }
+                },
+                () -> String.valueOf(settings.getInt("tu-default-team", 1))
+            );
+            t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
         all.row();
 

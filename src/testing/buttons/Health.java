@@ -47,7 +47,7 @@ public class Health{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> state.isCampaign());
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.invisible")).growX();
+        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.invincible")).growX();
         b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);

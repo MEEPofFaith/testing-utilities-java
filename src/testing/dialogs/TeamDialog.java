@@ -11,6 +11,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
+import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
@@ -40,17 +41,20 @@ public class TeamDialog extends BaseDialog{
 
         all.table(t -> {
             t.add("@tu-unit-menu.teams-id").right().color(Pal.accent);
-            TextField tField = t.field(String.valueOf(spawnTeam.id), s -> {
-                String team = Utils.extractNumber(s);
-                if(!team.isEmpty()){
-                    spawnTeam = Team.get(Integer.parseInt(team));
-                }
-            }).left().padLeft(6).get();
-            tField.update(() -> {
-                Scene stage = tField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == tField))
-                    tField.setText(String.valueOf(spawnTeam.id));
-            });
+
+            TextField tField = TUElements.textField(
+                String.valueOf(spawnTeam.id),
+                field -> {
+                    if(field.isValid()){
+                        String team = Utils.extractNumber(field.getText());
+                        if(!team.isEmpty()){
+                            spawnTeam = Team.get(Integer.parseInt(team));
+                        }
+                    }
+                },
+                () -> String.valueOf(spawnTeam)
+            );
+            t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
         all.row();
 

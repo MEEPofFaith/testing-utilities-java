@@ -26,6 +26,7 @@ import static mindustry.Vars.*;
 
 public class UnitDialog extends BaseDialog{
     TeamDialog teamDialog;
+    WaveChangeDialog waveDialog;
 
     TextField search;
     Table all = new Table();
@@ -38,11 +39,12 @@ public class UnitDialog extends BaseDialog{
     boolean expectingPos;
 
     final int maxAmount = 100;
-    final float minRadius = 0.125f, maxRadius = 10f;
+    final float minRadius = 0f, maxRadius = 10f;
 
     public UnitDialog(){
         super("@tu-unit-menu.name");
         teamDialog = new TeamDialog();
+        waveDialog = new WaveChangeDialog();
 
         shouldPause = false;
         addCloseButton();
@@ -128,49 +130,47 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(t -> {
-            TextField aField = new TextField(String.valueOf(amount));
+            TextField aField = TUElements.textField(
+                String.valueOf(amount),
+                field -> {
+                    if(field.isValid()){
+                        String s = Utils.extractNumber(field.getText());
+                        if(!s.isEmpty()){
+                            amount = Integer.parseInt(s);
+                        }
+                    }
+                },
+                () -> String.valueOf(amount)
+            );
+
             t.slider(1, maxAmount, 1, amount, n -> {
                 amount = (int)n;
                 aField.setText(String.valueOf(n));
             }).right();
             t.add("@tu-unit-menu.amount").left().padLeft(6);
             t.add(aField).left().padLeft(6);
-            aField.changed(() -> {
-                if(aField.isValid()){
-                    String s = Utils.extractNumber(aField.getText());
-                    if(!s.isEmpty()){
-                        amount = Integer.parseInt(s);
-                    }
-                }
-            });
-            aField.update(() -> {
-                Scene stage = aField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == aField))
-                    aField.setText(String.valueOf(amount));
-            });
 
             t.row();
 
-            TextField rField = new TextField(String.valueOf(radius));
+            TextField rField = TUElements.textField(
+                String.valueOf(amount),
+                field -> {
+                    if(field.isValid()){
+                        String s = Utils.extractNumber(field.getText());
+                        if(!s.isEmpty()){
+                            radius = Float.parseFloat(s);
+                        }
+                    }
+                },
+                () -> String.valueOf(radius)
+            );
+
             t.slider(minRadius, maxRadius, 1, radius, n -> {
                 radius = n;
                 rField.setText(String.valueOf(n));
             }).right();
             t.add("@tu-unit-menu.radius").left().padLeft(6);
             t.add(rField).left().padLeft(6);
-            rField.changed(() -> {
-                if(rField.isValid()){
-                    String s = Utils.extractNumber(rField.getText());
-                    if(!s.isEmpty()){
-                        radius = Float.parseFloat(s);
-                    }
-                }
-            });
-            rField.update(() -> {
-                Scene stage = rField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == rField))
-                    rField.setText(String.valueOf(radius));
-            });
         });
         all.row();
 
@@ -202,8 +202,15 @@ public class UnitDialog extends BaseDialog{
         }).padTop(6);
 
         all.row();
-        all.button(Icon.add, 32, this::spawn).padTop(6).get()
-            .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
+        all.table(b -> {
+            b.button(Icon.add, 32, this::spawn).padTop(6).get()
+                .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
+            b.button(Icon.units, 32, () -> {
+                hide();
+                waveDialog.show();
+            }).padTop(6).get()
+                .label(() -> "@tu-unit-menu.waves").padLeft(6).growX();
+        });
     }
 
     void spawn(){

@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -99,26 +100,25 @@ public class StatusDialog extends BaseDialog{
         all.row();
 
         all.table(d -> {
-            TextField dField = new TextField(String.valueOf(duration));
+            TextField dField = TUElements.textField(
+                String.valueOf(duration),
+                field -> {
+                    if(field.isValid()){
+                        String s = Utils.extractNumber(field.getText());
+                        if(!s.isEmpty()){
+                            duration = Float.parseFloat(s);
+                        }
+                    }
+                },
+                () -> String.valueOf(duration)
+            );
+
             d.slider(minDur, maxDur, 0.125f, duration, n -> {
                 duration = n;
                 dField.setText(String.valueOf(n));
             }).right();
             d.add("@tu-status-menu.duration").left().padLeft(6);
             d.add(dField).left().padLeft(6);
-            dField.changed(() -> {
-                if(dField.isValid()){
-                    String s = Utils.extractNumber(dField.getText());
-                    if(!s.isEmpty()){
-                        duration = Float.parseFloat(s);
-                    }
-                }
-            });
-            dField.update(() -> {
-                Scene stage = dField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == dField))
-                    dField.setText(String.valueOf(duration));
-            });
         }).bottom();
         all.row();
 
