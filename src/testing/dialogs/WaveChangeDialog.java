@@ -78,7 +78,10 @@ public class WaveChangeDialog extends BaseDialog{
         all.table(t -> {
             for(int i = minWave; i <= maxWave; i++){
                 int ii = i;
-                t.button(String.valueOf(ii), () -> setWave(ii)).right().growX();
+                TextButton b = t.button(String.valueOf(ii), () -> setWave(ii)).right().grow().get();
+                b.getLabel().setWrap(false);
+                b.getLabelCell().center();
+
                 t.table(w -> {
                     int wave = ii - 1;
                     for(SpawnGroup group: state.rules.spawns){
