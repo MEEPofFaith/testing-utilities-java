@@ -5,7 +5,7 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import testing.buttons.dialogs.*;
+import testing.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 

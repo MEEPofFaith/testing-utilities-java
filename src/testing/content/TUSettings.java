@@ -8,7 +8,7 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
-import testing.buttons.dialogs.*;
+import testing.dialogs.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;

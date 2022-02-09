@@ -1,4 +1,4 @@
-package testing.buttons.dialogs;
+package testing.dialogs;
 
 import arc.graphics.*;
 import arc.math.*;
