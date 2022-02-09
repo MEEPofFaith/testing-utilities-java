@@ -49,7 +49,6 @@ public class Death{
                 Unit u = player.unit();
                 if(u != null){
                     if(Core.settings.getBool("tu-instakill")){
-                        Effect.shake(u.type.hitSize, u.type.hitSize, u);
                         u.elevation(0);
                         u.health(-1);
                         u.dead(true);
