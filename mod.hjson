@@ -5,7 +5,7 @@ displayName: "Testing Utilities"
 name: "test-utils"
 
 #your name
-author: "[accent]MEEP of Faith"
+author: "MEEP of Faith"
 
 #the fully qualified main class of the mod
 main: "testing.TestUtils"
@@ -14,24 +14,7 @@ main: "testing.TestUtils"
 repo: MEEPofFaith/testing-utilities-java
 
 #the mod description as seen in the mod dialog
-description:
-    '''
-    Utilities for testing stuff.
-
-    Team Changer: Change teams easily. (Disabled in campaign)
-    Seppuku Button: Kill yourself. Press and hold to mass kill. A setting to make the death instant can be found in game settings.
-    Clone Button: Instantly clones your player unit. Press and hold to mass clone. (Disabled in campaign)
-    Heal Button: Sets your player unit's hp to its max. (Disabled in campaign)
-    Invincibility Button: Sets your player unit's hp to infinity. (Disabled in campaign)
-    Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
-    Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
-    Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
-    Unit Menu: Allows you to both spawn units and transform into a different unit. (Disabled in campaign)
-
-    A setting for making the menu folded by default can be found in game settings.
-
-    Also increases zooming range.
-    '''
+description: "Utilities for testing stuff in sandbox. (Load the game with this mod enabled for more info.)"
 
 #the mod version
 version: 29
