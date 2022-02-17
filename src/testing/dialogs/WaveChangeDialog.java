@@ -76,7 +76,7 @@ public class WaveChangeDialog extends BaseDialog{
 
         all.clear();
 
-        float iconMul = 1.5f;
+        float iconMul = 2f;
         all.table(t -> {
             for(int i = minWave; i <= maxWave; i++){
                 int ii = i;
@@ -104,10 +104,10 @@ public class WaveChangeDialog extends BaseDialog{
                                     if(hasShield){
                                         e.add(TUElements.itemImage(
                                             Icon.defense,
-                                            () -> Utils.roundAmount((int)group.getShield(wave)),
+                                            () -> Utils.roundAmount(group.getShield(wave)),
                                             Pal.accentBack,
                                             Pal.accent,
-                                            0.75f,
+                                            1f,
                                             Align.center
                                         )).size(8 * 2 * iconMul).growX();
                                     }

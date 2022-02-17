@@ -52,16 +52,16 @@ public class Utils{
         return s.replaceAll("\"", "\\\\\"");
     }
 
-    public static String roundAmount(int amount){
-        amount = UI.roundAmount(amount);
+    public static String roundAmount(float amount){
+        amount = UI.roundAmount((int)amount);
         if(amount >= 1_000_000_000){
-            return amount / 1_000_000_000 + bundle.get("unit.billions");
+            return Strings.autoFixed(amount / 1_000_000_000, 1) + bundle.get("unit.billions");
         }else if(amount >= 1_000_000){
-            return amount / 1_000_000 + bundle.get("unit.millions");
+            return Strings.autoFixed(amount / 1_000_000, 1) + bundle.get("unit.millions");
         }else if(amount >= 1000){
-            return amount / 1000 + bundle.get("unit.thousands");
+            return Strings.autoFixed(amount / 1000, 1) + bundle.get("unit.thousands");
         }else{
-            return String.valueOf(amount);
+            return String.valueOf((int)amount);
         }
     }
 }
