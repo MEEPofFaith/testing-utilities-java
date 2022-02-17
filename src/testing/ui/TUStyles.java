@@ -1,12 +1,12 @@
 package testing.ui;
 
-import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 
+import static arc.Core.*;
 import static arc.graphics.Color.*;
 
 public class TUStyles{
@@ -16,12 +16,12 @@ public class TUStyles{
 
     public static void init(){
         redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
-        buttonLeft = Core.atlas.getDrawable("test-utils-button-left");
-        buttonLeftDown = Core.atlas.getDrawable("test-utils-button-left-down");
-        buttonLeftOver = Core.atlas.getDrawable("test-utils-button-left-over");
-        buttonRight = Core.atlas.getDrawable("test-utils-button-right");
-        buttonRightDown = Core.atlas.getDrawable("test-utils-button-right-down");
-        buttonRightOver = Core.atlas.getDrawable("test-utils-button-right-over");
+        buttonLeft = atlas.getDrawable("test-utils-button-left");
+        buttonLeftDown = atlas.getDrawable("test-utils-button-left-down");
+        buttonLeftOver = atlas.getDrawable("test-utils-button-left-over");
+        buttonRight = atlas.getDrawable("test-utils-button-right");
+        buttonRightDown = atlas.getDrawable("test-utils-button-right-down");
+        buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
 
         redButtonStyle = new ButtonStyle(Styles.logict){{
             disabled = redBack;

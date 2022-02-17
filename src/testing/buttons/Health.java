@@ -1,12 +1,12 @@
 package testing.buttons;
 
-import arc.Core;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Health{
@@ -32,7 +32,7 @@ public class Health{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> state.isCampaign());
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.heal")).growX();
+        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
@@ -47,7 +47,7 @@ public class Health{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> state.isCampaign());
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.invincible")).growX();
+        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);

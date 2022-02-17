@@ -53,7 +53,7 @@ public class TUSettings{
         dialog.cont.center().add(tuSettings);
 
         Events.on(ResizeEvent.class, event -> {
-            if(dialog.isShown() && Core.scene.getDialog() == dialog){
+            if(dialog.isShown() && scene.getDialog() == dialog){
                 dialog.updateScrollFocus();
             }
         });

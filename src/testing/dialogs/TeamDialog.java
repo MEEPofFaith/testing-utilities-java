@@ -2,7 +2,6 @@ package testing.dialogs;
 
 import arc.graphics.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;

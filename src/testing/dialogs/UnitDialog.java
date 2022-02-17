@@ -5,7 +5,6 @@ import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -50,7 +49,7 @@ public class UnitDialog extends BaseDialog{
         addCloseButton();
         shown(this::rebuild);
         onResize(this::rebuild);
-        despawns = Core.settings.getBool("tu-despawns", true);
+        despawns = settings.getBool("tu-despawns", true);
 
         all.margin(20).marginTop(0f);
 

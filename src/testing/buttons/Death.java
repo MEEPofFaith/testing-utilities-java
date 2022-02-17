@@ -5,12 +5,12 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
-import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Death{
@@ -41,14 +41,14 @@ public class Death{
     public static void spontaniumCombustum(){
         if(Utils.noCheat()){
             if(net.client()){
-                if(Core.settings.getBool("tu-instakill")){
+                if(settings.getBool("tu-instakill")){
                     Utils.runCommandPlayer("p.unit().elevation = 0; p.unit().health = -1; p.unit().dead = true;");
                 }
                 Utils.runCommandPlayer("p.unit().kill();");
             }else{
                 Unit u = player.unit();
                 if(u != null){
-                    if(Core.settings.getBool("tu-instakill")){
+                    if(settings.getBool("tu-instakill")){
                         u.elevation(0);
                         u.health(-1);
                         u.dead(true);
@@ -80,11 +80,11 @@ public class Death{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.death")).growX().padLeft(6);
+        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.death")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
-                sTimer += Core.graphics.getDeltaTime() * 60f;
+                sTimer += graphics.getDeltaTime() * 60f;
                 if(sTimer > TUVars.longPress){
                     spontaniumCombustum();
                 }
@@ -109,11 +109,11 @@ public class Death{
         }).growX();
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.clone")).growX().padLeft(6);
+        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.clone")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
-                cTimer += Core.graphics.getDeltaTime() * 60f;
+                cTimer += graphics.getDeltaTime() * 60f;
                 if(cTimer > TUVars.longPress){
                     mitosis();
                 }

@@ -1,6 +1,5 @@
 package testing.buttons;
 
-import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
@@ -8,6 +7,7 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Sandbox{
@@ -50,7 +50,7 @@ public class Sandbox{
         if(label && !mobile){
             b.label(() ->
                 (b.isDisabled() ? "[gray]" : "[white]") +
-                (state.rules.infiniteResources ? Core.bundle.get("mode.survival.name") : Core.bundle.get("mode.sandbox.name"))
+                (state.rules.infiniteResources ? bundle.get("mode.survival.name") : bundle.get("mode.sandbox.name"))
             ).growX();
         }
         b.setDisabled(() -> state.isCampaign());
@@ -70,14 +70,14 @@ public class Sandbox{
         if(label && !mobile){
             b.label(() ->
                 "[" + (b.isDisabled() ? "gray" : "white") + "]" +
-                (fillMode ? Core.bundle.get("tu-ui-button.fill"): Core.bundle.get("tu-ui-button.dump")) + " " + Core.bundle.get("tu-ui-button.core")
+                (fillMode ? bundle.get("tu-ui-button.fill"): bundle.get("tu-ui-button.dump")) + " " + bundle.get("tu-ui-button.core")
             ).growX();
         }
         b.setDisabled(() -> state.isCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
-                timer += Core.graphics.getDeltaTime() * 60;
+                timer += graphics.getDeltaTime() * 60;
                 if(timer >= TUVars.longPress && !swap){
                     fillMode = !fillMode;
                     swap = true;

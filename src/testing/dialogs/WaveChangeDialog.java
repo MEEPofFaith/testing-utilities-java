@@ -1,6 +1,5 @@
 package testing.dialogs;
 
-import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -13,6 +12,7 @@ import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WaveChangeDialog extends BaseDialog{
@@ -66,13 +66,13 @@ public class WaveChangeDialog extends BaseDialog{
             w.add(maxField).left().padLeft(6).width(60f);
         });
         cont.row();
-        cont.label(() -> Core.bundle.format("tu-unit-menu.wave-current", state.wave));
+        cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave));
         cont.row();
         cont.pane(all);
     }
 
     void rebuild(){
-        title.setText(Core.bundle.format("tu-unit-menu.waves-menu", state.map.name()));
+        title.setText(bundle.format("tu-unit-menu.waves-menu", state.map.name()));
 
         all.clear();
 

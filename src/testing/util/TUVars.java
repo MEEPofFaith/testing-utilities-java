@@ -1,6 +1,5 @@
 package testing.util;
 
-import arc.*;
 import mindustry.*;
 import mindustry.game.*;
 

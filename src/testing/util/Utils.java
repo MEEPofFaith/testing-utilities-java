@@ -1,13 +1,12 @@
 package testing.util;
 
-import arc.math.*;
 import arc.util.*;
 import arc.util.async.*;
 import mindustry.core.*;
 import mindustry.gen.*;
 import testing.content.*;
 
-import static arc.Core.bundle;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Utils{

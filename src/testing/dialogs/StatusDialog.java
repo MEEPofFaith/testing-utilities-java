@@ -1,17 +1,14 @@
 package testing.dialogs;
 
-import arc.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -19,6 +16,7 @@ import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class StatusDialog extends BaseDialog{
@@ -37,7 +35,7 @@ public class StatusDialog extends BaseDialog{
         addCloseButton();
         shown(this::rebuild);
         onResize(this::rebuild);
-        perma = Core.settings.getBool("tu-permanent", false);
+        perma = settings.getBool("tu-permanent", false);
 
         all.margin(20).marginTop(0f);
 
@@ -57,9 +55,9 @@ public class StatusDialog extends BaseDialog{
         String text = search.getText();
 
         all.label(
-            () -> Core.bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
+            () -> bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
             status.localizedName +
-            (status.permanent ? Core.bundle.get("tu-status-menu.permaeff") : "")
+            (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
         ).padBottom(6);
         all.row();
 
@@ -68,7 +66,7 @@ public class StatusDialog extends BaseDialog{
             list.left();
 
             float iconMul = 1.5f;
-            int cols = (int)Mathf.clamp((Core.graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / iconMul, 1, 22 / iconMul);
+            int cols = (int)Mathf.clamp((graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / iconMul, 1, 22 / iconMul);
             int count = 0;
 
             for(StatusEffect s : array){
@@ -83,8 +81,8 @@ public class StatusDialog extends BaseDialog{
                 }
 
                 image.clicked(() -> {
-                    if(Core.input.keyDown(KeyCode.shiftLeft) && Fonts.getUnicode(s.name) != 0){
-                        Core.app.setClipboardText((char)Fonts.getUnicode(s.name) + "");
+                    if(input.keyDown(KeyCode.shiftLeft) && Fonts.getUnicode(s.name) != 0){
+                        app.setClipboardText((char)Fonts.getUnicode(s.name) + "");
                         ui.showInfoFade("@copied");
                     }else{
                         status = s;
