@@ -48,11 +48,12 @@ public class TeamDialog extends BaseDialog{
                     if(field.isValid()){
                         String team = Utils.extractNumber(field.getText());
                         if(!team.isEmpty()){
+                            if(!state.isGame()) settings.put("tu-default-team", Integer.parseInt(team));
                             spawnTeam = Team.get(Integer.parseInt(team));
                         }
                     }
                 },
-                () -> String.valueOf(spawnTeam)
+                () -> String.valueOf(getTeam().id)
             );
             t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
@@ -104,6 +105,7 @@ public class TeamDialog extends BaseDialog{
         }
 
         image.clicked(() -> {
+            if(!state.isGame()) settings.put("tu-default-team", team.id);
             spawnTeam = team;
             hide();
         });
@@ -114,7 +116,7 @@ public class TeamDialog extends BaseDialog{
     }
 
     public Team getTeam(){
-        return spawnTeam;
+        return state.isGame() ? spawnTeam : Team.get(settings.getInt("tu-default-team", 1));
     }
 
     public String teamName(Team team){

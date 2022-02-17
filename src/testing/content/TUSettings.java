@@ -15,13 +15,13 @@ import static mindustry.Vars.*;
 
 public class TUSettings{
     public static SettingsTable tuSettings;
-    static TeamSettingDialog teamSettingDialog;
+    static TeamDialog teamSettingDialog;
 
     public static void init(){
         BaseDialog dialog = new BaseDialog("@setting.tu-title");
         dialog.addCloseButton();
 
-        teamSettingDialog = new TeamSettingDialog();
+        teamSettingDialog = new TeamDialog();
 
         tuSettings = new SettingsTable(){
             @Override
