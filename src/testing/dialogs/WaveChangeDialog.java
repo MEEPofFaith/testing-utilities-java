@@ -1,12 +1,10 @@
 package testing.dialogs;
 
 import arc.*;
-import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -68,6 +66,8 @@ public class WaveChangeDialog extends BaseDialog{
             w.add(maxField).left().padLeft(6).width(60f);
         });
         cont.row();
+        cont.label(() -> Core.bundle.format("tu-unit-menu.wave-current", state.wave));
+        cont.row();
         cont.pane(all);
     }
 
@@ -78,7 +78,7 @@ public class WaveChangeDialog extends BaseDialog{
         all.table(t -> {
             for(int i = minWave; i <= maxWave; i++){
                 int ii = i;
-                TextButton b = t.button(String.valueOf(ii), () -> setWave(ii)).right().grow().get();
+                TextButton b = t.button(String.valueOf(ii), () -> setWave(ii)).right().grow().padRight(6f).padTop(6f).get();
                 b.getLabel().setWrap(false);
                 b.getLabelCell().center();
 
@@ -113,7 +113,7 @@ public class WaveChangeDialog extends BaseDialog{
                             }
                         }).grow();
                     }
-                }).growY().left();
+                }).growY().left().padTop(4f);
                 t.row();
             }
         });
