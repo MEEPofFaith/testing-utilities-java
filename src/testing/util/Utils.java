@@ -1,10 +1,13 @@
 package testing.util;
 
+import arc.math.*;
 import arc.util.*;
 import arc.util.async.*;
+import mindustry.core.*;
 import mindustry.gen.*;
 import testing.content.*;
 
+import static arc.Core.bundle;
 import static mindustry.Vars.*;
 
 public class Utils{
@@ -47,5 +50,18 @@ public class Utils{
 
     public static String fixQuotes(String s){
         return s.replaceAll("\"", "\\\\\"");
+    }
+
+    public static String roundAmount(int amount){
+        amount = UI.roundAmount(amount);
+        if(amount >= 1_000_000_000){
+            return amount / 1_000_000_000 + bundle.get("unit.billions");
+        }else if(amount >= 1_000_000){
+            return amount / 1_000_000 + bundle.get("unit.millions");
+        }else if(amount >= 1000){
+            return amount / 1000 + bundle.get("unit.thousands");
+        }else{
+            return String.valueOf(amount);
+        }
     }
 }

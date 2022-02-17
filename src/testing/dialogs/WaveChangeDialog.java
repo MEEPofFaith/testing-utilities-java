@@ -72,6 +72,8 @@ public class WaveChangeDialog extends BaseDialog{
     }
 
     void rebuild(){
+        title.setText(Core.bundle.format("tu-unit-menu.waves-menu", state.map.name()));
+
         all.clear();
 
         float iconMul = 1.5f;
@@ -102,10 +104,10 @@ public class WaveChangeDialog extends BaseDialog{
                                     if(hasShield){
                                         e.add(TUElements.itemImage(
                                             Icon.defense,
-                                            () -> String.valueOf((int)group.getShield(wave)),
+                                            () -> Utils.roundAmount((int)group.getShield(wave)),
                                             Pal.accentBack,
                                             Pal.accent,
-                                            0.5f,
+                                            0.75f,
                                             Align.center
                                         )).size(8 * 2 * iconMul).growX();
                                     }
