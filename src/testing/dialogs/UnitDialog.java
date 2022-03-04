@@ -214,14 +214,13 @@ public class UnitDialog extends BaseDialog{
 
     void spawn(){
         if(Utils.noCheat()){
-            if(net.client())
+            float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+            if(net.client()){
                 Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
-            for(int i = 0; i < amount; i++){
-                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                if(net.client()){
-                    Utils.runCommand("tempUnit.spawn(Team.get(" + spawnTeam().id + "), " + Tmp.v1.x + ", " + Tmp.v1.y + ")");
-                }else{
+                Utils.runCommand("for(let i=0;i<" + amount + ";i++){Tmp.v1.setToRandomDirection().setLength(" + r + ").add(" + spawnPos.x + "," + spawnPos.y + ");tempUnit.spawn(Team.get(" + spawnTeam().id + "),Tmp.v1.x,Tmp.v1.y);}");
+            }else{
+                for(int i = 0; i < amount; i++){
+                    Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
                     spawnUnit.spawn(spawnTeam(), Tmp.v1);
                 }
             }
