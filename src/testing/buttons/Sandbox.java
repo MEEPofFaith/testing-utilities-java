@@ -19,9 +19,10 @@ public class Sandbox{
         if(Utils.noCheat()){
             Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
             if(net.client()){
-                Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources");
+                Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;Call.setRules(Vars.state.rules);");
+            }else{
+                state.rules.infiniteResources = !state.rules.infiniteResources;
             }
-            state.rules.infiniteResources = !state.rules.infiniteResources;
         }
     }
 
