@@ -40,11 +40,11 @@ public class Utils{
     }
 
     public static void runCommandPlayer(String command){
-        String code =
-            "Groups.player.each(p => p.name == \"" + fixQuotes(player.name) + "\", " +
-            "p => {" + command + "}" +
-            ")";
-        runCommand(code);
+        runCommand("let p = Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")");
+        runCommand(command);
+    }
+    public static void runCommandPlayerFast(String command){
+        runCommand("Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")" + command);
     }
 
     public static String fixQuotes(String s){

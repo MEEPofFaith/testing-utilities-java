@@ -138,7 +138,7 @@ public class StatusDialog extends BaseDialog{
         if(Utils.noCheat()){
             if(net.client()){
                 Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
-                Utils.runCommandPlayer("p.unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+                Utils.runCommandPlayerFast(".unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
             }else if(player.unit() != null){
                 player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
             }
@@ -148,7 +148,7 @@ public class StatusDialog extends BaseDialog{
     void clearStatus(){
         if(Utils.noCheat()){
             if(net.client()){
-                Utils.runCommandPlayer("p.unit().clearStatuses();");
+                Utils.runCommandPlayerFast(".unit().clearStatuses();");
             }else if(player.unit() != null){
                 player.unit().clearStatuses();
             }

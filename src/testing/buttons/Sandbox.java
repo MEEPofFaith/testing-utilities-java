@@ -30,7 +30,7 @@ public class Sandbox{
         if(Utils.noCheat()){
             if(net.client()){
                 Utils.runCommandPlayer(
-                    "Vars.content.items().each(i => p.core().items.set(i, " +
+                    "Vars.content.items().each(i => p.core().items.set(i," +
                     (fillMode ? "p.core().storageCapacity" : "0") +
                     "));"
                 );

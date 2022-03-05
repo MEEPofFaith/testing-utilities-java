@@ -233,7 +233,7 @@ public class UnitDialog extends BaseDialog{
             if(net.client()){
                 Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
                 Utils.runCommandPlayer(
-                    "spawned = tempUnit.spawn(p.team(), p.x, p.y);" +
+                    "let spawned = tempUnit.spawn(p.team(), p.x, p.y);" +
                     "Call.unitControl(p, spawned);"
                 );
                 if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
