@@ -19,7 +19,7 @@ public class Sandbox{
         if(Utils.noCheat()){
             Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
             if(net.client()){
-                Utils.runCommand("Vars.state.rules.infiniteResources != Vars.state.rules.infiniteResources");
+                Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources");
             }
             state.rules.infiniteResources = !state.rules.infiniteResources;
         }
@@ -30,8 +30,8 @@ public class Sandbox{
             if(net.client()){
                 Utils.runCommandPlayer(
                     "Vars.content.items().each(i => p.core().items.set(i, " +
-                        (fillMode ? "p.core().storageCapacity" : "0") +
-                        "));"
+                    (fillMode ? "p.core().storageCapacity" : "0") +
+                    "));"
                 );
             }else{
                 CoreBuild core = player.core();
