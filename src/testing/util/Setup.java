@@ -4,6 +4,7 @@ import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.game.EventType.*;
 import testing.buttons.*;
+import testing.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -34,6 +35,7 @@ public class Setup{
 
     public static void init(){
         TUVars.setDefaults();
+        TUDialogs.load();
 
         Folding.add(folder);
         add(folder);
@@ -48,11 +50,9 @@ public class Setup{
         Sandbox.add(sandbox);
         add(sandbox);
 
-        StatusMenu.init();
         StatusMenu.add(status);
         add(status);
 
-        UnitMenu.init();
         UnitMenu.add(units);
         add(units);
 

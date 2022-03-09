@@ -22,14 +22,13 @@ import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
+import static testing.ui.TUDialogs.*;
 
 public class UnitDialog extends BaseDialog{
-    TeamDialog teamDialog;
-    WaveChangeDialog waveDialog;
-
     TextField search;
     Table all = new Table();
     UnitType spawnUnit = UnitTypes.dagger;
+    Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
     Vec2 spawnPos = new Vec2();
     int amount = 1;
     float radius = 2;
@@ -42,8 +41,6 @@ public class UnitDialog extends BaseDialog{
 
     public UnitDialog(){
         super("@tu-unit-menu.name");
-        teamDialog = new TeamDialog();
-        waveDialog = new WaveChangeDialog();
 
         shouldPause = false;
         addCloseButton();
@@ -174,8 +171,8 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(t -> {
-            t.button(Icon.defense, 32, teamDialog::show).get()
-                .label(() -> bundle.format("tu-unit-menu.team-set", "[#" + spawnTeam().color + "]" + teamName() + "[]")).padLeft(6).growX();
+            t.button(Icon.defense, 32, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get()
+                .label(() -> bundle.format("tu-unit-menu.team-set", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).growX();
             t.button(Icon.map, 32, () -> {
                 hide();
                 expectingPos = true;
@@ -206,7 +203,7 @@ public class UnitDialog extends BaseDialog{
                 .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
             b.button(Icon.units, 32, () -> {
                 hide();
-                waveDialog.show();
+                waveChangeDialog.show();
             }).padTop(6).get()
                 .label(() -> "@tu-unit-menu.waves").padLeft(6).growX();
         });
@@ -217,12 +214,12 @@ public class UnitDialog extends BaseDialog{
             if(net.client()){
                 Utils.runCommand("let tempUnit = Vars.content.units().find(b => b.name === \"" + Utils.fixQuotes(spawnUnit.name) + "\")");
                 Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
-                Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();tempUnit.spawn(Team.get(" + spawnTeam().id + "),Tmp.v1.x,Tmp.v1.y);}");
+                Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();tempUnit.spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
             }else{
                 for(int i = 0; i < amount; i++){
                     float r = radius * tilesize * Mathf.sqrt(Mathf.random());
                     Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                    spawnUnit.spawn(spawnTeam(), Tmp.v1);
+                    spawnUnit.spawn(spawnTeam, Tmp.v1);
                 }
             }
         }
@@ -249,12 +246,8 @@ public class UnitDialog extends BaseDialog{
         }
     }
 
-    Team spawnTeam(){
-        return teamDialog.getTeam();
-    }
-
     String teamName(){
-        return teamDialog.teamName();
+        return teamDialog.teamName(spawnTeam);
     }
 
     public UnitType getUnit(){

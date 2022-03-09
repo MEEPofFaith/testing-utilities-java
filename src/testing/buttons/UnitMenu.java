@@ -5,19 +5,13 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import testing.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static mindustry.Vars.*;
+import static testing.ui.TUDialogs.*;
 
 public class UnitMenu{
-    static UnitDialog unitDialog;
-
-    public static void init(){
-        unitDialog = new UnitDialog();
-    }
-
     public static Cell<ImageButton> addButton(Table t, boolean label){
         ImageButton b = new ImageButton(unitDialog.getUnit().uiIcon, TUStyles.tuRedImageStyle);
         if(!mobile && label) b.label(() -> Core.bundle.format("tu-unit-menu.button", b.isDisabled() ? "gray" : "white")).growX();

@@ -5,19 +5,13 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import testing.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static mindustry.Vars.*;
+import static testing.ui.TUDialogs.*;
 
 public class StatusMenu{
-    static StatusDialog statusDialog;
-
-    public static void init(){
-        statusDialog = new StatusDialog();
-    }
-
     public static Cell<ImageButton> addButton(Table t, boolean label){
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         if(!mobile && label) b.label(() -> Core.bundle.format("tu-status-menu.button", b.isDisabled() ? "gray" : "white")).growX();

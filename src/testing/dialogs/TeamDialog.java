@@ -1,5 +1,6 @@
 package testing.dialogs;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.scene.event.*;
@@ -17,13 +18,13 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class TeamDialog extends BaseDialog{
-    Team spawnTeam = Team.sharded;
+    Team curTeam;
+    Cons<Team> changed;
 
     Table all = new Table();
 
     public TeamDialog(){
         super("@tu-unit-menu.team");
-        spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
 
         shouldPause = false;
         addCloseButton();
@@ -35,6 +36,12 @@ public class TeamDialog extends BaseDialog{
         cont.pane(all);
     }
 
+    public void show(Team startTeam, Cons<Team> changed){
+        curTeam = startTeam;
+        this.changed = changed;
+        show();
+    }
+
     void rebuild(){
         all.clear();
 
@@ -42,17 +49,16 @@ public class TeamDialog extends BaseDialog{
             t.add("@tu-unit-menu.teams-id").right().color(Pal.accent);
 
             TextField tField = TUElements.textField(
-                String.valueOf(spawnTeam.id),
+                String.valueOf(curTeam.id),
                 field -> {
                     if(field.isValid()){
                         String team = Utils.extractNumber(field.getText());
                         if(!team.isEmpty()){
-                            if(!state.isGame()) settings.put("tu-default-team", Integer.parseInt(team));
-                            spawnTeam = Team.get(Integer.parseInt(team));
+                            changed.get(Team.get(Integer.parseInt(team)));
                         }
                     }
                 },
-                () -> String.valueOf(getTeam().id)
+                () -> String.valueOf(curTeam.id)
             );
             t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
@@ -104,8 +110,7 @@ public class TeamDialog extends BaseDialog{
         }
 
         image.clicked(() -> {
-            if(!state.isGame()) settings.put("tu-default-team", team.id);
-            spawnTeam = team;
+            changed.get(team);
             hide();
         });
         image.addListener(new Tooltip(tp ->
@@ -114,15 +119,7 @@ public class TeamDialog extends BaseDialog{
         ));
     }
 
-    public Team getTeam(){
-        return state.isGame() ? spawnTeam : Team.get(settings.getInt("tu-default-team", 1));
-    }
-
     public String teamName(Team team){
         return bundle.has("team." + team.name + ".name") ? bundle.get("team." + team.name + ".name") : String.valueOf(team.id);
-    }
-
-    public String teamName(){
-        return teamName(getTeam());
     }
 }
