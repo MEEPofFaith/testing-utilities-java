@@ -181,14 +181,7 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(b -> {
-            ImageButton ib = b.button(Icon.units, TUStyles.lefti, 32, () -> {
-                if(spawnUnit.constructor.get().canPass(player.tileX(), player.tileY())){
-                    //For some reason spider units also return false even though they can stand on blocks.
-                    transform();
-                }else{
-                    ui.showInfoToast("@tu-unit-menu.canttransform", 4f);
-                }
-            }).get();
+            ImageButton ib = b.button(Icon.units, TUStyles.lefti, 32, this::transform).get();
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
             ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
 
