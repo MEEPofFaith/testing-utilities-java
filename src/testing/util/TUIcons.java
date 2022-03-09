@@ -10,7 +10,7 @@ public class TUIcons{
     core, dump,
     survival, sandbox,
     heal, invincibility,
-    shard;
+    alpha, shard;
 
     public static void init(){
         clone = get("clone");
@@ -21,6 +21,7 @@ public class TUIcons{
         sandbox = get("sandbox");
         heal = get("heal");
         invincibility = get("invincibility");
+        alpha = new TextureRegionDrawable(UnitTypes.alpha.uiIcon);
         shard = new TextureRegionDrawable(Blocks.coreShard.uiIcon);
     }
 

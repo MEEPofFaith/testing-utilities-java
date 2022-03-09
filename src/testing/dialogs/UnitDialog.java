@@ -10,6 +10,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -66,7 +67,7 @@ public class UnitDialog extends BaseDialog{
                     }else if(input.justTouched()){
                         if(!scene.hasMouse()){
                             spawnPos.set(Mathf.round(input.mouseWorld().x), Mathf.round(input.mouseWorld().y));
-                            ui.showInfoToast(bundle.format("tu-unit-menu.setpos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
+                            ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
                             show();
                         }else{
                             ui.showInfoToast("@tu-unit-menu.cancel", 4f);
@@ -172,34 +173,41 @@ public class UnitDialog extends BaseDialog{
 
         all.table(t -> {
             t.button(Icon.defense, 32, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get()
-                .label(() -> bundle.format("tu-unit-menu.team-set", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).growX();
+                .label(() -> bundle.format("tu-unit-menu.team-set", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
             t.button(Icon.map, 32, () -> {
                 hide();
                 expectingPos = true;
-            }).padLeft(6).get().label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).growX();
+            }).padLeft(6).get().label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).expandX();
         }).padTop(6);
         all.row();
 
         all.table(b -> {
-            ImageButton ib = b.button(Icon.units, TUStyles.lefti, 32, this::transform).get();
+            ImageButton ib = b.button(Icon.units, TUStyles.lefti, 32, this::transform).expandX().get();
             ib.setDisabled(() -> player.unit().type == UnitTypes.block);
-            ib.label(() -> "@tu-unit-menu.transform").padLeft(6).growX();
+            ib.label(() -> "@tu-unit-menu.transform").padLeft(6).expandX();
 
-            ImageButton db = b.button(TUIcons.shard, TUStyles.toggleRighti, 32, () -> despawns = !despawns).growX().get();
+            ImageButton db = b.button(TUIcons.alpha, TUStyles.toggleRighti, 32, () -> despawns = !despawns).expandX().get();
             db.update(() -> db.setChecked(despawns));
-            db.label(() -> "@tu-unit-menu.despawns").padLeft(6).growX();
+            db.label(() -> "@tu-unit-menu.despawns").padLeft(6).expandX();
         }).padTop(6);
 
         all.row();
         all.table(b -> {
-            b.button(Icon.add, 32, this::spawn).padTop(6).get()
-                .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawnplural" : "spawn")).padLeft(6).growX();
-            b.button(Icon.units, 32, () -> {
+            b.button(Icon.add, TUStyles.lefti, 32, this::spawn).expandX().get()
+                .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
+
+            b.button(Icon.units, TUStyles.toggleRighti, 32, () -> {
                 hide();
                 waveChangeDialog.show();
-            }).padTop(6).get()
-                .label(() -> "@tu-unit-menu.waves").padLeft(6).growX();
-        });
+            }).expandX().get()
+                .label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
+        }).padTop(6);
+
+        all.row();
+        ImageButton cb = all.button(TUIcons.shard, 32f, this::placeCore).padTop(6).expandX().get();
+        cb.setDisabled(() -> Vars.world.tileWorld(spawnPos.x, spawnPos.y) == null);
+        cb.label(() -> "@tu-unit-menu.place-core")
+            .update(l -> l.setColor(cb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
     }
 
     void spawn(){
@@ -236,6 +244,16 @@ public class UnitDialog extends BaseDialog{
                 Fx.unitControl.at(u, true);
             }
             hide();
+        }
+    }
+
+    void placeCore(){
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommand("Vars.world.tileWorld(" + spawnPos.x + "," + spawnPos.y + ").setNet(Blocks.coreShard,Team.get(" + spawnTeam.id + "),0)");
+            }else{
+                Vars.world.tileWorld(spawnPos.x, spawnPos.y).setNet(Blocks.coreShard, spawnTeam, 0);
+            }
         }
     }
 
