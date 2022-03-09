@@ -41,7 +41,7 @@ public class TeamChanger{
             TUVars.curTeam = team;
             mode = setMode;
             changeTeam();
-        }).size(40).color(team.color);
+        }).size(40).color(team.color).tooltip("@tu-tooltip.button-team");
     }
 
     public static Cell<Button> addMini(Table t, Integer[] teams){
@@ -60,7 +60,7 @@ public class TeamChanger{
             }while(!Structs.contains(teams, mode));
             TUVars.curTeam = Team.baseTeams[mode];
             changeTeam();
-        }).size(40).color(Team.baseTeams[mode].color);
+        }).size(40).color(Team.baseTeams[mode].color).tooltip("@tu-tooltip.button-team");
     }
 
     public static void add(Table[] tables){

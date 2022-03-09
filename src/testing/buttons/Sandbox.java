@@ -46,7 +46,7 @@ public class Sandbox{
 
     public static Cell<ImageButton> toggling(Table t, boolean label){
         Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuRedImageStyle, Sandbox::toggle)
-            .color(TUVars.curTeam.color).growX();
+            .color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-sandbox");
         ImageButton b = i.get();
         if(label && !mobile){
             b.label(() ->
@@ -66,7 +66,7 @@ public class Sandbox{
     public static Cell<ImageButton> filling(Table t, boolean label){
         Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
             if(!swap) coreItems();
-        }).color(TUVars.curTeam.color).growX();
+        }).color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-fill");
         ImageButton b = i.get();
         if(label && !mobile){
             b.label(() ->

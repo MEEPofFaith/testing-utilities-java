@@ -22,7 +22,7 @@ public class UnitMenu{
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
         });
 
-        return t.add(b).growX();
+        return t.add(b).growX().tooltip("@tu-tooltip.button-units");
     }
 
     public static void add(Table[] tables){

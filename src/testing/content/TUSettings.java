@@ -31,7 +31,7 @@ public class TUSettings{
                 }
 
                 button(Icon.defense, () -> teamDialog.show(getTeam(), t -> settings.put("tu-default-team", t.id))).get()
-                    .label(() -> bundle.format("tu-unit-menu.team-default", "[#" + getTeam().color + "]" + teamDialog.teamName(getTeam()) + "[]")).padLeft(6).growX();
+                    .label(() -> bundle.format("tu-unit-menu.default-team", "[#" + getTeam().color + "]" + teamDialog.teamName(getTeam()) + "[]")).padLeft(6).growX();
                 row().center();
 
                 button(bundle.get("settings.reset", "Reset to Defaults"), () -> {

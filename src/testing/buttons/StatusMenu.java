@@ -22,7 +22,7 @@ public class StatusMenu{
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);
         });
 
-        return t.add(b).growX();
+        return t.add(b).growX().tooltip("@tu-tooltip.button-status");
     }
 
     public static void add(Table[] tables){

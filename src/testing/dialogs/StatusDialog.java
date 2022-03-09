@@ -47,7 +47,8 @@ public class StatusDialog extends BaseDialog{
 
         cont.pane(all);
 
-        buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus);
+        buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus)
+            .tooltip("@tu-tooltip.status-clear");
     }
 
     void rebuild(){
@@ -77,7 +78,9 @@ public class StatusDialog extends BaseDialog{
                 image.addListener(listener);
                 if(!mobile){
                     image.addListener(new HandCursorListener());
-                    image.update(() -> image.color.lerp(!listener.isOver() ? Color.lightGray : Color.white, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(listener.isOver() || status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                }else{
+                    image.update(() -> image.color.lerp(status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
                 }
 
                 image.clicked(() -> {
@@ -114,17 +117,22 @@ public class StatusDialog extends BaseDialog{
             d.slider(minDur, maxDur, 0.125f, duration, n -> {
                 duration = n;
                 dField.setText(String.valueOf(n));
-            }).right();
-            d.add("@tu-status-menu.duration").left().padLeft(6);
-            d.add(dField).left().padLeft(6);
+            }).right().tooltip("@tu-tooltip.status-duration")
+                .disabled(s -> perma || status.permanent);
+            d.add("@tu-status-menu.duration").left().padLeft(6).tooltip("@tu-tooltip.status-duration")
+                .disabled(s -> perma || status.permanent);
+            d.add(dField).left().padLeft(6).tooltip("@tu-tooltip.status-duration")
+                .disabled(s -> perma || status.permanent);
         }).bottom();
         all.row();
 
         all.table(null, b -> {
-            ImageButton ab = b.button(Icon.add, TUStyles.lefti, 32, this::apply).get();
+            ImageButton ab = b.button(Icon.add, TUStyles.lefti, 32, this::apply)
+                .tooltip("@tu-tooltip.status-apply").get();
             ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
 
-            ImageButton pb = b.button(Icon.refresh, TUStyles.toggleRighti, 32, () -> perma = !perma).get();
+            ImageButton pb = b.button(Icon.refresh, TUStyles.toggleRighti, 32, () -> perma = !perma)
+                .tooltip("@tu-tooltip.status-perma").get();
             Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
             pb.setDisabled(() -> status.permanent);
             pb.update(() -> {
