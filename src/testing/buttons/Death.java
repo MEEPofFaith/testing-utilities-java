@@ -146,6 +146,6 @@ public class Death{
         table.table(Tex.pane, t -> {
             clone(t).size(TUVars.iconWidth, 40);
             seppuku(t).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0)).padLeft(mobile ? 44 : 120);
+        }).padBottom(TUVars.TCOffset).padLeft(120);
     }
 }

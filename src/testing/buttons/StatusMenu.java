@@ -26,6 +26,6 @@ public class StatusMenu{
     public static void add(Table table){
         table.table(Tex.pane, t -> {
             addButton(t).size(TUVars.iconWidth, 40f);
-        }).padBottom(TUVars.TCOffset + (mobile ? 0 : TUVars.buttonHeight));
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight);
     }
 }

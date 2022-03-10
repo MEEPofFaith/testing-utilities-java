@@ -26,6 +26,6 @@ public class UnitMenu{
     public static void add(Table table){
         table.table(Tex.pane, t -> {
             addButton(t).size(TUVars.iconWidth, 40f);
-        }).padBottom(TUVars.TCOffset + (mobile ? 0 : TUVars.buttonHeight)).padLeft(TUVars.iconWidth + 20);
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(TUVars.iconWidth + 20);
     }
 }
