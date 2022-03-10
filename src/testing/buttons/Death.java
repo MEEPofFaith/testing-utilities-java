@@ -1,12 +1,15 @@
 package testing.buttons;
 
 import arc.*;
+import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
+import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -52,6 +55,10 @@ public class Death{
             }else{
                 Unit u = player.unit();
                 if(u != null){
+                    for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
+                        TUFx.deathLightning.at(u, true);
+                    }
+
                     if(settings.getBool("tu-instakill")){
                         u.elevation(0);
                         u.health(-1);
