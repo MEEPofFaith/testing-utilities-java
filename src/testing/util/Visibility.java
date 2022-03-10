@@ -17,21 +17,8 @@ public class Visibility{
         return true;
     };
 
-    public static Boolp unfoldedVisibility = () -> {
+    public static Boolp buttonVisibility = () -> {
         if(
-            TUVars.folded ||
-            !ui.hudfrag.shown ||
-            ui.minimapfrag.shown()
-        ) return false;
-
-        if(!mobile) return true;
-
-        return mobileChecks.get();
-    };
-
-    public static Boolp foldedVisibility = () -> {
-        if(
-            !TUVars.folded ||
             !ui.hudfrag.shown ||
             ui.minimapfrag.shown()
         ) return false;

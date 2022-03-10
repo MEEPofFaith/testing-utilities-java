@@ -3,6 +3,7 @@ package testing.buttons;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import testing.ui.*;
 import testing.util.*;
@@ -44,16 +45,10 @@ public class Sandbox{
         }
     }
 
-    public static Cell<ImageButton> toggling(Table t, boolean label){
+    public static Cell<ImageButton> toggling(Table t){
         Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuRedImageStyle, Sandbox::toggle)
             .color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-sandbox");
         ImageButton b = i.get();
-        if(label && !mobile){
-            b.label(() ->
-                (b.isDisabled() ? "[gray]" : "[white]") +
-                (state.rules.infiniteResources ? bundle.get("mode.survival.name") : bundle.get("mode.sandbox.name"))
-            ).growX();
-        }
         b.setDisabled(() -> state.isCampaign());
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
@@ -63,17 +58,11 @@ public class Sandbox{
         return i;
     }
 
-    public static Cell<ImageButton> filling(Table t, boolean label){
+    public static Cell<ImageButton> filling(Table t){
         Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
             if(!swap) coreItems();
         }).color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-fill");
         ImageButton b = i.get();
-        if(label && !mobile){
-            b.label(() ->
-                "[" + (b.isDisabled() ? "gray" : "white") + "]" +
-                (fillMode ? bundle.get("tu-ui-button.fill"): bundle.get("tu-ui-button.dump")) + " " + bundle.get("tu-ui-button.core")
-            ).growX();
-        }
         b.setDisabled(() -> state.isCampaign());
         b.resizeImage(40f);
         b.update(() -> {
@@ -95,15 +84,10 @@ public class Sandbox{
         return i;
     }
 
-    public static void add(Table[] tables){
-        tables[0].table(mobile ? Tex.pane : Tex.buttonEdge3, t -> {
-            toggling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 108), 40);
-            filling(t, true).size(TUVars.iconWidth + (mobile ? 0 : 120), 40);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 186);
-
-        tables[1].table(Tex.buttonEdge3, t -> {
-            toggling(t, false).size(TUVars.iconWidth, 40);
-            filling(t, false).size(TUVars.iconWidth, 40);
+    public static void add(Table table){
+        table.table(Tex.buttonEdge3, t -> {
+            toggling(t).size(TUVars.iconWidth, 40);
+            filling(t).size(TUVars.iconWidth, 40);
         }).padBottom(TUVars.TCOffset + (mobile ? 0 : TUVars.buttonHeight)).padLeft(2 * (TUVars.iconWidth + 20));
     }
 }

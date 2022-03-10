@@ -77,14 +77,14 @@ public class Death{
         }
     }
 
-    public static Cell<ImageButton> seppuku(Table t, boolean label){
+    public static Cell<ImageButton> seppuku(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
         }).growX().tooltip("@tu-tooltip.button-seppuku");
+
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.death")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
@@ -106,14 +106,13 @@ public class Death{
         return i;
     }
 
-    public static Cell<ImageButton> clone(Table t, boolean label){
+    public static Cell<ImageButton> clone(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
         }).growX().tooltip("@tu-tooltip.button-clone");
         ImageButton b = i.get();
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.clone")).growX().padLeft(6);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
@@ -136,15 +135,10 @@ public class Death{
         return i;
     }
 
-    public static void add(Table[] tables){
-        tables[0].table(Tex.buttonEdge3, t -> {
-            clone(t, true).size(mobile ? TUVars.iconWidth : 104, 40);
-            seppuku(t, true).size(mobile ? TUVars.iconWidth : 140, 40);
-        }).padBottom(TUVars.TCOffset + 2 * TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 176);
-
-        tables[1].table(Tex.pane, t -> {
-            clone(t, false).size(TUVars.iconWidth, 40);
-            seppuku(t, false).size(TUVars.iconWidth, 40);
+    public static void add(Table table){
+        table.table(Tex.pane, t -> {
+            clone(t).size(TUVars.iconWidth, 40);
+            seppuku(t).size(TUVars.iconWidth, 40);
         }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0)).padLeft(mobile ? 44 : 120);
     }
 }

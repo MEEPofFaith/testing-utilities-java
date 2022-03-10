@@ -13,32 +13,26 @@ public class Setup{
 
     static Table
         unfolded = new Table().bottom().left(),
-        folded = new Table().bottom().left();
+        buttons = new Table().bottom().left();
 
-    public static Table[]
+    public static Table
+    team = newTable(),
+    death = newTable(),
+    sandbox = newTable(),
+    status = newTable(),
+    units = newTable();
 
-    folder = newTables(),
-    team = newTables(),
-    death = newTables(),
-    sandbox = newTables(),
-    status = newTables(),
-    units = newTables();
-
-    public static Table[] newTables(){
-        return new Table[]{new Table().bottom().left(), new Table().bottom().left()};
+    public static Table newTable(){
+        return new Table().bottom().left();
     }
 
-    public static void add(Table[] tables){
-        unfolded.addChild(tables[0]);
-        folded.addChild(tables[1]);
+    public static void add(Table table){
+        buttons.addChild(table);
     }
 
     public static void init(){
         TUVars.setDefaults();
         TUDialogs.load();
-
-        Folding.add(folder);
-        add(folder);
 
         TeamChanger.add(team);
         add(team);
@@ -56,10 +50,8 @@ public class Setup{
         UnitMenu.add(units);
         add(units);
 
-        unfolded.visibility = Visibility.unfoldedVisibility;
-        ui.hudGroup.addChild(unfolded);
-        folded.visibility = Visibility.foldedVisibility;
-        ui.hudGroup.addChild(folded);
+        buttons.visibility = Visibility.buttonVisibility;
+        ui.hudGroup.addChild(buttons);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){

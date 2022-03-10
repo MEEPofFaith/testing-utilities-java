@@ -3,6 +3,7 @@ package testing.content;
 import arc.*;
 import arc.scene.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -43,10 +44,10 @@ public class TUSettings{
                 }).margin(14).width(240f).pad(6);
             }
         };
-        tuSettings.checkPref("tu-startfolded", false);
         tuSettings.checkPref("tu-instakill", true);
         tuSettings.checkPref("tu-despawns", true);
         tuSettings.checkPref("tu-permanent", false);
+        tuSettings.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2));
 
         dialog.cont.center().add(tuSettings);
 
