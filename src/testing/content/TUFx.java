@@ -64,5 +64,5 @@ public class TUFx{
         }
 
         Lines.endLine();
-    }).followParent(false).rotWithParent(false);
+    }).followParent(false);
 }

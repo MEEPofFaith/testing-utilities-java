@@ -20,7 +20,7 @@ description: "Utilities for testing stuff in sandbox. (Load the game with this m
 version: 35
 
 #the minimum game build required to run this mod
-minGameVersion: 135
+minGameVersion: 132
 
 #this is a java mod
 java: true
