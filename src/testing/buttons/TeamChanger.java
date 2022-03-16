@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static arc.Core.graphics;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 

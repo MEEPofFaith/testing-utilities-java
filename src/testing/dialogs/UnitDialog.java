@@ -204,7 +204,7 @@ public class UnitDialog extends BaseDialog{
                 .tooltip("@tu-tooltip.unit-spawn").get()
                 .label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
 
-            b.button(Icon.units, TUStyles.toggleRighti, 32, () -> {
+            b.button(Icon.waves, TUStyles.toggleRighti, 32, () -> {
                 hide();
                 waveChangeDialog.show();
             }).expandX()

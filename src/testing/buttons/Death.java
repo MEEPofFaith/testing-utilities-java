@@ -1,14 +1,12 @@
 package testing.buttons;
 
 import arc.*;
-import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import testing.content.*;
 import testing.ui.*;
 import testing.util.*;

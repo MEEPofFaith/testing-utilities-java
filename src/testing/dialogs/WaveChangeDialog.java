@@ -69,6 +69,9 @@ public class WaveChangeDialog extends BaseDialog{
         cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave));
         cont.row();
         cont.pane(all);
+
+        buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave)
+            .tooltip("@tu-tooltip.unit-send-wave");
     }
 
     void rebuild(){
@@ -80,10 +83,11 @@ public class WaveChangeDialog extends BaseDialog{
         all.table(t -> {
             for(int i = minWave; i <= maxWave; i++){
                 int ii = i;
-                TextButton b = t.button(String.valueOf(ii), () -> setWave(ii)).right().grow().padRight(6f).padTop(6f).get();
+                TextButton b = t.button(String.valueOf(i), () -> setWave(ii)).right().grow().padRight(6f).padTop(4f).get();
                 b.getLabel().setWrap(false);
                 b.getLabelCell().center();
 
+                int[] amount = {0};
                 t.table(w -> {
                     int wave = ii - 1;
                     for(SpawnGroup group: state.rules.spawns){
@@ -93,6 +97,7 @@ public class WaveChangeDialog extends BaseDialog{
                                 new TextureRegionDrawable(group.type.uiIcon),
                                 () -> String.valueOf(group.getSpawned(wave))
                             )).size(8 * 4 * iconMul).top().grow();
+                            amount[0] += group.getSpawned(wave);
                             boolean hasEffect = group.effect != null && group.effect != StatusEffects.none,
                                 hasShield = group.getShield(wave) > 0;
                             if(hasEffect || hasShield){
@@ -116,9 +121,20 @@ public class WaveChangeDialog extends BaseDialog{
                         }).grow();
                     }
                 }).growY().left().padTop(4f);
+                t.label(() -> bundle.format("tu-unit-menu.wave-total", amount[0])).grow().left().padLeft(6f).padTop(4f);
                 t.row();
             }
         });
+    }
+
+    void sendWave(){
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommand("Vars.logic.runWave()");
+            }else{
+                logic.runWave();
+            }
+        }
     }
 
     void setWave(int wave){

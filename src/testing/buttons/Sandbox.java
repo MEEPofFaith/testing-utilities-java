@@ -3,7 +3,6 @@ package testing.buttons;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import testing.ui.*;
 import testing.util.*;
