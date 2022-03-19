@@ -101,9 +101,7 @@ public class StatusDialog extends BaseDialog{
         all.row();
 
         all.table(d -> {
-            TextField dField = TUElements.textField(
-                String.valueOf(duration),
-                field -> {
+            TUElements.sliderSet(d, field -> {
                     if(field.isValid()){
                         String s = Utils.extractNumber(field.getText());
                         if(!s.isEmpty()){
@@ -111,23 +109,15 @@ public class StatusDialog extends BaseDialog{
                         }
                     }
                 },
-                () -> String.valueOf(duration)
+                () -> String.valueOf(duration),
+                minDur, maxDur, 0.125f, duration, (n, f) -> {
+                    duration = n;
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-status-menu.duration",
+                "@tu-tooltip.status-duration"
             );
-
-            Tooltip tip = new Tooltip(to -> to.background(Tex.button).add("@tu-tooltip.status-duration"));
-            d.slider(minDur, maxDur, 0.125f, duration, n -> {
-                duration = n;
-                dField.setText(String.valueOf(n));
-            }).right()
-                .disabled(s -> perma || status.permanent)
-                .get().addListener(tip);
-            d.add("@tu-status-menu.duration").left().padLeft(6)
-                .disabled(s -> perma || status.permanent)
-                .get().addListener(tip);
-            d.add(dField).left().padLeft(6)
-                .disabled(s -> perma || status.permanent)
-                .get().addListener(tip);
-        }).bottom();
+        }).bottom().disabled(s -> perma || status.permanent);
         all.row();
 
         all.table(null, b -> {

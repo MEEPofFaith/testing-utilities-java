@@ -129,9 +129,7 @@ public class UnitDialog extends BaseDialog{
         all.row();
 
         all.table(t -> {
-            TextField aField = TUElements.textField(
-                String.valueOf(amount),
-                field -> {
+            TUElements.sliderSet(t, field -> {
                     if(field.isValid()){
                         String s = Utils.extractNumber(field.getText());
                         if(!s.isEmpty()){
@@ -139,22 +137,18 @@ public class UnitDialog extends BaseDialog{
                         }
                     }
                 },
-                () -> String.valueOf(amount)
+                () -> String.valueOf(amount),
+                1, maxAmount, 1, amount, (n, f) -> {
+                    amount = n.intValue();
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.amount",
+                "@tu-tooltip.unit-amount"
             );
-
-            Tooltip at = new Tooltip(to -> to.background(Tex.button).add("@tu-tooltip.unit-amount"));
-            t.slider(1, maxAmount, 1, amount, n -> {
-                amount = (int)n;
-                aField.setText(String.valueOf(n));
-            }).right().get().addListener(at);
-            t.add("@tu-unit-menu.amount").left().padLeft(6).get().addListener(at);
-            t.add(aField).left().padLeft(6).get().addListener(at);
 
             t.row();
 
-            TextField rField = TUElements.textField(
-                String.valueOf(amount),
-                field -> {
+            TUElements.sliderSet(t, field -> {
                     if(field.isValid()){
                         String s = Utils.extractNumber(field.getText());
                         if(!s.isEmpty()){
@@ -162,16 +156,14 @@ public class UnitDialog extends BaseDialog{
                         }
                     }
                 },
-                () -> String.valueOf(radius)
+                () -> String.valueOf(radius),
+                minRadius, maxRadius, 1, radius, (n, f) -> {
+                    radius = n;
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.radius",
+                "@tu-tooltip.unit-radius"
             );
-
-            Tooltip rt = new Tooltip(to -> to.background(Tex.button).add("@tu-tooltip.unit-radius"));
-            t.slider(minRadius, maxRadius, 1, radius, n -> {
-                radius = n;
-                rField.setText(String.valueOf(n));
-            }).right().get().addListener(rt);
-            t.add("@tu-unit-menu.radius").left().padLeft(6).get().addListener(rt);
-            t.add(rField).left().padLeft(6).get().addListener(rt);
         });
         all.row();
 

@@ -10,6 +10,15 @@ import arc.util.*;
 import mindustry.gen.*;
 
 public class TUElements{
+    public static void sliderSet(Table t, Cons<TextField> changed, Prov<String> fieldText, float min, float max, float step, float def, Cons2<Float, TextField> sliderChanged, String title, String tooltip){
+        TextField field = textField(String.valueOf(def), changed, fieldText);
+
+        Tooltip tip = new Tooltip(to -> to.background(Tex.button).add(tooltip));
+        t.slider(min, max, step, def, s -> sliderChanged.get(s, field)).right().get().addListener(tip);
+        t.add(title).left().padLeft(6f).get().addListener(tip);
+        t.add(field).left().padLeft(6f).get().addListener(tip);
+    }
+
     public static TextField textField(String text, Cons<TextField> changed, Prov<String> setText){
         TextField field = new TextField(text);
         field.changed(() -> changed.get(field));
