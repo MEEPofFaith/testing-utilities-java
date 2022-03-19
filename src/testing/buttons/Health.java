@@ -29,8 +29,10 @@ public class Health{
     public static Cell<ImageButton> healing(Table t){
         Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, () -> {
             heal(false);
-        }).growX().tooltip("@tu-tooltip.button-heal");
+        }).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
         b.setDisabled(() -> state.isCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.resizeImage(40f);
@@ -44,8 +46,10 @@ public class Health{
     public static Cell<ImageButton> invincibility(Table t){
         Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, () -> {
             heal(true);
-        }).growX().tooltip("@tu-tooltip.button-invincibility");
+        }).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
         b.setDisabled(() -> state.isCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.resizeImage(40f);

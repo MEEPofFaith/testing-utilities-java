@@ -7,6 +7,7 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.gen.*;
 
 public class TUElements{
     public static TextField textField(String text, Cons<TextField> changed, Prov<String> setText){
@@ -37,5 +38,13 @@ public class TUElements{
         stack.add(i);
         stack.add(t);
         return stack;
+    }
+
+    public static void boxTooltip(Element e, Prov<CharSequence> text){
+        e.addListener(new Tooltip(t -> t.background(Tex.button).label(text)));
+    }
+
+    public static void boxTooltip(Element e, String text){
+        e.addListener(new Tooltip(t -> t.background(Tex.button).add(text)));
     }
 }

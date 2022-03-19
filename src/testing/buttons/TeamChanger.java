@@ -28,12 +28,13 @@ public class TeamChanger{
 
     public static Cell<Button> addMini(Table t){
         Cell<Button> i = t.button(b -> {
+            TUElements.boxTooltip(b, "@tu-tooltip.button-team");
             b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
             b.label(TeamChanger::teamName);
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;
             changeTeam(getNextTeam());
-        }).size(40).color(curTeam().color).tooltip("@tu-tooltip.button-team");
+        }).size(40).color(curTeam().color);
 
         Button b = i.get();
         b.update(() -> {

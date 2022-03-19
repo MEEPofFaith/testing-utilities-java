@@ -70,8 +70,8 @@ public class WaveChangeDialog extends BaseDialog{
         cont.row();
         cont.pane(all);
 
-        buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave)
-            .tooltip("@tu-tooltip.unit-send-wave");
+        TextButton b = buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave).get();
+        TUElements.boxTooltip(b, "@tu-tooltip.unit-send-wave");
     }
 
     void rebuild(){

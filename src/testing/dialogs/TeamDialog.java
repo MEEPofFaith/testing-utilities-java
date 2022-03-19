@@ -113,10 +113,7 @@ public class TeamDialog extends BaseDialog{
             changed.get(team);
             hide();
         });
-        image.addListener(new Tooltip(tp ->
-            tp.background(Tex.button)
-            .label(() -> teamName(team))
-        ));
+        TUElements.boxTooltip(image, () -> teamName(team));
     }
 
     public String teamName(Team team){

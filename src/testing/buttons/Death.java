@@ -86,9 +86,10 @@ public class Death{
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
-        }).growX().tooltip("@tu-tooltip.button-seppuku");
+        }).growX();
 
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
         b.resizeImage(40f);
         b.update(() -> {
@@ -115,8 +116,10 @@ public class Death{
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
-        }).growX().tooltip("@tu-tooltip.button-clone");
+        }).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
         b.resizeImage(40f);
         b.update(() -> {

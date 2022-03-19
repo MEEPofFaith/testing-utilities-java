@@ -13,6 +13,7 @@ import static testing.ui.TUDialogs.*;
 public class UnitMenu{
     public static Cell<ImageButton> addButton(Table t){
         ImageButton b = new ImageButton(unitDialog.getUnit().uiIcon, TUStyles.tuRedImageStyle);
+        TUElements.boxTooltip(b, "@tu-tooltip.button-units");
         b.clicked(unitDialog::show);
         b.setDisabled(() -> state.isCampaign());
         b.resizeImage(40f);
@@ -20,7 +21,7 @@ public class UnitMenu{
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
         });
 
-        return t.add(b).growX().tooltip("@tu-tooltip.button-units");
+        return t.add(b).growX();
     }
 
     public static void add(Table table){

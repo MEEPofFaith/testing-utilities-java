@@ -46,8 +46,10 @@ public class Sandbox{
 
     public static Cell<ImageButton> toggling(Table t){
         Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuRedImageStyle, Sandbox::toggle)
-            .color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-sandbox");
+            .color(TUVars.curTeam.color).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-sandbox");
         b.setDisabled(() -> state.isCampaign());
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
@@ -60,8 +62,10 @@ public class Sandbox{
     public static Cell<ImageButton> filling(Table t){
         Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
             if(!swap) coreItems();
-        }).color(TUVars.curTeam.color).growX().tooltip("@tu-tooltip.button-fill");
+        }).color(TUVars.curTeam.color).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
         b.setDisabled(() -> state.isCampaign());
         b.resizeImage(40f);
         b.update(() -> {

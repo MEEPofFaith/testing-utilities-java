@@ -13,6 +13,7 @@ import static testing.ui.TUDialogs.*;
 public class StatusMenu{
     public static Cell<ImageButton> addButton(Table t){
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
+        TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
         b.setDisabled(() -> state.isCampaign());
         b.resizeImage(40f);
@@ -20,7 +21,7 @@ public class StatusMenu{
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);
         });
 
-        return t.add(b).growX().tooltip("@tu-tooltip.button-status");
+        return t.add(b).growX();
     }
 
     public static void add(Table table){
