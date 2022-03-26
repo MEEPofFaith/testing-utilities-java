@@ -40,7 +40,6 @@ public class WaveChangeDialog extends BaseDialog{
                         if(!s.isEmpty()){
                             minWave = Math.max(Integer.parseInt(s), 1);
                             minWave = Math.min(minWave, maxWave); //Cannot be greater than max
-                            rebuild();
                         }
                     }
                 },
@@ -57,21 +56,27 @@ public class WaveChangeDialog extends BaseDialog{
                         String s = Utils.extractNumber(field.getText());
                         if(!s.isEmpty()){
                             maxWave = Math.max(Integer.parseInt(s), minWave); //Cannot be less than min
-                            rebuild();
                         }
                     }
                 },
                 () -> String.valueOf(maxWave)
             );
             w.add(maxField).left().padLeft(6).width(60f);
+
+            TUElements.boxTooltip(
+                w.button(new TextureRegionDrawable(Icon.upload), 24, this::rebuild).padLeft(6f).get(),
+                "@tu-tooltip.unit-set-range"
+            );
         });
         cont.row();
         cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave));
         cont.row();
         cont.pane(all);
 
-        TextButton b = buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave).get();
-        TUElements.boxTooltip(b, "@tu-tooltip.unit-send-wave");
+        TUElements.boxTooltip(
+            buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave).get(),
+            "@tu-tooltip.unit-send-wave"
+        );
     }
 
     void rebuild(){
@@ -109,7 +114,7 @@ public class WaveChangeDialog extends BaseDialog{
                                     if(hasShield){
                                         e.add(TUElements.itemImage(
                                             Icon.defense,
-                                            () -> Utils.roundAmount(group.getShield(wave)),
+                                            () -> Utils.round(group.getShield(wave)),
                                             Pal.accentBack,
                                             Pal.accent,
                                             1f,

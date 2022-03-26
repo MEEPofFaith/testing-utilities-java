@@ -47,8 +47,10 @@ public class StatusDialog extends BaseDialog{
 
         cont.pane(all);
 
-        TextButton b = buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus).get();
-        TUElements.boxTooltip(b, "@tu-tooltip.status-clear");
+        TUElements.boxTooltip(
+            buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus).get(),
+            "@tu-tooltip.status-clear"
+        );
     }
 
     void rebuild(){

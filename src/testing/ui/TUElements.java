@@ -22,11 +22,13 @@ public class TUElements{
     public static TextField textField(String text, Cons<TextField> changed, Prov<String> setText){
         TextField field = new TextField(text);
         field.changed(() -> changed.get(field));
-        field.update(() -> {
-            Scene stage = field.getScene();
-            if(!(stage != null && stage.getKeyboardFocus() == field))
-                field.setText(setText.get());
-        });
+        if(setText != null){
+            field.update(() -> {
+                Scene stage = field.getScene();
+                if(!(stage != null && stage.getKeyboardFocus() == field))
+                    field.setText(setText.get());
+            });
+        }
 
         return field;
     }

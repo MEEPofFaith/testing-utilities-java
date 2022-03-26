@@ -51,16 +51,15 @@ public class Utils{
         return s.replaceAll("\"", "\\\\\"");
     }
 
-    public static String roundAmount(float amount){
-        amount = UI.roundAmount((int)amount);
-        if(amount >= 1_000_000_000){
-            return Strings.autoFixed(amount / 1_000_000_000, 1) + bundle.get("unit.billions");
-        }else if(amount >= 1_000_000){
-            return Strings.autoFixed(amount / 1_000_000, 1) + bundle.get("unit.millions");
-        }else if(amount >= 1000){
-            return Strings.autoFixed(amount / 1000, 1) + bundle.get("unit.thousands");
+    public static String round(float f){
+        if(f >= 1_000_000_000){
+            return Strings.autoFixed(f / 1_000_000_000, 1) + UI.billions;
+        }else if(f >= 1_000_000){
+            return Strings.autoFixed(f / 1_000_000, 1) + UI.millions;
+        }else if(f >= 1000){
+            return Strings.autoFixed(f / 1000, 1) + UI.thousands;
         }else{
-            return String.valueOf((int)amount);
+            return (int)f + "";
         }
     }
 }
