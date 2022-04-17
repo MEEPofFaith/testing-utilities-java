@@ -58,10 +58,10 @@ public class TeamChanger{
     }
 
     public static Team getNextTeam(){
-        if(player.team() == Team.sharded){
-            return Team.crux;
+        if(player.team() == state.rules.defaultTeam){
+            return state.rules.waveTeam;
         }else{
-            return Team.sharded;
+            return state.rules.defaultTeam;
         }
     }
 
