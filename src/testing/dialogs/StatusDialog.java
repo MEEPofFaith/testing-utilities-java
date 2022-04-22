@@ -3,8 +3,10 @@ package testing.dialogs;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
+import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -104,14 +106,11 @@ public class StatusDialog extends BaseDialog{
 
         all.table(d -> {
             TUElements.sliderSet(d, field -> {
-                    if(field.isValid()){
-                        String s = Utils.extractNumber(field.getText());
-                        if(!s.isEmpty()){
-                            duration = Float.parseFloat(s);
-                        }
+                    if(Strings.canParsePositiveFloat(field.getText())){
+                        duration = Strings.parseFloat(field.getText());
                     }
                 },
-                () -> String.valueOf(duration),
+                () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
                 minDur, maxDur, 0.125f, duration, (n, f) -> {
                     duration = n;
                     f.setText(String.valueOf(n));

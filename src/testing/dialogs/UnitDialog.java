@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -130,14 +131,11 @@ public class UnitDialog extends BaseDialog{
 
         all.table(t -> {
             TUElements.sliderSet(t, field -> {
-                    if(field.isValid()){
-                        String s = Utils.extractNumber(field.getText());
-                        if(!s.isEmpty()){
-                            amount = Integer.parseInt(s);
-                        }
+                    if(Strings.canParsePositiveInt(field.getText())){
+                        amount = Strings.parseInt(field.getText());
                     }
                 },
-                () -> String.valueOf(amount),
+                () -> String.valueOf(amount), TextFieldFilter.digitsOnly,
                 1, maxAmount, 1, amount, (n, f) -> {
                     amount = n.intValue();
                     f.setText(String.valueOf(n));
@@ -149,14 +147,11 @@ public class UnitDialog extends BaseDialog{
             t.row();
 
             TUElements.sliderSet(t, field -> {
-                    if(field.isValid()){
-                        String s = Utils.extractNumber(field.getText());
-                        if(!s.isEmpty()){
-                            radius = Float.parseFloat(s);
-                        }
+                    if(Strings.canParsePositiveFloat(field.getText())){
+                        radius = Strings.parseFloat(field.getText());
                     }
                 },
-                () -> String.valueOf(radius),
+                () -> String.valueOf(radius), TextFieldFilter.floatsOnly,
                 minRadius, maxRadius, 1, radius, (n, f) -> {
                     radius = n;
                     f.setText(String.valueOf(n));

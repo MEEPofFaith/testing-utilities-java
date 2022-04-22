@@ -6,16 +6,9 @@ import mindustry.core.*;
 import mindustry.gen.*;
 import testing.content.*;
 
-import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Utils{
-    /** Extracts a number out of a string by removing every non-numerical character  */
-    public static String extractNumber(String s){
-        //God, I love google. I have no idea what the "[^\\d.]" part even is.
-        return s.replaceAll("[^\\d.]", "");
-    }
-
     public static void spawnIconEffect(String sprite){
         TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
     }

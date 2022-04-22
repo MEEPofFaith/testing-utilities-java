@@ -2,6 +2,7 @@ package testing.dialogs;
 
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -35,15 +36,13 @@ public class WaveChangeDialog extends BaseDialog{
             TextField minField = TUElements.textField(
                 String.valueOf(minWave),
                 field -> {
-                    if(field.isValid()){
-                        String s = Utils.extractNumber(field.getText());
-                        if(!s.isEmpty()){
-                            minWave = Math.max(Integer.parseInt(s), 1);
-                            minWave = Math.min(minWave, maxWave); //Cannot be greater than max
-                        }
+                    if(Strings.canParsePositiveInt(field.getText())){
+                        minWave = Math.max(Strings.parseInt(field.getText()), 1);
+                        minWave = Math.min(minWave, maxWave); //Cannot be greater than max
                     }
                 },
-                () -> String.valueOf(minWave)
+                () -> String.valueOf(minWave),
+                TextFieldFilter.digitsOnly
             );
             w.add(minField).left().padLeft(6).width(60f);
 
@@ -52,14 +51,12 @@ public class WaveChangeDialog extends BaseDialog{
             TextField maxField = TUElements.textField(
                 String.valueOf(maxWave),
                 field -> {
-                    if(field.isValid()){
-                        String s = Utils.extractNumber(field.getText());
-                        if(!s.isEmpty()){
-                            maxWave = Math.max(Integer.parseInt(s), minWave); //Cannot be less than min
-                        }
+                    if(Strings.canParsePositiveInt(field.getText())){
+                        maxWave = Math.max(Strings.parseInt(field.getText()), minWave); //Cannot be less than min
                     }
                 },
-                () -> String.valueOf(maxWave)
+                () -> String.valueOf(maxWave),
+                TextFieldFilter.digitsOnly
             );
             w.add(maxField).left().padLeft(6).width(60f);
 

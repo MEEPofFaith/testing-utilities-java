@@ -5,14 +5,13 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
 import testing.ui.*;
-import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -51,14 +50,12 @@ public class TeamDialog extends BaseDialog{
             TextField tField = TUElements.textField(
                 String.valueOf(curTeam.id),
                 field -> {
-                    if(field.isValid()){
-                        String team = Utils.extractNumber(field.getText());
-                        if(!team.isEmpty()){
-                            changed.get(Team.get(Integer.parseInt(team)));
-                        }
+                    if(Strings.canParsePositiveInt(field.getText())){
+                        changed.get(Team.get(Strings.parseInt(field.getText())));
                     }
                 },
-                () -> String.valueOf(curTeam.id)
+                () -> String.valueOf(curTeam.id),
+                TextFieldFilter.digitsOnly
             );
             t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
