@@ -3,7 +3,6 @@ package testing.dialogs;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
-import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;

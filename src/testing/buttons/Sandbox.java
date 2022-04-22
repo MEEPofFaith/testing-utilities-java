@@ -91,6 +91,6 @@ public class Sandbox{
         table.table(Tex.buttonEdge3, t -> {
             toggling(t).size(TUVars.iconWidth, 40);
             filling(t).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(2 * (TUVars.iconWidth + 20));
+        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(3 * TUVars.iconWidth + 40);
     }
 }

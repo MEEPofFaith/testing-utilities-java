@@ -45,7 +45,7 @@ public class Setup{
         StatusMenu.add(status);
         add(status);
 
-        UnitMenu.add(units);
+        SpawnMenu.add(units);
         add(units);
 
         buttons.visibility = Visibility.buttonVisibility;

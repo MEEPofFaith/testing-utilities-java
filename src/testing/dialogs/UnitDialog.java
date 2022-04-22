@@ -11,7 +11,6 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -67,7 +66,7 @@ public class UnitDialog extends BaseDialog{
                         expectingPos = false;
                     }else if(input.justTouched()){
                         if(!scene.hasMouse()){
-                            spawnPos.set(Mathf.round(input.mouseWorld().x), Mathf.round(input.mouseWorld().y));
+                            spawnPos.set(input.mouseWorld());
                             ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
                             show();
                         }else{
@@ -202,13 +201,6 @@ public class UnitDialog extends BaseDialog{
             wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
 
         }).padTop(6);
-
-        all.row();
-        ImageButton cb = all.button(TUIcons.shard, 32f, this::placeCore).padTop(6).expandX().get();
-        TUElements.boxTooltip(cb, "@tu-tooltip.unit-place-core");
-        cb.setDisabled(() -> Vars.world.tileWorld(spawnPos.x, spawnPos.y) == null);
-        cb.label(() -> "@tu-unit-menu.place-core")
-            .update(l -> l.setColor(cb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
     }
 
     void spawn(){
@@ -245,16 +237,6 @@ public class UnitDialog extends BaseDialog{
                 Fx.unitControl.at(u, true);
             }
             hide();
-        }
-    }
-
-    void placeCore(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.world.tileWorld(" + spawnPos.x + "," + spawnPos.y + ").setNet(Blocks.coreShard,Team.get(" + spawnTeam.id + "),0)");
-            }else{
-                Vars.world.tileWorld(spawnPos.x, spawnPos.y).setNet(Blocks.coreShard, spawnTeam, 0);
-            }
         }
     }
 
