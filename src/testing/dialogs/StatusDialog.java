@@ -104,7 +104,7 @@ public class StatusDialog extends BaseDialog{
         }).growX().left().padBottom(10);
         all.row();
 
-        all.table(d -> {
+        all.collapser(d -> {
             TUElements.sliderSet(d, field -> {
                     if(Strings.canParsePositiveFloat(field.getText())){
                         duration = Strings.parseFloat(field.getText());
@@ -118,7 +118,7 @@ public class StatusDialog extends BaseDialog{
                 "@tu-status-menu.duration",
                 "@tu-tooltip.status-duration"
             );
-        }).bottom().disabled(s -> perma || status.permanent);
+        }, true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
         all.row();
 
         all.table(null, b -> {
