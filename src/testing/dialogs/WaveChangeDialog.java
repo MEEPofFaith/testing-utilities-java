@@ -61,7 +61,7 @@ public class WaveChangeDialog extends BaseDialog{
             w.add(maxField).left().padLeft(6).width(60f);
 
             TUElements.boxTooltip(
-                w.button(new TextureRegionDrawable(Icon.upload), 24, this::rebuild).padLeft(6f).get(),
+                w.button(new TextureRegionDrawable(Icon.refresh), 24, this::rebuild).padLeft(6f).get(),
                 "@tu-tooltip.unit-set-range"
             );
         });
@@ -95,11 +95,12 @@ public class WaveChangeDialog extends BaseDialog{
                     for(SpawnGroup group: state.rules.spawns){
                         if(group.getSpawned(wave) <= 0) continue;
                         w.table(u -> {
+                            int a = group.getSpawned(wave) * spawner.countSpawns();
                             u.add(TUElements.itemImage(
                                 new TextureRegionDrawable(group.type.uiIcon),
-                                () -> String.valueOf(group.getSpawned(wave))
+                                () -> String.valueOf(a)
                             )).size(8 * 4 * iconMul).top().grow();
-                            amount[0] += group.getSpawned(wave);
+                            amount[0] += a;
                             boolean hasEffect = group.effect != null && group.effect != StatusEffects.none,
                                 hasShield = group.getShield(wave) > 0;
                             if(hasEffect || hasShield){

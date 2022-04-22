@@ -11,9 +11,7 @@ import static mindustry.Vars.*;
 public class Setup{
     static boolean selfInit;
 
-    static Table
-        unfolded = new Table().bottom().left(),
-        buttons = new Table().bottom().left();
+    static Table buttons = new Table().bottom().left();
 
     public static Table
     team = newTable(),
@@ -55,7 +53,6 @@ public class Setup{
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
-                //lmao
                 Table healthUI = placement();
                 healthUI.row();
                 Health.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
