@@ -121,11 +121,11 @@ public class StatusDialog extends BaseDialog{
         all.row();
 
         all.table(null, b -> {
-            ImageButton ab = b.button(Icon.add, TUStyles.lefti, 32, this::apply).get();
+            ImageButton ab = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::apply).get();
             TUElements.boxTooltip(ab, "@tu-tooltip.status-apply");
             ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
 
-            ImageButton pb = b.button(Icon.refresh, TUStyles.toggleRighti, 32, () -> perma = !perma).get();
+            ImageButton pb = b.button(TUIcons.get(Icon.refresh), TUStyles.toggleRighti, TUVars.buttonSize, () -> perma = !perma).get();
             TUElements.boxTooltip(pb, "@tu-tooltip.status-perma");
             Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
             pb.setDisabled(() -> status.permanent);

@@ -61,7 +61,7 @@ public class WaveChangeDialog extends BaseDialog{
             w.add(maxField).left().padLeft(6).width(60f);
 
             TUElements.boxTooltip(
-                w.button(new TextureRegionDrawable(Icon.refresh), 24, this::rebuild).padLeft(6f).get(),
+                w.button(TUIcons.get(Icon.refresh), 24, this::rebuild).padLeft(6f).get(),
                 "@tu-tooltip.unit-set-range"
             );
         });

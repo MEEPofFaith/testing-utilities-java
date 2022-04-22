@@ -129,11 +129,11 @@ public class BlockDialog extends BaseDialog{
         all.row();
 
         all.table(t -> {
-            ImageButton tb = t.button(Icon.defense, TUStyles.lefti, 32, () -> teamDialog.show(placeTeam, team -> placeTeam = team)).get();
+            ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(placeTeam, team -> placeTeam = team)).get();
             tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + placeTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
             TUElements.boxTooltip(tb, "@tu-tooltip.block-set-team");
 
-            ImageButton pb = t.button(Icon.map, TUStyles.toggleRighti, 32, () -> {
+            ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
                 hide();
                 expectingPos = true;
             }).get();
@@ -143,7 +143,7 @@ public class BlockDialog extends BaseDialog{
         all.row();
 
         all.table(p -> {
-            ImageButton rb = p.button(new TextureRegionDrawable(Icon.up.getRegion()), TUStyles.lefti, 32f, () -> {
+            ImageButton rb = p.button(TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize, () -> {
                 rotation = Mathf.mod(rotation - 1, 4);
                 Log.info(rotation);
             }).get();
@@ -153,7 +153,7 @@ public class BlockDialog extends BaseDialog{
                 ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection());
             });
 
-            ImageButton pb = p.button(new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, 32f, this::placeBlock).expandX().get();
+            ImageButton pb = p.button(new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize, this::placeBlock).expandX().get();
             TUElements.boxTooltip(pb, "@tu-tooltip.block-place");
             pb.setDisabled(() -> Vars.world.tile(placePos) == null);
             pb.label(() -> "@tu-block-menu.place")
@@ -162,7 +162,7 @@ public class BlockDialog extends BaseDialog{
                 ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
             });
 
-            ImageButton cb = p.button(Icon.cancel, TUStyles.righti, 32f, this::deleteBlock).expandX().get();
+            ImageButton cb = p.button(TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize, this::deleteBlock).expandX().get();
             TUElements.boxTooltip(cb, "@tu-tooltip.block-delete");
             cb.setDisabled(() -> Vars.world.tile(placePos) == null);
             cb.label(() -> "@tu-block-menu.delete")
