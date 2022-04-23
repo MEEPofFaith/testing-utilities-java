@@ -19,7 +19,7 @@ import static mindustry.Vars.*;
 public class WaveChangeDialog extends BaseDialog{
     Table all = new Table();
 
-    int minWave = 1, maxWave = 50;
+    int startWave = 1, waves = 50;
 
     public WaveChangeDialog(){
         super("@tu-unit-menu.waves");
@@ -31,44 +31,41 @@ public class WaveChangeDialog extends BaseDialog{
 
         all.margin(20).marginTop(0f);
 
+        cont.add("@tu-unit-menu.wave-range").right();
         cont.table(w -> {
-            w.add("@tu-unit-menu.wave-range");
+            w.add("@tu-unit-menu.wave-start").left();
             TextField minField = TUElements.textField(
-                String.valueOf(minWave),
+                String.valueOf(startWave),
                 field -> {
                     if(Strings.canParsePositiveInt(field.getText())){
-                        minWave = Math.max(Strings.parseInt(field.getText()), 1);
-                        minWave = Math.min(minWave, maxWave); //Cannot be greater than max
+                        startWave = Math.max(Strings.parseInt(field.getText()), 1);
+                        rebuild();
                     }
                 },
-                () -> String.valueOf(minWave),
+                () -> String.valueOf(startWave),
                 TextFieldFilter.digitsOnly
             );
             w.add(minField).left().padLeft(6).width(60f);
+            w.row();
 
-            w.add("-");
-
+            w.add("@tu-unit-menu.wave-waves").left();
             TextField maxField = TUElements.textField(
-                String.valueOf(maxWave),
+                String.valueOf(waves),
                 field -> {
                     if(Strings.canParsePositiveInt(field.getText())){
-                        maxWave = Math.max(Strings.parseInt(field.getText()), minWave); //Cannot be less than min
+                        waves = Math.max(Strings.parseInt(field.getText()), 1);
+                        rebuild();
                     }
                 },
-                () -> String.valueOf(maxWave),
+                () -> String.valueOf(waves),
                 TextFieldFilter.digitsOnly
             );
             w.add(maxField).left().padLeft(6).width(60f);
-
-            TUElements.boxTooltip(
-                w.button(TUIcons.get(Icon.refresh), 24, this::rebuild).padLeft(6f).get(),
-                "@tu-tooltip.unit-set-range"
-            );
-        });
+        }).left();
         cont.row();
-        cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave));
+        cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave)).colspan(2);
         cont.row();
-        cont.pane(all);
+        cont.pane(all).colspan(2);
 
         TUElements.boxTooltip(
             buttons.button("@tu-unit-menu.wave-send", Icon.upload, this::sendWave).get(),
@@ -83,7 +80,7 @@ public class WaveChangeDialog extends BaseDialog{
 
         float iconMul = 2f;
         all.table(t -> {
-            for(int i = minWave; i <= maxWave; i++){
+            for(int i = startWave; i < startWave + waves; i++){
                 int ii = i;
                 TextButton b = t.button(String.valueOf(i), () -> setWave(ii)).right().grow().padRight(6f).padTop(4f).get();
                 b.getLabel().setWrap(false);
