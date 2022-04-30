@@ -4,10 +4,10 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class StatusMenu{
@@ -15,7 +15,7 @@ public class StatusMenu{
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);

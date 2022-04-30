@@ -4,6 +4,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -50,7 +51,7 @@ public class Sandbox{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-sandbox");
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
@@ -66,7 +67,7 @@ public class Sandbox{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){

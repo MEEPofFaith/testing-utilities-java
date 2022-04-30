@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
@@ -120,7 +121,7 @@ public class Death{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || state.isCampaign());
+        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){

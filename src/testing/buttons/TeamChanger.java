@@ -6,6 +6,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -29,7 +30,7 @@ public class TeamChanger{
     public static Cell<Button> addMini(Table t){
         Cell<Button> i = t.button(b -> {
             TUElements.boxTooltip(b, "@tu-tooltip.button-team");
-            b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
+            b.setDisabled(() -> TestUtils.disableCampaign() || player.unit().type == UnitTypes.block);
             b.label(TeamChanger::teamName);
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;

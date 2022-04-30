@@ -3,6 +3,7 @@ package testing.buttons;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -33,7 +34,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.resizeImage(40f);
         b.update(() -> {
@@ -50,7 +51,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.resizeImage(40f);
         b.update(() -> {

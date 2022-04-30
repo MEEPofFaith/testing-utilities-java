@@ -2,6 +2,7 @@ package testing;
 
 import arc.*;
 import arc.func.*;
+import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
@@ -54,4 +55,7 @@ public class TestUtils extends Mod{
         //There is no content to load
     }
 
+    public static boolean disableCampaign(){
+        return state.isCampaign() && !OS.username.equals("MEEP");
+    }
 }

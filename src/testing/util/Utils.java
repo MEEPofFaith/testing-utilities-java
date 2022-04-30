@@ -4,6 +4,7 @@ import arc.util.*;
 import arc.util.async.*;
 import mindustry.core.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.content.*;
 
 import static mindustry.Vars.*;
@@ -14,7 +15,7 @@ public class Utils{
     }
 
     public static boolean noCheat(){
-        if(!net.client() && state.isCampaign()){
+        if(!net.client() && TestUtils.disableCampaign()){
             /* lmao
             Groups.build.each(b -> {
                 if(b.team == state.rules.defaultTeam){

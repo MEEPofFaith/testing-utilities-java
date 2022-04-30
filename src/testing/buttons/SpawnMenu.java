@@ -4,10 +4,10 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class SpawnMenu{
@@ -15,7 +15,7 @@ public class SpawnMenu{
         ImageButton b = new ImageButton(unitDialog.getUnit().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-units");
         b.clicked(unitDialog::show);
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
@@ -28,7 +28,7 @@ public class SpawnMenu{
         ImageButton b = new ImageButton(blockDialog.getBlock().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-block");
         b.clicked(blockDialog::show);
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> TestUtils.disableCampaign());
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(blockDialog.getBlock().uiIcon);
