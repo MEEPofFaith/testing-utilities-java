@@ -13,7 +13,8 @@ public class TUStyles{
     public static Drawable redBack,
         buttonLeft, buttonLeftDown, buttonLeftOver,
         buttonCenter, buttonCenterDown, buttonCenterOver,
-        buttonRight, buttonRightOver, buttonRightDown;
+        buttonRight, buttonRightOver, buttonRightDown,
+        paneBottom;
     public static ButtonStyle redButtonStyle;
     public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti, centeri;
 
@@ -28,6 +29,7 @@ public class TUStyles{
         buttonRight = atlas.getDrawable("test-utils-button-right");
         buttonRightDown = atlas.getDrawable("test-utils-button-right-down");
         buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
+        paneBottom = atlas.getDrawable("test-utils-pane-bottom");
 
         redButtonStyle = new ButtonStyle(Styles.logict){{
             disabled = redBack;

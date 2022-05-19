@@ -50,6 +50,7 @@ public class Setup{
 
         buttons.visibility = Visibility.buttonVisibility;
         ui.hudGroup.addChild(buttons);
+        ui.hudGroup.find(c -> c == buttons).moveBy(0f, mobile ? Scl.scl(48f) : 0f);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){

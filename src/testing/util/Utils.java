@@ -1,7 +1,6 @@
 package testing.util;
 
 import arc.util.*;
-import arc.util.async.*;
 import mindustry.core.*;
 import mindustry.gen.*;
 import testing.*;

@@ -50,11 +50,6 @@ public class TestUtils extends Mod{
         }
     }
 
-    @Override
-    public void loadContent(){
-        //There is no content to load
-    }
-
     public static boolean disableCampaign(){
         return state.isCampaign() && !OS.username.equals("MEEP");
     }

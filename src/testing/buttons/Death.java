@@ -143,7 +143,7 @@ public class Death{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> {
+        table.table(mobile ? TUStyles.paneBottom : Tex.pane, t -> {
             clone(t).size(TUVars.iconWidth, 40);
             seppuku(t).size(TUVars.iconWidth, 40);
         }).padBottom(TUVars.TCOffset).padLeft(120);
