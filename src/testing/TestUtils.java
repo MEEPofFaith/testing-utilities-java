@@ -63,6 +63,7 @@ public class TestUtils extends Mod{
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-despawns", true);
             t.checkPref("tu-permanent", false);
+            t.checkPref("tu-show-hidden", false);
             t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2));
 
             if(OS.username.equals("MEEP")) t.checkPref("tu-mobile-test", false);

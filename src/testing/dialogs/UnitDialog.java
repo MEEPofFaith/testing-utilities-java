@@ -90,7 +90,7 @@ public class UnitDialog extends BaseDialog{
         ).padBottom(6);
         all.row();
 
-        Seq<UnitType> array = content.units().select(e -> e != UnitTypes.block && !e.isHidden() && (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
+        Seq<UnitType> array = content.units().select(e -> !e.internal && (!e.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
         all.table(list -> {
             list.left();
 
