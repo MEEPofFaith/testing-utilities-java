@@ -183,7 +183,7 @@ public class BlockDialog extends BaseDialog{
     void placeBlock(){
         if(Utils.noCheat()){
             if(net.client()){
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.name + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
+                Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
             }else{
                 world.tile(placePos).setNet(block, placeTeam, rotation);
             }

@@ -103,21 +103,18 @@ public class StatusDialog extends BaseDialog{
         }).growX().left().padBottom(10);
         all.row();
 
-        all.collapser(d -> {
-            TUElements.sliderSet(d, field -> {
-                    if(Strings.canParsePositiveFloat(field.getText())){
-                        duration = Strings.parseFloat(field.getText());
-                    }
-                },
-                () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
-                minDur, maxDur, 0.125f, duration, (n, f) -> {
-                    duration = n;
-                    f.setText(String.valueOf(n));
-                },
-                "@tu-status-menu.duration",
-                "@tu-tooltip.status-duration"
-            );
-        }, true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
+        all.collapser(d -> TUElements.sliderSet(d, field -> {
+                if(Strings.canParsePositiveFloat(field.getText())){
+                    duration = Strings.parseFloat(field.getText());
+                }
+            }, () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
+            minDur, maxDur, 0.125f, duration, (n, f) -> {
+                duration = n;
+                f.setText(String.valueOf(n));
+            },
+            "@tu-status-menu.duration",
+            "@tu-tooltip.status-duration"
+        ), true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
         all.row();
 
         all.table(null, b -> {
@@ -139,8 +136,7 @@ public class StatusDialog extends BaseDialog{
     void apply(){
         if(Utils.noCheat()){
             if(net.client()){
-                Utils.runCommand("let tempEff = Vars.content.statusEffects().find(b => b.name === \"" + Utils.fixQuotes(status.name) + "\")");
-                Utils.runCommandPlayerFast(".unit().apply(tempEff, " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+                Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
             }else if(player.unit() != null){
                 player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
             }
