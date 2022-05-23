@@ -2,6 +2,7 @@ package testing.util;
 
 import arc.*;
 import arc.scene.ui.layout.*;
+import mindustry.*;
 import mindustry.game.EventType.*;
 import testing.buttons.*;
 import testing.ui.*;
@@ -18,7 +19,8 @@ public class Setup{
     death = newTable(),
     sandbox = newTable(),
     status = newTable(),
-    units = newTable();
+    units = newTable(),
+    console = newTable();
 
     public static Table newTable(){
         return new Table().bottom().left();
@@ -47,6 +49,11 @@ public class Setup{
 
         SpawnMenu.add(units);
         add(units);
+
+        if(Vars.mobile){
+            Console.add(console);
+            add(console);
+        }
 
         buttons.visibility = Visibility.buttonVisibility;
         ui.hudGroup.addChild(buttons);

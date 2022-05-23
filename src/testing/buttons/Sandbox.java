@@ -51,7 +51,7 @@ public class Sandbox{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-sandbox");
-        b.setDisabled(() -> TestUtils.disableCampaign());
+        b.setDisabled(TestUtils::disableCampaign);
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
@@ -67,7 +67,7 @@ public class Sandbox{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
-        b.setDisabled(() -> TestUtils.disableCampaign());
+        b.setDisabled(TestUtils::disableCampaign);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){

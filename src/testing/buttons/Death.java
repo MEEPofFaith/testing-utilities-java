@@ -4,6 +4,7 @@ import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -90,7 +91,6 @@ public class Death{
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
-        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
                 sTimer += graphics.getDeltaTime() * 60f;
@@ -105,6 +105,7 @@ public class Death{
             kill.add(unit1);
             kill.add(knife);
             b.replaceImage(kill);
+            b.resizeImage(40f);
         });
         b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
 
@@ -120,7 +121,6 @@ public class Death{
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
-        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
                 cTimer += graphics.getDeltaTime() * 60f;
@@ -137,15 +137,16 @@ public class Death{
             dupe.add(unit2);
             dupe.add(plus);
             b.replaceImage(dupe);
+            b.resizeImage(40f);
         });
 
         return i;
     }
 
     public static void add(Table table){
-        table.table(mobile ? TUStyles.paneBottom : Tex.pane, t -> {
+        table.table(mobile ? Tex.buttonEdge3 : Tex.pane, t -> {
             clone(t).size(TUVars.iconWidth, 40);
             seppuku(t).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset).padLeft(120);
+        }).padBottom(TUVars.TCOffset).padLeft(120 + (Vars.mobile ? TUVars.iconWidth + 20 : 0));
     }
 }
