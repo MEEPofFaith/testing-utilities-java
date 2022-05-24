@@ -63,7 +63,7 @@ public class TestUtils extends Mod{
             //sk7725/whynotteleport
             if(mobile) return;
             Events.run(Trigger.update, () -> {
-                if(!disableCampaign() && state.isGame() && player.unit().type != UnitTypes.block &&
+                if(!disableCampaign() && state.isGame() && !player.unit().type.internal &&
                     input.ctrl() && input.alt() && input.isTouched()
                 ){
                     if(teleport) return;

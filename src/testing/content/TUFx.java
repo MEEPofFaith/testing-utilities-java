@@ -85,9 +85,17 @@ public class TUFx{
 
         Draw.scl = p;
 
-        //Teleportation line
-        stroke(data.type.hitSize / 4f * scl, e.color);
-        line(data.oldX, data.oldY, e.x, e.y);
+        //Teleportation trail
+        Draw.color(e.color);
+        float stroke = data.type.hitSize / 4f * scl,
+            angle = Angles.angle(data.oldX, data.oldY, e.x, e.y);
+
+        Fill.quad(
+            data.oldX + Mathf.cosDeg(angle + 90) * stroke / 2f, data.oldY + Mathf.sinDeg(angle + 90) * stroke / 2f,
+            e.x + Mathf.cosDeg(angle + 90) * stroke, e.y + Mathf.sinDeg(angle + 90) * stroke,
+            e.x + Mathf.cosDeg(angle - 90) * stroke, e.y + Mathf.sinDeg(angle - 90) * stroke,
+            data.oldX + Mathf.cosDeg(angle - 90) * stroke / 2f, data.oldY + Mathf.sinDeg(angle - 90) * stroke / 2f
+        );
     });
 
     public static class TPData{
