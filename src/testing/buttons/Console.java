@@ -1,6 +1,5 @@
 package testing.buttons;
 
-import arc.func.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;

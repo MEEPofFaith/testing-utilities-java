@@ -4,7 +4,6 @@ import arc.*;
 import arc.func.*;
 import arc.scene.ui.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;

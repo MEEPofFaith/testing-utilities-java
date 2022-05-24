@@ -88,13 +88,15 @@ public class TUFx{
         //Teleportation trail
         Draw.color(e.color);
         float stroke = data.type.hitSize / 4f * scl,
-            angle = Angles.angle(data.oldX, data.oldY, e.x, e.y);
+            angle = Angles.angle(data.oldX, data.oldY, e.x, e.y),
+            cos = Mathf.cosDeg(angle + 90) * stroke,
+            sin = Mathf.sinDeg(angle + 90) * stroke;
 
         Fill.quad(
-            data.oldX + Mathf.cosDeg(angle + 90) * stroke / 2f, data.oldY + Mathf.sinDeg(angle + 90) * stroke / 2f,
-            e.x + Mathf.cosDeg(angle + 90) * stroke, e.y + Mathf.sinDeg(angle + 90) * stroke,
-            e.x + Mathf.cosDeg(angle - 90) * stroke, e.y + Mathf.sinDeg(angle - 90) * stroke,
-            data.oldX + Mathf.cosDeg(angle - 90) * stroke / 2f, data.oldY + Mathf.sinDeg(angle - 90) * stroke / 2f
+            data.oldX + cos / 4f, data.oldY + sin / 4f,
+            e.x + cos, e.y + sin,
+            e.x - cos, e.y - sin,
+            data.oldX - cos / 4f, data.oldY - sin / 4f
         );
     });
 
