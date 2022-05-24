@@ -8,6 +8,11 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+
+import static arc.graphics.g2d.Draw.rect;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
 
 public class TUFx{
     private static final Rand rand = new Rand();
@@ -18,8 +23,8 @@ public class TUFx{
         if(e.data instanceof String s){
             float rise = e.finpow() * 28f;
             float opacity = Mathf.curve(e.fin(), 0f, 0.2f) - Mathf.curve(e.fin(), 0.9f, 1f);
-            Draw.alpha(opacity);
-            Draw.rect(Core.atlas.find(s), e.x, e.y + rise);
+            alpha(opacity);
+            rect(Core.atlas.find(s), e.x, e.y + rise);
         }
     }).layer(Layer.flyingUnit + 1),
 
@@ -38,12 +43,12 @@ public class TUFx{
         int links = Mathf.ceil(dst / range);
         float spacing = dst / links;
 
-        Lines.stroke(2.5f * e.fout());
-        Draw.color(Color.white, e.color, e.fin());
+        stroke(2.5f * e.fout());
+        color(Color.white, e.color, e.fin());
 
-        Lines.beginLine();
+        beginLine();
 
-        Lines.linePoint(ex, ey);
+        linePoint(ex, ey);
 
         rand.setSeed(e.id + 1L);
 
@@ -63,5 +68,36 @@ public class TUFx{
         }
 
         Lines.endLine();
-    }).followParent(false);
+    }).followParent(false),
+
+    teleport = new Effect(100f, e -> {
+        if(!(e.data instanceof TPData data)) return;
+
+        //Copied from Fx.unitDespawn
+        float scl = e.fout(Interp.pow2Out);
+        float p = Draw.scl;
+        Draw.scl *= scl;
+
+        mixcol(e.color, 1f);
+        rect(data.type.fullIcon, data.oldX, data.oldY, e.rotation);
+        rect(data.type.fullIcon, e.x, e.y, e.rotation);
+        reset();
+
+        Draw.scl = p;
+
+        //Teleportation line
+        stroke(data.type.hitSize / 4f * scl, e.color);
+        line(data.oldX, data.oldY, e.x, e.y);
+    });
+
+    public static class TPData{
+        public UnitType type;
+        public float oldX, oldY;
+
+        public TPData(UnitType type, float oldX, float oldY){
+            this.type = type;
+            this.oldX = oldX;
+            this.oldY = oldY;
+        }
+    }
 }

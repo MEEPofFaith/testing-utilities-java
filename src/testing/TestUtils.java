@@ -4,6 +4,7 @@ import arc.*;
 import arc.func.*;
 import arc.scene.ui.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -11,6 +12,8 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import testing.content.*;
+import testing.content.TUFx.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -19,6 +22,8 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
+    boolean teleport;
+
     public TestUtils(){
         if(!headless){
             enableConsole =  experimental = true; //Dev mode
@@ -54,6 +59,30 @@ public class TestUtils extends Mod{
                 i++;
             }
             tu.meta.description = tools.toString();
+
+            //sk7725/whynotteleport
+            if(mobile) return;
+            Events.run(Trigger.update, () -> {
+                if(!disableCampaign() && state.isGame() && player.unit().type != UnitTypes.block &&
+                    input.ctrl() && input.alt() && input.isTouched()
+                ){
+                    if(teleport) return;
+                    teleport = true;
+
+                    float oldX = player.x, oldY = player.y;
+
+                    player.unit().set(input.mouseWorld());
+                    player.snapInterpolation();
+
+                    TUFx.teleport.at(
+                        input.mouseWorldX(), input.mouseWorldY(),
+                        player.unit().rotation - 90f, player.team().color,
+                        new TPData(player.unit().type, oldX, oldY)
+                    );
+                }else{
+                    teleport = false;
+                }
+            });
         }
     }
 
