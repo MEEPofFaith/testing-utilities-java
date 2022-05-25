@@ -69,7 +69,7 @@ public class TeamChanger{
     public static void add(Table table){
         table.table(Tex.pane, t -> {
             addMini(t).width(100);
-        }).padBottom(TUVars.TCOffset);
+        });
     }
 
     static String teamName(){

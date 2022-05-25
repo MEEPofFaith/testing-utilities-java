@@ -28,8 +28,8 @@ public class Console{
 
     public static void add(Table table){
         table.table(Tex.pane, t -> {
-            addButton(t).size(TUVars.iconWidth, 40f);
-        }).padBottom(TUVars.TCOffset).padLeft(120);
+            addButton(t).size(TUVars.iconSize, 40f);
+        }).padLeft(120);
 
         Vars.ui.scriptfrag.visible(() -> shown);
     }

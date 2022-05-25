@@ -57,7 +57,7 @@ public class Setup{
 
         buttons.visibility = Visibility.buttonVisibility;
         ui.hudGroup.addChild(buttons);
-        ui.hudGroup.find(c -> c == buttons).moveBy(0f, mobile ? Scl.scl(48f) : 0f);
+        ui.hudGroup.find(c -> c == buttons).moveBy(0f, Scl.scl((mobile ? 48f : 0f) + TUVars.TCOffset));
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){

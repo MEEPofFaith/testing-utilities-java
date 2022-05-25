@@ -2,6 +2,7 @@ package testing.util;
 
 import mindustry.*;
 import mindustry.game.*;
+import mindustry.mod.Mods.*;
 
 import static arc.Core.*;
 
@@ -13,10 +14,11 @@ public class TUVars{
     /** Offset for when sk7725/timecontrol is enabled */
     public static float TCOffset;
     /** Used for positioning */
-    public static float buttonHeight = 60f, iconWidth = 40f, buttonSize = 24f;
+    public static float rowHeight = 60f, iconSize = 40f, buttonSize = 24f;
 
     public static void setDefaults(){
         longPress = settings.getInt("tu-long-press", 2) * 60f / 4f;
-        TCOffset = settings.getBool("mod-time-control-enabled", false) && Vars.mods.getMod("time-control") != null ? 62 : 0;
+        LoadedMod timeControl = Vars.mods.getMod("time-control");
+        TCOffset = timeControl != null && timeControl.isSupported() && timeControl.enabled() ? 68 : 0;
     }
 }

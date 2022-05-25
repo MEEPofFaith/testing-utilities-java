@@ -89,9 +89,9 @@ public class Sandbox{
     }
 
     public static void add(Table table){
-        table.table(Tex.buttonEdge3, t -> {
-            toggling(t).size(TUVars.iconWidth, 40);
-            filling(t).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(3 * TUVars.iconWidth + 40);
+        table.table(mobile ? Tex.buttonEdge3 : TUStyles.buttonRight, t -> {
+            toggling(t).size(TUVars.iconSize, 40);
+            filling(t).size(TUVars.iconSize, 40);
+        }).padBottom(TUVars.rowHeight).padLeft(3 * TUVars.iconSize + 40);
     }
 }

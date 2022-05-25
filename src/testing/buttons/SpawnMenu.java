@@ -39,8 +39,8 @@ public class SpawnMenu{
 
     public static void add(Table table){
         table.table(Tex.pane, t -> {
-            unitMenu(t).size(TUVars.iconWidth, 40f);
-            blockMenu(t).size(TUVars.iconWidth, 40f);
-        }).padBottom(TUVars.TCOffset + TUVars.buttonHeight).padLeft(TUVars.iconWidth + 20);
+            unitMenu(t).size(TUVars.iconSize, 40f);
+            blockMenu(t).size(TUVars.iconSize, 40f);
+        }).padBottom(TUVars.rowHeight).padLeft(TUVars.iconSize + 20);
     }
 }
