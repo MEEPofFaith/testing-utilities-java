@@ -20,6 +20,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import testing.*;
+import testing.buttons.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -78,17 +80,25 @@ public class UnitDialog extends BaseDialog{
                     }
                 }
             });
-            Events.run(Trigger.draw, () -> {
-                if(expectingPos && state.isGame() && !scene.hasMouse()){
-                    float x = input.mouseWorldX(), y = input.mouseWorldY();
-                    Draw.z(Layer.overlayUI);
-                    Lines.stroke(1f, spawnTeam.color);
-                    if(radius > 0.01f) Lines.circle(x, y, radius * tilesize);
-                    Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
-                }
-            });
             initialized = true;
         }
+    }
+
+    public void drawPos(){
+        float x, y;
+        if(expectingPos && state.isGame() && !scene.hasMouse()){
+            x = input.mouseWorldX();
+            y = input.mouseWorldY();
+        }else if(SpawnMenu.spawnHover && !TestUtils.disableCampaign()){
+            x = spawnPos.x;
+            y = spawnPos.y;
+        }else{
+            return;
+        }
+        Draw.z(Layer.overlayUI);
+        Lines.stroke(1f, spawnTeam.color);
+        if(radius > 0.01f) Lines.circle(x, y, radius * tilesize);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
     }
 
     void rebuild(){

@@ -11,6 +11,7 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import testing.buttons.*;
 import testing.content.*;
 import testing.content.TUFx.*;
 import testing.ui.*;
@@ -59,8 +60,14 @@ public class TestUtils extends Mod{
             }
             tu.meta.description = tools.toString();
 
-            //sk7725/whynotteleport
+            //position drawing + sk7725/whynotteleport
             if(mobile) return;
+            Events.on(WorldLoadEvent.class, e -> SpawnMenu.spawnHover = SpawnMenu.blockHover = false);
+            Events.run(Trigger.draw, () -> {
+                unitDialog.drawPos();
+                blockDialog.drawPos();
+            });
+
             Events.run(Trigger.update, () -> {
                 if(!disableCampaign() && state.isGame() && !player.unit().type.internal &&
                     input.ctrl() && input.alt() && input.isTouched()
@@ -81,6 +88,10 @@ public class TestUtils extends Mod{
                 }else{
                     teleport = false;
                 }
+            });
+
+            Events.run(Trigger.draw, () -> {
+
             });
         }
     }

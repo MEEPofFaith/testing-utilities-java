@@ -24,6 +24,8 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.legacy.*;
+import testing.*;
+import testing.buttons.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -79,20 +81,27 @@ public class BlockDialog extends BaseDialog{
                     }
                 }
             });
-            Events.run(Trigger.draw, () -> {
-                if(expectingPos && state.isGame() && !scene.hasMouse()){
-                    float size = block.size * tilesize,
-                        offset = (1 - block.size % 2) * tilesize / 2f,
-                        x = World.toTile(input.mouseWorldX()) * tilesize,
-                        y = World.toTile(input.mouseWorldY()) * tilesize;
-                    Draw.z(Layer.overlayUI);
-                    Lines.stroke(1f, placeTeam.color);
-                    Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
-                    Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
-                }
-            });
             initialized = true;
         }
+    }
+
+    public void drawPos(){
+        float size = block.size * tilesize,
+            offset = (1 - block.size % 2) * tilesize / 2f,
+            x, y;
+        if(expectingPos && state.isGame() && !scene.hasMouse()){
+            x = World.toTile(input.mouseWorldX()) * tilesize;
+            y = World.toTile(input.mouseWorldY()) * tilesize;
+        }else if(SpawnMenu.blockHover && !TestUtils.disableCampaign()){
+            x = Point2.x(placePos) * tilesize;
+            y = Point2.y(placePos) * tilesize;
+        }else{
+            return;
+        }
+        Draw.z(Layer.overlayUI);
+        Lines.stroke(1f, placeTeam.color);
+        Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
     }
 
     void rebuild(){

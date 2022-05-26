@@ -11,6 +11,8 @@ import testing.util.*;
 import static testing.ui.TUDialogs.*;
 
 public class SpawnMenu{
+    public static boolean spawnHover, blockHover;
+
     public static Cell<ImageButton> unitMenu(Table t){
         ImageButton b = new ImageButton(unitDialog.getUnit().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-units");
@@ -20,6 +22,8 @@ public class SpawnMenu{
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
         });
+        b.hovered(() -> spawnHover = true);
+        b.exited(() -> spawnHover = false);
 
         return t.add(b).growX();
     }
@@ -33,6 +37,8 @@ public class SpawnMenu{
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(blockDialog.getBlock().uiIcon);
         });
+        b.hovered(() -> blockHover = true);
+        b.exited(() -> blockHover = false);
 
         return t.add(b).growX();
     }
