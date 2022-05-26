@@ -14,9 +14,11 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
@@ -65,7 +67,8 @@ public class BlockDialog extends BaseDialog{
                         expectingPos = false;
                     }else if(input.justTouched()){
                         if(!scene.hasMouse()){
-                            int x = Math.round(input.mouseWorldX() / 8f), y = Math.round(input.mouseWorldY() / 8f);
+                            int x = World.toTile(input.mouseWorldX()),
+                                y = World.toTile(input.mouseWorldY());
                             placePos = Point2.pack(x, y);
                             ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", x, y), 4f);
                             show();
@@ -74,6 +77,18 @@ public class BlockDialog extends BaseDialog{
                         }
                         expectingPos = false;
                     }
+                }
+            });
+            Events.run(Trigger.draw, () -> {
+                if(expectingPos && state.isGame() && !scene.hasMouse()){
+                    float size = block.size * tilesize,
+                        offset = (1 - block.size % 2) * tilesize / 2f,
+                        x = World.toTile(input.mouseWorldX()) * tilesize,
+                        y = World.toTile(input.mouseWorldY()) * tilesize;
+                    Draw.z(Layer.overlayUI);
+                    Lines.stroke(1f, placeTeam.color);
+                    Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
+                    Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
                 }
             });
             initialized = true;

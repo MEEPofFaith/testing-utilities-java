@@ -2,6 +2,7 @@ package testing.dialogs;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -15,6 +16,7 @@ import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -74,6 +76,15 @@ public class UnitDialog extends BaseDialog{
                         }
                         expectingPos = false;
                     }
+                }
+            });
+            Events.run(Trigger.draw, () -> {
+                if(expectingPos && state.isGame() && !scene.hasMouse()){
+                    float x = input.mouseWorldX(), y = input.mouseWorldY();
+                    Draw.z(Layer.overlayUI);
+                    Lines.stroke(1f, spawnTeam.color);
+                    if(radius > 0.01f) Lines.circle(x, y, radius * tilesize);
+                    Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
                 }
             });
             initialized = true;
