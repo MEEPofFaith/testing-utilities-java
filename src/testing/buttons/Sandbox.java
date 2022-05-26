@@ -12,7 +12,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Sandbox{
-    static boolean fillMode = true;
+    static boolean fill = true;
     static float timer;
     static boolean swap;
 
@@ -28,20 +28,52 @@ public class Sandbox{
     }
 
     public static void coreItems(){
+        if(fill){
+            fillCore();
+        }else{
+            dumpCore();
+        }
+    }
+
+    public static void fillCore(){
         if(Utils.noCheat()){
             if(net.client()){
-                Utils.runCommandPlayer(
-                    "Vars.content.items().each(i => p.core().items.set(i," +
-                    (fillMode ? "p.core().storageCapacity" : "0") +
-                    "));"
-                );
+                CoreBuild core = player.core();
+                if(core == null) return;
+                float capacity = core.storageCapacity;
+                if(settings.getBool("tu-fill-all")){
+                    Utils.runCommandPlayer(
+                        "Vars.content.items().each(" +
+                            "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
+                            "i=>p.core().items.set(i," + capacity + ")" +
+                        ");"
+                    );
+                }else{ //Separate to prevent unnecessary command length.
+                    Utils.runCommandPlayer(
+                        "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
+                    );
+                }
             }else{
                 CoreBuild core = player.core();
                 if(core != null){
-                    content.items().each(i -> core.items.set(i, fillMode ? core.storageCapacity : 0));
+                    content.items().each(
+                        i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
+                        i -> core.items.set(i, core.storageCapacity)
+                    );
                 }
             }
-            Utils.spawnIconEffect(fillMode ? "core" : "dump");
+            Utils.spawnIconEffect("core");
+        }
+    }
+
+    public static void dumpCore(){
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommandPlayerFast(".core().items.clear()");
+            }else{
+                player.core().items.clear();
+            }
+            Utils.spawnIconEffect("dump");
         }
     }
 
@@ -73,7 +105,7 @@ public class Sandbox{
             if(b.isPressed() && !b.isDisabled()){
                 timer += graphics.getDeltaTime() * 60;
                 if(timer >= TUVars.longPress && !swap){
-                    fillMode = !fillMode;
+                    fill = !fill;
                     swap = true;
                 }
             }else{
@@ -81,7 +113,7 @@ public class Sandbox{
                 swap = false;
             }
 
-            b.getStyle().imageUp = fillMode ? TUIcons.core : TUIcons.dump;
+            b.getStyle().imageUp = fill ? TUIcons.core : TUIcons.dump;
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
