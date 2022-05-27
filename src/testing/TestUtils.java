@@ -2,6 +2,7 @@ package testing;
 
 import arc.*;
 import arc.func.*;
+import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
@@ -66,6 +67,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.draw, () -> {
                 unitDialog.drawPos();
                 blockDialog.drawPos();
+                Draw.reset();
             });
 
             Events.run(Trigger.update, () -> {
@@ -88,10 +90,6 @@ public class TestUtils extends Mod{
                 }else{
                     teleport = false;
                 }
-            });
-
-            Events.run(Trigger.draw, () -> {
-
             });
         }
     }
