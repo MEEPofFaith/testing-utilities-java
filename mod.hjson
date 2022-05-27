@@ -20,7 +20,7 @@ description: "Utilities for testing stuff in sandbox. (Load the game with this m
 subtitle: "Pre-Erekir? Check releases."
 
 #the mod version
-version: 38
+version: 39
 
 #the minimum game build required to run this mod
 minGameVersion: 136
