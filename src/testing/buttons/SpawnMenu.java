@@ -47,6 +47,6 @@ public class SpawnMenu{
         table.table(Tex.pane, t -> {
             unitMenu(t).size(TUVars.iconSize, 40f);
             blockMenu(t).size(TUVars.iconSize, 40f);
-        }).padBottom(TUVars.rowHeight).padLeft(TUVars.iconSize + 20);
+        });
     }
 }

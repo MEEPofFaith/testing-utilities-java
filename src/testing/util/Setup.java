@@ -2,6 +2,7 @@ package testing.util;
 
 import arc.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import testing.buttons.*;
@@ -12,7 +13,7 @@ import static mindustry.Vars.*;
 public class Setup{
     static boolean selfInit;
 
-    static Table buttons = new Table().bottom().left();
+    static Table buttons = newTable(), temp;
 
     public static Table
     team = newTable(),
@@ -26,23 +27,27 @@ public class Setup{
         return new Table().bottom().left();
     }
 
+    public static void row(boolean bottom){
+        buttons.row();
+        buttons.table(t -> {
+            if(!bottom) t.defaults().padBottom(-4);
+            temp = t;
+        }).left();
+    }
+
     public static void add(Table table){
-        buttons.addChild(table);
+        float shift = 0;
+        if(temp.getChildren().size > 0) shift = -4;
+        temp.add(table).padLeft(shift);
     }
 
     public static void init(){
         TUVars.setDefaults();
         TUDialogs.load();
+        buttons.setOrigin(Align.bottomLeft);
 
-        TeamChanger.add(team);
-        add(team);
-
-        Death.init();
-        Death.add(death);
-        add(death);
-
-        Sandbox.add(sandbox);
-        add(sandbox);
+        //First row
+        row(false);
 
         StatusMenu.add(status);
         add(status);
@@ -50,10 +55,23 @@ public class Setup{
         SpawnMenu.add(units);
         add(units);
 
+        Sandbox.add(sandbox);
+        add(sandbox);
+
+        //Second row
+        row(true);
+
+        TeamChanger.add(team);
+        add(team);
+
         if(Vars.mobile){
             Console.add(console);
             add(console);
         }
+
+        Death.init();
+        Death.add(death);
+        add(death);
 
         buttons.visibility = Visibility.buttonVisibility;
         ui.hudGroup.addChild(buttons);

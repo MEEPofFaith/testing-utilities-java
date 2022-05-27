@@ -147,6 +147,6 @@ public class Death{
         table.table(mobile ? Tex.buttonEdge3 : Tex.pane, t -> {
             clone(t).size(TUVars.iconSize, 40);
             seppuku(t).size(TUVars.iconSize, 40);
-        }).padLeft(120 + (Vars.mobile ? TUVars.iconSize + 20 : 0));
+        });
     }
 }

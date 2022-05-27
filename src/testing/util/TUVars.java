@@ -13,8 +13,7 @@ public class TUVars{
 
     /** Offset for when sk7725/timecontrol is enabled */
     public static float TCOffset;
-    /** Used for positioning */
-    public static float rowHeight = 60f, iconSize = 40f, buttonSize = 24f;
+    public static float iconSize = 40f, buttonSize = 24f;
 
     public static void setDefaults(){
         longPress = settings.getInt("tu-long-press", 2) * 60f / 4f;

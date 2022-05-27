@@ -124,6 +124,6 @@ public class Sandbox{
         table.table(mobile ? Tex.buttonEdge3 : TUStyles.buttonRight, t -> {
             toggling(t).size(TUVars.iconSize, 40);
             filling(t).size(TUVars.iconSize, 40);
-        }).padBottom(TUVars.rowHeight).padLeft(3 * TUVars.iconSize + 40);
+        });
     }
 }

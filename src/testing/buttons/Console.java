@@ -27,9 +27,7 @@ public class Console{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> {
-            addButton(t).size(TUVars.iconSize, 40f);
-        }).padLeft(120);
+        table.table(Tex.pane, t -> addButton(t).size(TUVars.iconSize, 40f));
 
         Vars.ui.scriptfrag.visible(() -> shown);
     }
