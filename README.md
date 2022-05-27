@@ -9,13 +9,11 @@ Just some small utilities for sandbox/modding
 - Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
 - Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
 - Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
+- Weather Menu: Start/stop weather. (Disabled in campaign)
 - Unit Menu: Spawn units or transform into a different unit. Includes a wave selector. (Disabled in campaign)
 - Block Menu: Place blocks anywhere, even ones you're supposed to. (Disabled in campaign)
 - [sk7725/whynotteleport](https://github.com/sk7725/WhyNotTeleport): Ctrl + Alt + Click to teleport to your cursor. Sorry if your on mobile. (Disabled in campaign)
-
-A setting for making the menu folded by default can be found in game settings.
-
-Also enables console and increases zooming range.
+- Enables console and increases zoom range.
 
 Original repo here: [MEEPofFaith/testing-utilities-js](https://github.com/MEEPofFaith/testing-utilities-js).
 

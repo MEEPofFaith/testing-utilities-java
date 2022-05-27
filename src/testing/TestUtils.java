@@ -63,7 +63,7 @@ public class TestUtils extends Mod{
 
             //position drawing + sk7725/whynotteleport
             if(mobile) return;
-            Events.on(WorldLoadEvent.class, e -> SpawnMenu.spawnHover = SpawnMenu.blockHover = false);
+            Events.on(WorldLoadEvent.class, e -> Spawn.spawnHover = Spawn.blockHover = false);
             Events.run(Trigger.draw, () -> {
                 unitDialog.drawPos();
                 blockDialog.drawPos();

@@ -8,6 +8,7 @@ public class TUDialogs{
     public static TeamDialog teamDialog;
     public static WaveChangeDialog waveChangeDialog;
     public static StatusDialog statusDialog;
+    public static WeatherDialog weatherDialog;
 
     public static void load(){
         unitDialog = new UnitDialog();
@@ -15,5 +16,6 @@ public class TUDialogs{
         teamDialog = new TeamDialog();
         waveChangeDialog = new WaveChangeDialog();
         statusDialog = new StatusDialog();
+        weatherDialog = new WeatherDialog();
     }
 }

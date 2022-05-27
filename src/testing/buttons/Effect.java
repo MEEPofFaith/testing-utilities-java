@@ -10,8 +10,8 @@ import testing.util.*;
 
 import static testing.ui.TUDialogs.*;
 
-public class StatusMenu{
-    public static Cell<ImageButton> addButton(Table t){
+public class Effect{
+    public static Cell<ImageButton> statusButton(Table t){
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
@@ -24,7 +24,20 @@ public class StatusMenu{
         return t.add(b).growX();
     }
 
+    public static Cell<ImageButton> weatherButton(Table t){
+        ImageButton b = new ImageButton(TUIcons.weather, TUStyles.tuRedImageStyle);
+        TUElements.boxTooltip(b, "@tu-tooltip.button-weather");
+        b.clicked(weatherDialog::show);
+        b.setDisabled(TestUtils::disableCampaign);
+        b.resizeImage(40f);
+
+        return t.add(b).growX();
+    }
+
     public static void add(Table table){
-        table.table(Tex.pane, t -> addButton(t).size(TUVars.iconSize, 40f));
+        table.table(Tex.pane, t -> {
+            statusButton(t).size(TUVars.iconSize, 40f);
+            weatherButton(t).size(TUVars.iconSize, 40f);
+        });
     }
 }

@@ -22,7 +22,7 @@ import static mindustry.Vars.*;
 
 public class StatusDialog extends BaseDialog{
     TextField search;
-    Table all = new Table();
+    Table selection = new Table();
     StatusEffect status = StatusEffects.burning;
     float duration = 10f;
     static boolean perma;
@@ -38,15 +38,45 @@ public class StatusDialog extends BaseDialog{
         onResize(this::rebuild);
         perma = settings.getBool("tu-permanent", false);
 
-        all.margin(20).marginTop(0f);
-
         cont.table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all);
+        cont.pane(all -> {
+            all.add(selection);
+            all.row();
+
+            all.collapser(s -> TUElements.sliderSet(s, field -> {
+                    if(Strings.canParsePositiveFloat(field.getText())){
+                        duration = Strings.parseFloat(field.getText());
+                    }
+                }, () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
+                minDur, maxDur, 0.125f, duration, (n, f) -> {
+                    duration = n;
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-status-menu.duration",
+                "@tu-tooltip.status-duration"
+            ), true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
+            all.row();
+
+            all.table(null, b -> {
+                ImageButton ab = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::apply).get();
+                TUElements.boxTooltip(ab, "@tu-tooltip.status-apply");
+                ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
+
+                ImageButton pb = b.button(TUIcons.get(Icon.refresh), TUStyles.toggleRighti, TUVars.buttonSize, () -> perma = !perma).get();
+                TUElements.boxTooltip(pb, "@tu-tooltip.status-perma");
+                Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
+                pb.setDisabled(() -> status.permanent);
+                pb.update(() -> {
+                    pb.setChecked(perma);
+                    pl.setColor(pb.isDisabled() ? Color.gray : Color.white);
+                });
+            }).padTop(6);
+        });
 
         TUElements.boxTooltip(
             buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus).get(),
@@ -55,18 +85,18 @@ public class StatusDialog extends BaseDialog{
     }
 
     void rebuild(){
-        all.clear();
+        selection.clear();
         String text = search.getText();
 
-        all.label(
+        selection.label(
             () -> bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
             status.localizedName +
             (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
         ).padBottom(6);
-        all.row();
+        selection.row();
 
         Seq<StatusEffect> array = content.statusEffects().select(e -> e != StatusEffects.none && (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
-        all.table(list -> {
+        selection.table(list -> {
             list.left();
 
             float iconMul = 1.5f;
@@ -101,36 +131,6 @@ public class StatusDialog extends BaseDialog{
                 }
             }
         }).growX().left().padBottom(10);
-        all.row();
-
-        all.collapser(d -> TUElements.sliderSet(d, field -> {
-                if(Strings.canParsePositiveFloat(field.getText())){
-                    duration = Strings.parseFloat(field.getText());
-                }
-            }, () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
-            minDur, maxDur, 0.125f, duration, (n, f) -> {
-                duration = n;
-                f.setText(String.valueOf(n));
-            },
-            "@tu-status-menu.duration",
-            "@tu-tooltip.status-duration"
-        ), true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
-        all.row();
-
-        all.table(null, b -> {
-            ImageButton ab = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::apply).get();
-            TUElements.boxTooltip(ab, "@tu-tooltip.status-apply");
-            ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
-
-            ImageButton pb = b.button(TUIcons.get(Icon.refresh), TUStyles.toggleRighti, TUVars.buttonSize, () -> perma = !perma).get();
-            TUElements.boxTooltip(pb, "@tu-tooltip.status-perma");
-            Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
-            pb.setDisabled(() -> status.permanent);
-            pb.update(() -> {
-                pb.setChecked(perma);
-                pl.setColor(pb.isDisabled() ? Color.gray : Color.white);
-            });
-        }).padTop(6);
     }
 
     void apply(){

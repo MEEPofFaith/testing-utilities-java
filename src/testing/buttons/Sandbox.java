@@ -121,7 +121,7 @@ public class Sandbox{
     }
 
     public static void add(Table table){
-        table.table(mobile ? Tex.buttonEdge3 : TUStyles.buttonRight, t -> {
+        table.table(Tex.buttonEdge3, t -> {
             toggling(t).size(TUVars.iconSize, 40);
             filling(t).size(TUVars.iconSize, 40);
         });

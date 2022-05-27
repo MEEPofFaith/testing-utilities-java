@@ -71,7 +71,5 @@ public class TUStyles{
             down = buttonCenterDown;
             over = buttonCenterOver;
         }};
-
-
     }
 }

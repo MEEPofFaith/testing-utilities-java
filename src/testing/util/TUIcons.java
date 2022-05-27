@@ -10,6 +10,7 @@ public class TUIcons{
     core, dump,
     survival, sandbox,
     heal, invincibility,
+    weather,
     alpha;
 
     public static void init(){
@@ -21,6 +22,7 @@ public class TUIcons{
         sandbox = get("sandbox");
         heal = get("heal");
         invincibility = get("invincibility");
+        weather = get("weather");
         alpha = new TextureRegionDrawable(UnitTypes.alpha.uiIcon);
     }
 

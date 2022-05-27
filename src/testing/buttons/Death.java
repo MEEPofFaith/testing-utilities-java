@@ -144,7 +144,7 @@ public class Death{
     }
 
     public static void add(Table table){
-        table.table(mobile ? Tex.buttonEdge3 : Tex.pane, t -> {
+        table.table(Tex.buttonEdge3, t -> {
             clone(t).size(TUVars.iconSize, 40);
             seppuku(t).size(TUVars.iconSize, 40);
         });

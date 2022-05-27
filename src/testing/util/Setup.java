@@ -49,10 +49,12 @@ public class Setup{
         //First row
         row(false);
 
-        StatusMenu.add(status);
-        add(status);
+        if(Vars.mobile){
+            Console.add(console);
+            add(console);
+        }
 
-        SpawnMenu.add(units);
+        Spawn.add(units);
         add(units);
 
         Sandbox.add(sandbox);
@@ -64,10 +66,10 @@ public class Setup{
         TeamChanger.add(team);
         add(team);
 
-        if(Vars.mobile){
-            Console.add(console);
-            add(console);
-        }
+        Effect.add(status);
+        add(status);
+
+        //TODO weather
 
         Death.init();
         Death.add(death);

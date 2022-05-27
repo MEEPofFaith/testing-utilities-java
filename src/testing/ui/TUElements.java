@@ -15,8 +15,8 @@ public class TUElements{
         TextField field = textField(String.valueOf(def), changed, fieldText, filter);
 
         Tooltip tip = new Tooltip(to -> to.background(Tex.button).add(tooltip));
+        t.add(title).right().padRight(6f).get().addListener(tip);
         t.slider(min, max, step, def, s -> sliderChanged.get(s, field)).right().get().addListener(tip);
-        t.add(title).left().padLeft(6f).get().addListener(tip);
         t.add(field).left().padLeft(6f).get().addListener(tip);
     }
 

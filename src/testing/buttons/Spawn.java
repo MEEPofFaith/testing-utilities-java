@@ -10,7 +10,7 @@ import testing.util.*;
 
 import static testing.ui.TUDialogs.*;
 
-public class SpawnMenu{
+public class Spawn{
     public static boolean spawnHover, blockHover;
 
     public static Cell<ImageButton> unitMenu(Table t){
