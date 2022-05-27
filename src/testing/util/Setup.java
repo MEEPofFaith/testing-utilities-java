@@ -5,6 +5,7 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.input.*;
 import testing.buttons.*;
 import testing.ui.*;
 
@@ -75,7 +76,13 @@ public class Setup{
         Death.add(death);
         add(death);
 
-        buttons.visibility = Visibility.buttonVisibility;
+        buttons.visible(() -> {
+            if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
+            if(!mobile) return true;
+
+            MobileInput input = (MobileInput)control.input;
+            return input.lastSchematic == null || input.selectPlans.isEmpty();
+        });
         ui.hudGroup.addChild(buttons);
         ui.hudGroup.find(c -> c == buttons).moveBy(0f, Scl.scl((mobile ? 48f : 0f) + TUVars.TCOffset));
 
