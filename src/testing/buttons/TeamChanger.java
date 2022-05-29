@@ -32,7 +32,7 @@ public class TeamChanger{
 
     public static Cell<Button> addSingle(Table t, Team team, int setMode){
         return t.button(b -> {
-            b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
+            b.setDisabled(() -> false || player.unit().type == UnitTypes.block);
 
             String s = team.localized();
             String name = s.substring(0, 1).toUpperCase() + (!mobile ? s.substring(1) : "");
@@ -46,7 +46,7 @@ public class TeamChanger{
 
     public static Cell<Button> addMini(Table t, Integer[] teams){
         return t.button(b -> {
-            b.setDisabled(() -> state.isCampaign() || player.unit().type == UnitTypes.block);
+            b.setDisabled(() -> false || player.unit().type == UnitTypes.block);
             b.update(() -> b.setColor(Team.baseTeams[mode].color));
 
             b.label(() -> {

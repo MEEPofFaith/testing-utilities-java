@@ -53,7 +53,7 @@ public class Sandbox{
                 (state.rules.infiniteResources ? Core.bundle.get("mode.survival.name") : Core.bundle.get("mode.sandbox.name"))
             ).growX();
         }
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> false);
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
@@ -73,7 +73,7 @@ public class Sandbox{
                 (fillMode ? Core.bundle.get("tu-ui-button.fill"): Core.bundle.get("tu-ui-button.dump")) + " " + Core.bundle.get("tu-ui-button.core")
             ).growX();
         }
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> false);
         b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){

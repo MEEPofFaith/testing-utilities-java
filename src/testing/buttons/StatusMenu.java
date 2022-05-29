@@ -22,7 +22,7 @@ public class StatusMenu{
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         if(!mobile && label) b.label(() -> Core.bundle.format("tu-status-menu.button", b.isDisabled() ? "gray" : "white")).growX();
         b.clicked(statusDialog::show);
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> false);
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);

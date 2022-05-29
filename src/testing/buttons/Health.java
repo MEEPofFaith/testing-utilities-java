@@ -31,7 +31,7 @@ public class Health{
             heal(false);
         }).growX();
         ImageButton b = i.get();
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> false);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.heal")).growX();
         b.resizeImage(40f);
         b.update(() -> {
@@ -46,7 +46,7 @@ public class Health{
             heal(true);
         }).growX();
         ImageButton b = i.get();
-        b.setDisabled(() -> state.isCampaign());
+        b.setDisabled(() -> false);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.invisible")).growX();
         b.resizeImage(40f);
         b.update(() -> {
