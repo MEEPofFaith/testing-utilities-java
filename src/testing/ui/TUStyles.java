@@ -1,27 +1,35 @@
 package testing.ui;
 
-import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 
+import static arc.Core.*;
 import static arc.graphics.Color.*;
 
 public class TUStyles{
-    public static Drawable redBack, buttonLeft, buttonLeftDown, buttonLeftOver, buttonRight, buttonRightOver, buttonRightDown;
+    public static Drawable redBack,
+        buttonLeft, buttonLeftDown, buttonLeftOver,
+        buttonCenter, buttonCenterDown, buttonCenterOver,
+        buttonRight, buttonRightOver, buttonRightDown,
+        paneBottom;
     public static ButtonStyle redButtonStyle;
-    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti;
+    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti, centeri;
 
     public static void init(){
         redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
-        buttonLeft = Core.atlas.getDrawable("test-utils-button-left");
-        buttonLeftDown = Core.atlas.getDrawable("test-utils-button-left-down");
-        buttonLeftOver = Core.atlas.getDrawable("test-utils-button-left-over");
-        buttonRight = Core.atlas.getDrawable("test-utils-button-right");
-        buttonRightDown = Core.atlas.getDrawable("test-utils-button-right-down");
-        buttonRightOver = Core.atlas.getDrawable("test-utils-button-right-over");
+        buttonLeft = atlas.getDrawable("test-utils-button-left");
+        buttonLeftDown = atlas.getDrawable("test-utils-button-left-down");
+        buttonLeftOver = atlas.getDrawable("test-utils-button-left-over");
+        buttonCenter = atlas.getDrawable("test-utils-button-center");
+        buttonCenterDown = atlas.getDrawable("test-utils-button-center-down");
+        buttonCenterOver = atlas.getDrawable("test-utils-button-center-over");
+        buttonRight = atlas.getDrawable("test-utils-button-right");
+        buttonRightDown = atlas.getDrawable("test-utils-button-right-down");
+        buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
+        paneBottom = atlas.getDrawable("test-utils-pane-bottom");
 
         redButtonStyle = new ButtonStyle(Styles.logict){{
             disabled = redBack;
@@ -56,6 +64,12 @@ public class TUStyles{
 
         toggleRighti = new ImageButtonStyle(righti){{
             checked = buttonRightOver;
+        }};
+
+        centeri = new ImageButtonStyle(Styles.defaulti){{
+            up = buttonCenter;
+            down = buttonCenterDown;
+            over = buttonCenterOver;
         }};
     }
 }

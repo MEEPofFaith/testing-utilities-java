@@ -1,29 +1,29 @@
-package testing.buttons.dialogs;
+package testing.dialogs;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
-import testing.util.*;
+import testing.ui.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class TeamDialog extends BaseDialog{
-    Team spawnTeam = Team.sharded;
+    Team curTeam;
+    Cons<Team> changed;
 
     Table all = new Table();
 
     public TeamDialog(){
         super("@tu-unit-menu.team");
-        spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
 
         shouldPause = false;
         addCloseButton();
@@ -35,22 +35,29 @@ public class TeamDialog extends BaseDialog{
         cont.pane(all);
     }
 
+    public void show(Team startTeam, Cons<Team> changed){
+        curTeam = startTeam;
+        this.changed = changed;
+        show();
+    }
+
     void rebuild(){
         all.clear();
 
         all.table(t -> {
             t.add("@tu-unit-menu.teams-id").right().color(Pal.accent);
-            TextField tField = t.field(String.valueOf(spawnTeam.id), s -> {
-                String team = Utils.extractNumber(s);
-                if(!team.isEmpty()){
-                    spawnTeam = Team.get(Integer.parseInt(team));
-                }
-            }).left().padLeft(6).get();
-            tField.update(() -> {
-                Scene stage = tField.getScene();
-                if(!(stage != null && stage.getKeyboardFocus() == tField))
-                    tField.setText(String.valueOf(spawnTeam.id));
-            });
+
+            TextField tField = TUElements.textField(
+                String.valueOf(curTeam.id),
+                field -> {
+                    if(Strings.canParsePositiveInt(field.getText())){
+                        changed.get(Team.get(Strings.parseInt(field.getText())));
+                    }
+                },
+                () -> String.valueOf(curTeam.id),
+                TextFieldFilter.digitsOnly
+            );
+            t.add(tField).left().padLeft(6);
         }).left().padBottom(6);
         all.row();
 
@@ -100,24 +107,13 @@ public class TeamDialog extends BaseDialog{
         }
 
         image.clicked(() -> {
-            spawnTeam = team;
+            changed.get(team);
             hide();
         });
-        image.addListener(new Tooltip(tp ->
-            tp.background(Tex.button)
-            .label(() -> teamName(team))
-        ));
-    }
-
-    public Team getTeam(){
-        return spawnTeam;
+        TUElements.boxTooltip(image, () -> teamName(team));
     }
 
     public String teamName(Team team){
         return bundle.has("team." + team.name + ".name") ? bundle.get("team." + team.name + ".name") : String.valueOf(team.id);
-    }
-
-    public String teamName(){
-        return teamName(getTeam());
     }
 }

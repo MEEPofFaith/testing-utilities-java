@@ -2,68 +2,92 @@ package testing.util;
 
 import arc.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
+import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.input.*;
 import testing.buttons.*;
+import testing.ui.*;
 
 import static mindustry.Vars.*;
 
 public class Setup{
     static boolean selfInit;
 
-    static Table
-        unfolded = new Table().bottom().left(),
-        folded = new Table().bottom().left();
+    static Table buttons = newTable(), temp;
 
-    public static Table[]
+    public static Table
+    team = newTable(),
+    death = newTable(),
+    sandbox = newTable(),
+    status = newTable(),
+    units = newTable(),
+    console = newTable();
 
-    folder = newTables(),
-    team = newTables(),
-    death = newTables(),
-    sandbox = newTables(),
-    status = newTables(),
-    units = newTables();
-
-    public static Table[] newTables(){
-        return new Table[]{new Table().bottom().left(), new Table().bottom().left()};
+    public static Table newTable(){
+        return new Table().bottom().left();
     }
 
-    public static void add(Table[] tables){
-        unfolded.addChild(tables[0]);
-        folded.addChild(tables[1]);
+    public static void row(boolean bottom){
+        buttons.row();
+        buttons.table(t -> {
+            if(!bottom) t.defaults().padBottom(-4);
+            temp = t;
+        }).left();
+    }
+
+    public static void add(Table table){
+        float shift = 0;
+        if(temp.getChildren().size > 0) shift = -4;
+        temp.add(table).padLeft(shift);
     }
 
     public static void init(){
         TUVars.setDefaults();
+        TUDialogs.load();
+        buttons.setOrigin(Align.bottomLeft);
 
-        Folding.add(folder);
-        add(folder);
+        //First row
+        row(false);
+
+        if(Vars.mobile){
+            Console.add(console);
+            add(console);
+        }
+
+        Spawn.add(units);
+        add(units);
+
+        Sandbox.add(sandbox);
+        add(sandbox);
+
+        //Second row
+        row(true);
 
         TeamChanger.add(team);
         add(team);
+
+        Effect.add(status);
+        add(status);
+
+        //TODO weather
 
         Death.init();
         Death.add(death);
         add(death);
 
-        Sandbox.add(sandbox);
-        add(sandbox);
+        buttons.visible(() -> {
+            if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
+            if(!mobile) return true;
 
-        StatusMenu.init();
-        StatusMenu.add(status);
-        add(status);
-
-        UnitMenu.init();
-        UnitMenu.add(units);
-        add(units);
-
-        unfolded.visibility = Visibility.unfoldedVisibility;
-        ui.hudGroup.addChild(unfolded);
-        folded.visibility = Visibility.foldedVisibility;
-        ui.hudGroup.addChild(folded);
+            MobileInput input = (MobileInput)control.input;
+            return input.lastSchematic == null || input.selectPlans.isEmpty();
+        });
+        ui.hudGroup.addChild(buttons);
+        buttons.moveBy(0f, Scl.scl((mobile ? 48f : 0f) + TUVars.TCOffset));
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
-                //lmao
                 Table healthUI = placement();
                 healthUI.row();
                 Health.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);

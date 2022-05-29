@@ -4,13 +4,16 @@ import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
-import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import testing.*;
+import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Death{
@@ -39,23 +42,28 @@ public class Death{
 
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public static void spontaniumCombustum(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                if(Core.settings.getBool("tu-instakill")){
-                    Utils.runCommandPlayer("p.unit().elevation = 0; p.unit().health = -1; p.unit().dead = true;");
+        if(net.client()){
+            if(settings.getBool("tu-instakill")){
+                Utils.runCommandPlayer(
+                    "p.unit().elevation = 0;" +
+                    "p.unit().health = -1;" +
+                    "p.unit().dead = true;"
+                );
+            }
+            Utils.runCommandPlayerFast(".unit().kill();");
+        }else{
+            Unit u = player.unit();
+            if(u != null){
+                for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
+                    TUFx.deathLightning.at(u, true);
                 }
-                Utils.runCommandPlayer("p.unit().kill();");
-            }else{
-                Unit u = player.unit();
-                if(u != null){
-                    if(Core.settings.getBool("tu-instakill")){
-                        Effect.shake(u.type.hitSize, u.type.hitSize, u);
-                        u.elevation(0);
-                        u.health(-1);
-                        u.dead(true);
-                    }
-                    u.kill();
+
+                if(settings.getBool("tu-instakill")){
+                    u.elevation(0);
+                    u.health(-1);
+                    u.dead(true);
                 }
+                u.kill();
             }
         }
     }
@@ -74,18 +82,18 @@ public class Death{
         }
     }
 
-    public static Cell<ImageButton> seppuku(Table t, boolean label){
+    public static Cell<ImageButton> seppuku(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
         }).growX();
+
         ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.death")).growX().padLeft(6);
-        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed()){
-                sTimer += Core.graphics.getDeltaTime() * 60f;
+                sTimer += graphics.getDeltaTime() * 60f;
                 if(sTimer > TUVars.longPress){
                     spontaniumCombustum();
                 }
@@ -97,24 +105,25 @@ public class Death{
             kill.add(unit1);
             kill.add(knife);
             b.replaceImage(kill);
+            b.resizeImage(40f);
         });
         b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
 
         return i;
     }
 
-    public static Cell<ImageButton> clone(Table t, boolean label){
+    public static Cell<ImageButton> clone(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
         }).growX();
+
         ImageButton b = i.get();
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || false);
-        if(!mobile && label) b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + Core.bundle.get("tu-ui-button.clone")).growX().padLeft(6);
-        b.resizeImage(40f);
+        TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
+        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
         b.update(() -> {
             if(b.isPressed()){
-                cTimer += Core.graphics.getDeltaTime() * 60f;
+                cTimer += graphics.getDeltaTime() * 60f;
                 if(cTimer > TUVars.longPress){
                     mitosis();
                 }
@@ -128,20 +137,16 @@ public class Death{
             dupe.add(unit2);
             dupe.add(plus);
             b.replaceImage(dupe);
+            b.resizeImage(40f);
         });
 
         return i;
     }
 
-    public static void add(Table[] tables){
-        tables[0].table(Tex.buttonEdge3, t -> {
-            clone(t, true).size(mobile ? TUVars.iconWidth : 104, 40);
-            seppuku(t, true).size(mobile ? TUVars.iconWidth : 140, 40);
-        }).padBottom(TUVars.TCOffset + 2 * TUVars.buttonHeight).padLeft(mobile ? TUVars.iconWidth + 20 : 176);
-
-        tables[1].table(Tex.pane, t -> {
-            clone(t, false).size(TUVars.iconWidth, 40);
-            seppuku(t, false).size(TUVars.iconWidth, 40);
-        }).padBottom(TUVars.TCOffset + (mobile ? TUVars.buttonHeight : 0)).padLeft(mobile ? 44 : 120);
+    public static void add(Table table){
+        table.table(Tex.buttonEdge3, t -> {
+            clone(t).size(TUVars.iconSize, 40);
+            seppuku(t).size(TUVars.iconSize, 40);
+        });
     }
 }

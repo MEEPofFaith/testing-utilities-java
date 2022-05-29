@@ -10,7 +10,8 @@ public class TUIcons{
     core, dump,
     survival, sandbox,
     heal, invincibility,
-    shard;
+    weather,
+    alpha;
 
     public static void init(){
         clone = get("clone");
@@ -21,10 +22,15 @@ public class TUIcons{
         sandbox = get("sandbox");
         heal = get("heal");
         invincibility = get("invincibility");
-        shard = new TextureRegionDrawable(Blocks.coreShard.uiIcon);
+        weather = get("weather");
+        alpha = new TextureRegionDrawable(UnitTypes.alpha.uiIcon);
     }
 
     static TextureRegionDrawable get(String name){
         return new TextureRegionDrawable(Core.atlas.find("test-utils-" + name));
+    }
+
+    public static TextureRegionDrawable get(TextureRegionDrawable icon){
+        return new TextureRegionDrawable(icon);
     }
 }
