@@ -71,7 +71,7 @@ public class Sandbox{
             if(net.client()){
                 Utils.runCommandPlayerFast(".core().items.clear()");
             }else{
-                player.core().items.clear();
+                if(player.core() != null) player.core().items.clear();
             }
             Utils.spawnIconEffect("dump");
         }
