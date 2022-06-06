@@ -84,7 +84,7 @@ public class Setup{
             return input.lastSchematic == null || input.selectPlans.isEmpty();
         });
         ui.hudGroup.addChild(buttons);
-        buttons.moveBy(0f, Scl.scl((mobile ? 48f : 0f) + TUVars.TCOffset));
+        buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
