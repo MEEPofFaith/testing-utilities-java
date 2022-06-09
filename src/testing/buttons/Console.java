@@ -15,7 +15,7 @@ public class Console{
     public static Cell<ImageButton> addButton(Table t){
         Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.terminal), TUStyles.tuRedImageStyle, () -> {
             shown = !shown;
-            Vars.ui.scriptfrag.toggle();
+            Vars.ui.consolefrag.toggle();
         });
 
         ImageButton b = i.get();
@@ -29,6 +29,6 @@ public class Console{
     public static void add(Table table){
         table.table(Tex.pane, t -> addButton(t).size(TUVars.iconSize, 40f));
 
-        Vars.ui.scriptfrag.visible(() -> shown);
+        Vars.ui.consolefrag.visible(() -> shown);
     }
 }
