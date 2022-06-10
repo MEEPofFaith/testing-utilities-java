@@ -50,7 +50,7 @@ public class Setup{
         //First row
         row(false);
 
-        if(Vars.mobile){
+        if(Vars.mobile && Core.settings.getBool("console")){
             Console.add(console);
             add(console);
         }
