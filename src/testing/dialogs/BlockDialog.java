@@ -155,7 +155,7 @@ public class BlockDialog extends BaseDialog{
         ).padBottom(6);
         selection.row();
 
-        Seq<Block> array = content.blocks().select(b -> !b.isStatic() && !(b instanceof ConstructBlock) && !(b instanceof LegacyBlock) && (!b.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
+        Seq<Block> array = content.blocks().select(b -> !(b instanceof ConstructBlock) && !(b instanceof LegacyBlock) && (!b.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         selection.table(list -> {
             list.left();
 
