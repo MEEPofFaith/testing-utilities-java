@@ -207,9 +207,9 @@ public class BlockDialog extends BaseDialog{
         if(Utils.noCheat()){
             if(net.client()){
                 if(block.isFloor()){
-                    Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))";
+                    Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))");
                 }else if(block.isOverlay()) {
-                    Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))";
+                    Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
                 }else{
                     Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
                 }
