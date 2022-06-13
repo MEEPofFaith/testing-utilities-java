@@ -155,7 +155,7 @@ public class BlockDialog extends BaseDialog{
         ).padBottom(6);
         selection.row();
 
-        Seq<Block> array = content.blocks().select(b -> !b.isFloor() && !b.isStatic() && !(b instanceof ConstructBlock) && !(b instanceof LegacyBlock) && (!b.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
+        Seq<Block> array = content.blocks().select(b -> !b.isStatic() && !(b instanceof ConstructBlock) && !(b instanceof LegacyBlock) && (!b.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         selection.table(list -> {
             list.left();
 
@@ -206,9 +206,21 @@ public class BlockDialog extends BaseDialog{
     void placeBlock(){
         if(Utils.noCheat()){
             if(net.client()){
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
+                if(block.isFloor()){
+                    Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+                }else if(block.isOverlay()) {
+                    Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
+                }else{
+                    Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
+                }
             }else{
-                world.tile(placePos).setNet(block, placeTeam, rotation);
+                if(block.isFloor()){
+                    world.tile(placePos).setFloorNet(block);
+                }else if(block.isOverlay()) {
+                    world.tile(placePos).setOverlayNet(block);
+                }else{
+                    world.tile(placePos).setNet(block, placeTeam, rotation);
+                }
             }
         }
     }
