@@ -27,7 +27,7 @@ public class TestUtils extends Mod{
 
     public TestUtils(){
         if(!headless){
-            settings.put("console", true); //Dev mode
+            if(mobile) settings.put("console", true); //Dev mode
             experimental = true; //Also dev mode
             renderer.minZoom = 0.667f; //Zoom out farther
             renderer.maxZoom = 24f; //Get a closer look at yourself
