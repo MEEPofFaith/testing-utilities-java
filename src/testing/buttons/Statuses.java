@@ -10,7 +10,7 @@ import testing.util.*;
 
 import static testing.ui.TUDialogs.*;
 
-public class Effect{
+public class Statuses{
     public static Cell<ImageButton> statusButton(Table t){
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");

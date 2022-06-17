@@ -9,6 +9,7 @@ public class TUDialogs{
     public static WaveChangeDialog waveChangeDialog;
     public static StatusDialog statusDialog;
     public static WeatherDialog weatherDialog;
+    public static FieldEditor fieldEditor;
 
     public static void load(){
         unitDialog = new UnitDialog();
@@ -17,5 +18,6 @@ public class TUDialogs{
         waveChangeDialog = new WaveChangeDialog();
         statusDialog = new StatusDialog();
         weatherDialog = new WeatherDialog();
+        fieldEditor = new FieldEditor();
     }
 }

@@ -22,7 +22,8 @@ public class Setup{
     sandbox = newTable(),
     status = newTable(),
     units = newTable(),
-    console = newTable();
+    console = newTable(),
+    fields = newTable();
 
     public static Table newTable(){
         return new Table().bottom().left();
@@ -67,10 +68,11 @@ public class Setup{
         TeamChanger.add(team);
         add(team);
 
-        Effect.add(status);
-        add(status);
+        Fields.add(fields);
+        add(fields);
 
-        //TODO weather
+        Statuses.add(status);
+        add(status);
 
         Death.init();
         Death.add(death);
