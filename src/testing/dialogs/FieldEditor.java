@@ -4,42 +4,43 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.math.*;
+import arc.scene.event.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TreeElement.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.ctype.Content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
+import mindustry.world.blocks.legacy.*;
 import mindustry.world.meta.*;
+import testing.ui.*;
 
 import java.lang.reflect.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
-/**
- * @author Anuke
- * Modified by me (MEEP) to add more functionaliyy.
- * */
 public class FieldEditor extends BaseDialog{
     static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class);
     static Seq<String> skipFieldNames = Seq.with("name", "iconId");
-    static ContentType[] editableContent = {
-        ContentType.block,
-        ContentType.unit,
-        //ContentType.bullet, //TODO make separate editor
-        ContentType.item,
-        ContentType.liquid,
-        //ContentType.weather,
-        ContentType.status,
-        //ContentType.planet,
-        ContentType.sector
-    };
+    static TextField search;
+    static Table selection = new Table(), fields = new Table();
+    static ContentType selectedType = ContentType.block;
+    static UnlockableContent selectedContent;
     static float height = 50f;
 
     public FieldEditor(){
@@ -48,15 +49,127 @@ public class FieldEditor extends BaseDialog{
         shouldPause = false;
         addCloseButton();
         closeOnBack();
+        shown(() -> {
+            rebuildSelection();
+            rebuildFields();
+        });
+        onResize(() -> {
+            rebuildSelection();
+            rebuildFields();
+        });
 
-        shown(this::setup);
+        //ContentType Selector
+        cont.table(c -> {
+            c.defaults().size(60f);
+            contentButton(c, new TextureRegionDrawable(Icon.crafting), ContentType.block);
+            contentButton(c, new TextureRegionDrawable(Icon.units), ContentType.unit);
+            contentButton(c, new TextureRegionDrawable(Icon.distribution), ContentType.item);
+            contentButton(c, new TextureRegionDrawable(Icon.liquid), ContentType.liquid);
+            contentButton(c, new TextureRegionDrawable(StatusEffects.burning.fullIcon), ContentType.status);
+            contentButton(c, new TextureRegionDrawable(Icon.terrain), ContentType.sector);
+        });
+
+        cont.row();
+        cont.table(s -> { //Search Bar
+            s.image(Icon.zoom).padRight(8);
+            search = s.field(null, text -> rebuildSelection()).growX().get();
+            search.setMessageText("@players.search");
+        }).fillX().padBottom(4).row();
+
+        cont.row();
+        cont.pane(all -> {
+            all.add(selection).top().center(); //Content Selection
+            all.row();
+            all.add(fields); //Field Editor
+        }).expandY().top();
     }
 
-    void setup(){
+    void contentButton(Table table, Drawable icon, ContentType type){
+        ImageButton b = table.button(icon, () -> {
+            selectedType = type;
+            rebuildSelection();
+        }).get();
+        b.getStyle().checked = Tex.buttonOver;
+        b.update(() -> {
+            b.setChecked(selectedType == type);
+        });
+    }
+
+    void rebuildSelection(){
+        selection.clear();
+        String text = search.getText();
+
+        selection.label(() -> bundle.get("tu-menu.selection") + (selectedContent != null ? selectedContent.localizedName : bundle.get("none"))).padBottom(6);
+        selection.row();
+
+        Seq<UnlockableContent> array = content.getBy(selectedType).<UnlockableContent>as().select(u -> !u.isHidden() && shouldShow(u) && (text.isEmpty() || u.localizedName.toLowerCase().contains(text.toLowerCase())));
+        selection.table(list -> {
+            list.left();
+
+            float iconMul = 1.25f;
+            int cols = (int)Mathf.clamp((graphics.getWidth() - Scl.scl(30)) / Scl.scl(32 + 10) / iconMul, 1, 22 / iconMul);
+            int count = 0;
+
+            for(UnlockableContent u : array){
+                Image image = new Image(u.uiIcon).setScaling(Scaling.fit);
+                list.add(image).size(8 * 4 * iconMul).pad(3);
+
+                ClickListener listener = new ClickListener();
+                image.addListener(listener);
+                if(!mobile){
+                    image.addListener(new HandCursorListener());
+                    image.update(() -> image.color.lerp(listener.isOver() || selectedContent == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                }else{
+                    image.update(() -> image.color.lerp(selectedContent == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                }
+
+                image.clicked(() -> {
+                    if(input.keyDown(KeyCode.shiftLeft) && Fonts.getUnicode(u.name) != 0){
+                        app.setClipboardText((char)Fonts.getUnicode(u.name) + "");
+                        ui.showInfoFade("@copied");
+                    }else{
+                        if(selectedContent == u){
+                            selectedContent = null;
+                        }else{
+                            selectedContent = u;
+                        }
+                        rebuildFields();
+                    }
+                });
+                TUElements.boxTooltip(image, u.localizedName);
+
+                if((++count) % cols == 0){
+                    list.row();
+                }
+            }
+        }).growX().left().padBottom(10);
+    }
+
+    boolean shouldShow(UnlockableContent u){
+        return switch(selectedType){
+            case block -> !(u instanceof ConstructBlock) && !(u instanceof LegacyBlock);
+            case unit -> !((UnitType)u).internal;
+            case status -> u != StatusEffects.none;
+            default -> true;
+        };
+    }
+
+    void rebuildFields(){
+        fields.clear();
+
+        if(selectedContent == null) return;
+
+        Class<?> c = selectedContent.getClass();
+
+        for(Field field : c.getFields()){
+            addField(selectedContent, fields, field);
+        }
+    }
+
+    /*void setup(){
         cont.clear();
 
-        //TODO better menu
-        /*TreeElement t = new TreeElement();
+        TreeElement t = new TreeElement();
 
         for(ContentType type : editableContent){
             t.add(new TreeElementNode(new Label(type.name())).children(tp -> {
@@ -74,14 +187,8 @@ public class FieldEditor extends BaseDialog{
             }));
         }
 
-        cont.pane(t).top().left().grow();*/
-
-        cont.table(Tex.button, t -> {
-            for(ContentType type : editableContent){
-                //TODO ui similar to  settings ui?
-            }
-        });
-    }
+        cont.pane(t).top().left().grow();
+    }*/
 
     void addField(Object obj, Table all, Field field){
         if(skipFields.contains(field.getType()) || skipFieldNames.contains(field.getName())) return;
@@ -91,7 +198,7 @@ public class FieldEditor extends BaseDialog{
         Table res = new Table();
         res.left();
         res.defaults().fillX();
-        makeFieldEditor(obj, fieldType, field, res);
+        makeFieldEditor(obj, fieldType, field, res, null);
 
         all.defaults().padBottom(2);
         all.add(head).left().uniformY().padRight(8);
@@ -100,7 +207,11 @@ public class FieldEditor extends BaseDialog{
         all.row();
     }
 
-    void makeFieldEditor(Object content, Class<?> type, Field field, Table table){
+    /**
+     * @author Anuke
+     * Modified by me (MEEP) to add more functionaliyy.
+     * */
+    void makeFieldEditor(Object content, Class<?> type, Field field, Table table, TreeElement tree){
         if(type == int.class){
             table.field(Reflect.get(content, field) + "", out -> {
                 if(Strings.canParseInt(out)){
@@ -137,22 +248,6 @@ public class FieldEditor extends BaseDialog{
                     Reflect.set(content, field, out[0]);
                 }
             }).valid(t -> Core.atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
-        }else if(type == Effect.class){ //Untested, and I can already tell that this won't work.
-            Effect effect = Reflect.get(content, field);
-            table.table(t -> {
-                for(Field f : effect.getClass().getFields()){
-                    addField(effect, t, f);
-                }
-            });
-        }else if(type == Effect[].class){
-            Effect[] effects = Reflect.get(content, field);
-            for(Effect e : effects){
-                table.table(t -> {
-                    for(Field f: e.getClass().getFields()){
-                        addField(e, t, f);
-                    }
-                }).padLeft(4f);
-            }
         }
     }
 
