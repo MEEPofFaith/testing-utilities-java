@@ -36,7 +36,7 @@ import static mindustry.Vars.*;
 
 public class FieldEditor extends BaseDialog{
     static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class);
-    static Seq<String> skipFieldNames = Seq.with("name", "iconId");
+    static Seq<String> skipFieldNames = Seq.with("name", "iconId", "outineColor");
     static TextField search;
     static Table selection = new Table(), fields = new Table();
     static ContentType selectedType = ContentType.block;
@@ -80,6 +80,7 @@ public class FieldEditor extends BaseDialog{
         cont.pane(all -> {
             all.add(selection).top().center(); //Content Selection
             all.row();
+            //TODO field search
             all.add(fields); //Field Editor
         }).expandY().top();
     }
@@ -102,7 +103,7 @@ public class FieldEditor extends BaseDialog{
         selection.label(() -> bundle.get("tu-menu.selection") + (selectedContent != null ? selectedContent.localizedName : bundle.get("none"))).padBottom(6);
         selection.row();
 
-        Seq<UnlockableContent> array = content.getBy(selectedType).<UnlockableContent>as().select(u -> !u.isHidden() && shouldShow(u) && (text.isEmpty() || u.localizedName.toLowerCase().contains(text.toLowerCase())));
+        Seq<UnlockableContent> array = content.getBy(selectedType).<UnlockableContent>as().select(u -> shouldShow(u) && (text.isEmpty() || u.localizedName.toLowerCase().contains(text.toLowerCase())));
         selection.table(list -> {
             list.left();
 
@@ -147,7 +148,7 @@ public class FieldEditor extends BaseDialog{
 
     boolean shouldShow(UnlockableContent u){
         return switch(selectedType){
-            case block -> !(u instanceof ConstructBlock) && !(u instanceof LegacyBlock);
+            case block -> u != Blocks.air && !(u instanceof ConstructBlock) && !(u instanceof LegacyBlock);
             case unit -> !((UnitType)u).internal;
             case status -> u != StatusEffects.none;
             default -> true;
@@ -248,8 +249,15 @@ public class FieldEditor extends BaseDialog{
                     Reflect.set(content, field, out[0]);
                 }
             }).valid(t -> Core.atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
+        }else if(UnlockableContent.class.isAssignableFrom(type)){
+            UnlockableContent[] c = {Reflect.get(content, field)};
+            table.image(() -> c[0] != null ? c[0].uiIcon : new TextureRegion(Icon.none.getRegion())).padRight(4).size(50f).scaling(Scaling.fit);
+            table.field(c[0] != null ? c[0].name : "", res -> {
+                if(!res.isEmpty()){
+                    c[0] = Vars.content.getByName(c[0].getContentType(), res); //Does not work if the initial value is null, and I don't know what to do about it.
+                    Reflect.set(content, field, c[0]);
+                }
+            }).valid(t -> c[0] != null && Vars.content.getByName(c[0].getContentType(), t) != null).size(250f, height).padLeft(4f);
         }
     }
-
-
 }
