@@ -39,7 +39,7 @@ public class TeamChanger{
 
         Button b = i.get();
         b.update(() -> {
-            if(b.isPressed()){
+            if(b.isPressed() && !b.isDisabled()){
                 tTimer += graphics.getDeltaTime() * 60f;
                 if(tTimer > TUVars.longPress){
                     teamDialog.show(curTeam(), TeamChanger::changeTeam);
