@@ -251,13 +251,38 @@ public class FieldEditor extends BaseDialog{
             }).valid(t -> Core.atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
         }else if(UnlockableContent.class.isAssignableFrom(type)){
             UnlockableContent[] c = {Reflect.get(content, field)};
+            ContentType cType = getType(type);
             table.image(() -> c[0] != null ? c[0].uiIcon : new TextureRegion(Icon.none.getRegion())).padRight(4).size(50f).scaling(Scaling.fit);
             table.field(c[0] != null ? c[0].name : "", res -> {
                 if(!res.isEmpty()){
-                    c[0] = Vars.content.getByName(c[0].getContentType(), res); //Does not work if the initial value is null, and I don't know what to do about it.
+                    c[0] = Vars.content.getByName(cType, res);
                     Reflect.set(content, field, c[0]);
+                }else{
+                    c[0] = null;
+                    Reflect.set(content, field, null);
                 }
-            }).valid(t -> c[0] != null && Vars.content.getByName(c[0].getContentType(), t) != null).size(250f, height).padLeft(4f);
+            }).valid(t -> Vars.content.getByName(cType, t) != null || t.isEmpty()).size(250f, height).padLeft(4f);
         }
+    }
+
+    ContentType getType(Class<?> ucClass){
+        if(Item.class.isAssignableFrom(ucClass)){
+            return ContentType.item;
+        }else if(Block.class.isAssignableFrom(ucClass)){
+            return ContentType.block;
+        }else if(Liquid.class.isAssignableFrom(ucClass)){
+            return ContentType.liquid;
+        }else if(StatusEffect.class.isAssignableFrom(ucClass)){
+            return ContentType.status;
+        }else if(UnitType.class.isAssignableFrom(ucClass)){
+            return ContentType.unit;
+        }else if(Weather.class.isAssignableFrom(ucClass)){
+            return ContentType.weather;
+        }else if(SectorPreset.class.isAssignableFrom(ucClass)){
+            return ContentType.sector;
+        }else if(Planet.class.isAssignableFrom(ucClass)){
+            return ContentType.planet;
+        }
+        return null;
     }
 }
