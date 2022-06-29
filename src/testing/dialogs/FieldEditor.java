@@ -266,22 +266,10 @@ public class FieldEditor extends BaseDialog{
     }
 
     ContentType getType(Class<?> ucClass){
-        if(Item.class.isAssignableFrom(ucClass)){
-            return ContentType.item;
-        }else if(Block.class.isAssignableFrom(ucClass)){
-            return ContentType.block;
-        }else if(Liquid.class.isAssignableFrom(ucClass)){
-            return ContentType.liquid;
-        }else if(StatusEffect.class.isAssignableFrom(ucClass)){
-            return ContentType.status;
-        }else if(UnitType.class.isAssignableFrom(ucClass)){
-            return ContentType.unit;
-        }else if(Weather.class.isAssignableFrom(ucClass)){
-            return ContentType.weather;
-        }else if(SectorPreset.class.isAssignableFrom(ucClass)){
-            return ContentType.sector;
-        }else if(Planet.class.isAssignableFrom(ucClass)){
-            return ContentType.planet;
+        for(ContentType c : ContentType.all){
+            if(c.contentClass.isAssignableFrom(ucClass)){
+                return c;
+            }
         }
         return null;
     }
