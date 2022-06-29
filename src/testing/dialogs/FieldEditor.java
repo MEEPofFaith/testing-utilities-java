@@ -18,6 +18,7 @@ import mindustry.content.*;
 import mindustry.ctype.Content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -167,30 +168,6 @@ public class FieldEditor extends BaseDialog{
         }
     }
 
-    /*void setup(){
-        cont.clear();
-
-        TreeElement t = new TreeElement();
-
-        for(ContentType type : editableContent){
-            t.add(new TreeElementNode(new Label(type.name())).children(tp -> {
-                for(UnlockableContent un : Vars.content.getBy(type).<UnlockableContent>as().select(c -> !c.isHidden())){
-                    tp.get(new TreeElementNode(new Label(un.emoji() + " " + un.localizedName)).children(cp -> {
-                        Table all = new Table();
-                        Class<?> c = un.getClass();
-
-                        for(Field field : c.getFields()){
-                            addField(un, all, field);
-                        }
-                        cp.get(new TreeElementNode(all).hoverable(false));
-                    }));
-                }
-            }));
-        }
-
-        cont.pane(t).top().left().grow();
-    }*/
-
     void addField(Object obj, Table all, Field field){
         if(skipFields.contains(field.getType()) || skipFieldNames.contains(field.getName())) return;
 
@@ -199,11 +176,11 @@ public class FieldEditor extends BaseDialog{
         Table res = new Table();
         res.left();
         res.defaults().fillX();
-        makeFieldEditor(obj, fieldType, field, res, null);
+        makeFieldEditor(obj, fieldType, field, res);
 
-        all.defaults().padBottom(2);
-        all.add(head).left().uniformY().padRight(8);
-        all.add(res).growX().uniformY();
+        all.defaults().padBottom(2).top().minHeight(50f);
+        all.add(head).left().padRight(8);
+        all.add(res).growX();
 
         all.row();
     }
@@ -212,7 +189,7 @@ public class FieldEditor extends BaseDialog{
      * @author Anuke
      * Modified by me (MEEP) to add more functionaliyy.
      * */
-    void makeFieldEditor(Object content, Class<?> type, Field field, Table table, TreeElement tree){
+    void makeFieldEditor(Object content, Class<?> type, Field field, Table table){
         if(type == int.class){
             table.field(Reflect.get(content, field) + "", out -> {
                 if(Strings.canParseInt(out)){
@@ -262,12 +239,29 @@ public class FieldEditor extends BaseDialog{
                     Reflect.set(content, field, null);
                 }
             }).valid(t -> Vars.content.getByName(cType, t) != null || t.isEmpty()).size(250f, height).padLeft(4f);
+        }else if(BulletType.class.isAssignableFrom(type)){
+            BulletType b = Reflect.get(content, field);
+            if(b != null){
+                TreeElement tree = new TreeElement();
+                tree.add(new TreeElementNode(new Label("edit")).children(bp -> {
+                    Table bt = new Table();
+
+                    for(Field f : type.getFields()){
+                        addField(b, bt, f);
+                    }
+                    bp.get(new TreeElementNode(bt).hoverable(false));
+                }));
+
+                table.add(tree);
+            }else{
+                table.add("cannot edit");
+            }
         }
     }
 
-    ContentType getType(Class<?> ucClass){
+    ContentType getType(Class<?> cClass){
         for(ContentType c : ContentType.all){
-            if(c.contentClass.isAssignableFrom(ucClass)){
+            if(c.contentClass != null && c.contentClass.isAssignableFrom(cClass)){
                 return c;
             }
         }
