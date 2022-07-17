@@ -28,7 +28,6 @@ public class TestUtils extends Mod{
     public TestUtils(){
         if(!headless){
             if(mobile){
-                settings.put("console", true); //Dev mode
                 loadLogger();
             }
             experimental = true; //Also dev mode
@@ -110,6 +109,8 @@ public class TestUtils extends Mod{
 
             if(OS.username.equals("MEEP")) t.checkPref("tu-mobile-test", false);
         });
+
+        ui.settings.game.checkPref("console", true); //Dev Mode
     }
 
     public static boolean disableCampaign(){
