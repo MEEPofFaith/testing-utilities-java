@@ -27,11 +27,15 @@ public class TestUtils extends Mod{
 
     public TestUtils(){
         if(!headless){
-            experimental = true; //Dev mode
+            if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
+
+            if(mobile){
+                loadLogger();
+            }
+
+            experimental = true; //Also dev mode
             renderer.minZoom = 0.667f; //Zoom out farther
             renderer.maxZoom = 24f; //Get a closer look at yourself
-
-            if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
 
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
@@ -106,6 +110,8 @@ public class TestUtils extends Mod{
 
             if(OS.username.equals("MEEP")) t.checkPref("tu-mobile-test", false);
         });
+
+        ui.settings.game.checkPref("console", true); //Dev Mode
     }
 
     public static boolean disableCampaign(){

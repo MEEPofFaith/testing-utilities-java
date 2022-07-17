@@ -12,14 +12,36 @@ import testing.util.*;
 public class Console{
     static boolean shown;
 
-    public static Cell<ImageButton> addButton(Table t){
-        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.terminal), TUStyles.tuRedImageStyle, () -> {
+    public static Cell<ImageButton> addToggleButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.eye), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             shown = !shown;
-            Vars.ui.consolefrag.toggle();
+            Vars.ui.consolefrag.visible(() -> shown);
         });
 
         ImageButton b = i.get();
-        TUElements.boxTooltip(b, "@tu-tooltip.button-console");
+        TUElements.boxTooltip(b, "@tu-tooltip.button-console-show");
+        b.setDisabled(TestUtils::disableCampaign);
+        b.resizeImage(40f);
+
+        return i;
+    }
+    
+    public static Cell<ImageButton> addRefreshButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.trash), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.clearMessages());
+
+        ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-console-clear");
+        b.setDisabled(TestUtils::disableCampaign);
+        b.resizeImage(40f);
+
+        return i;
+    }
+    
+    public static Cell<ImageButton> addTerminalButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.terminal), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.toggle());
+
+        ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-console-input");
         b.setDisabled(TestUtils::disableCampaign);
         b.resizeImage(40f);
 
@@ -27,8 +49,10 @@ public class Console{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> addButton(t).size(TUVars.iconSize, 40f));
-
-        Vars.ui.consolefrag.visible(() -> shown);
+        table.table(Tex.pane, t -> {
+            addToggleButton(t).size(TUVars.iconSize, 40f);
+            addRefreshButton(t).size(TUVars.iconSize, 40f);
+            addTerminalButton(t).size(TUVars.iconSize, 40f);
+        });
     }
 }
