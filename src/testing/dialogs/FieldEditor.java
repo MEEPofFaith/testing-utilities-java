@@ -1,6 +1,5 @@
 package testing.dialogs;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.*;
@@ -17,14 +16,10 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.Content.*;
 import mindustry.ctype.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
-import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.legacy.*;
 import mindustry.world.meta.*;
@@ -37,7 +32,7 @@ import static mindustry.Vars.*;
 
 public class FieldEditor extends BaseDialog{
     static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class);
-    static Seq<String> skipFieldNames = Seq.with("name", "iconId", "outineColor");
+    static Seq<String> skipFieldNames = Seq.with("name", "iconId", "outineColor", "outputItem", "outputLiquid");
     static TextField search;
     static Table selection = new Table(), fields = new Table();
     static ContentType selectedType = ContentType.block;
@@ -218,14 +213,14 @@ public class FieldEditor extends BaseDialog{
             });
         }else if(type == TextureRegion.class){
             TextureRegion[] out = {Reflect.get(content, field)};
-            if(out[0] == null) out[0] = Core.atlas.find("error");
+            if(out[0] == null) out[0] = atlas.find("error");
             table.image(() -> out[0]).padRight(4).size(50f).scaling(Scaling.fit).visible(() -> out[0].found());
             table.field(out[0].found() && out[0] instanceof AtlasRegion ? ((AtlasRegion)out[0]).name : "", res -> {
                 if(!res.isEmpty()){
-                    out[0] = Core.atlas.find(res);
+                    out[0] = atlas.find(res);
                     Reflect.set(content, field, out[0]);
                 }
-            }).valid(t -> Core.atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
+            }).valid(t -> atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
         }else if(UnlockableContent.class.isAssignableFrom(type)){
             UnlockableContent[] c = {Reflect.get(content, field)};
             ContentType cType = getType(type);
@@ -239,17 +234,134 @@ public class FieldEditor extends BaseDialog{
                     Reflect.set(content, field, null);
                 }
             }).valid(t -> Vars.content.getByName(cType, t) != null || t.isEmpty()).size(250f, height).padLeft(4f);
-        }else if(BulletType.class.isAssignableFrom(type)){
-            BulletType b = Reflect.get(content, field);
-            if(b != null){
+        }else if(type.isArray()){
+            Class<?> arrType = type.getComponentType();
+            Object arr = Reflect.get(content, field);
+            if(arr != null){
                 TreeElement tree = new TreeElement();
-                tree.add(new TreeElementNode(new Label("edit")).children(bp -> {
-                    Table bt = new Table();
+                tree.add(new TreeElementNode(new Label("edit")).children(ap -> {
+                    Table at = new Table();
+                    TreeElement terms = new TreeElement();
+
+                    int len = Array.getLength(arr);
+                    for(int i = 0; i < len; i++){
+                        int ii = i;
+                        terms.add(new TreeElementNode(new Label(i + "")).children(tp -> {
+                            Table tt = new Table();
+
+                            arrayTermEditor(arr, ii, arrType, tt);
+
+                            tp.get(new TreeElementNode(tt).hoverable(false));
+                        }));
+                    }
+                    at.add(terms);
+
+                    ap.get(new TreeElementNode(at).hoverable(false));
+                }));
+                table.add(tree);
+            }
+        }else if(Object.class.isAssignableFrom(type)){
+            Object o = Reflect.get(content, field);
+            if(o != null){
+                TreeElement tree = new TreeElement();
+                tree.add(new TreeElementNode(new Label("edit")).children(op -> {
+                    Table ot = new Table();
 
                     for(Field f : type.getFields()){
-                        addField(b, bt, f);
+                        addField(o, ot, f);
                     }
-                    bp.get(new TreeElementNode(bt).hoverable(false));
+                    op.get(new TreeElementNode(ot).hoverable(false));
+                }));
+
+                table.add(tree);
+            }else{
+                table.add("cannot edit");
+            }
+        }
+    }
+
+    /**
+     * Makes an editor similar to makeFieldEditor for a term in an array.
+     * TODO: THERE HAS TO BE A WAY TO DO THIS WITHOUT COPY/PASTING THE ENTIRETY OF makeFieldEditor
+     */
+    void arrayTermEditor(Object array, int index, Class<?> type, Table table){
+        if(type == int.class){
+            table.field(Array.getInt(array, index) + "", out -> {
+                if(Strings.canParseInt(out)){
+                    Array.setInt(array, index, Strings.parseInt(out));
+                }
+            }).size(250f, height).valid(Strings::canParseInt);
+        }else if(type == float.class){
+            table.field(Array.getFloat(array, index) + "", out -> {
+                if(Strings.canParseFloat(out)){
+                    Array.setFloat(array, index, Strings.parseFloat(out));
+                }
+            }).size(250f, height).valid(Strings::canParseFloat);
+        }else if(type == String.class){
+            table.field((String)Array.get(array, index), out -> Array.set(array, index, out)).size(250f, height);
+        }else if(type == boolean.class){
+            table.check("", Array.getBoolean(array, index), val -> Array.setBoolean(array, index, val)).left();
+        }else if(type == Color.class){
+            Color out = (Color)Array.get(array, index);
+            if(out == null) return;
+            table.table(Tex.pane, in -> {
+                in.stack(new Image(Tex.alphaBg), new Image(Tex.whiteui){{
+                    update(() -> setColor(out));
+                }}).grow();
+            }).margin(4).size(height).padRight(10).get().tapped(() -> {
+                ui.picker.show(out, out::set);
+            });
+        }else if(type == TextureRegion.class){
+            TextureRegion[] out = {(TextureRegion)Array.get(array, index)};
+            if(out[0] == null) out[0] = atlas.find("error");
+            table.image(() -> out[0]).padRight(4).size(50f).scaling(Scaling.fit).visible(() -> out[0].found());
+            table.field(out[0].found() && out[0] instanceof AtlasRegion ? ((AtlasRegion)out[0]).name : "", res -> {
+                if(!res.isEmpty()){
+                    out[0] = atlas.find(res);
+                    Array.set(array, index, out[0]);
+                }
+            }).valid(t -> atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
+        }else if(UnlockableContent.class.isAssignableFrom(type)){
+            UnlockableContent[] c = {(UnlockableContent)Array.get(array, index)};
+            ContentType cType = getType(type);
+            table.image(() -> c[0] != null ? c[0].uiIcon : new TextureRegion(Icon.none.getRegion())).padRight(4).size(50f).scaling(Scaling.fit);
+            table.field(c[0] != null ? c[0].name : "", res -> {
+                if(!res.isEmpty()){
+                    c[0] = Vars.content.getByName(cType, res);
+                    Array.set(array, index, c[0]);
+                }else{
+                    c[0] = null;
+                    Array.set(array, index, null);
+                }
+            }).valid(t -> Vars.content.getByName(cType, t) != null || t.isEmpty()).size(250f, height).padLeft(4f);
+        }else if(type.isArray()){ //ARRAYCEPTION
+            Class<?> arrType = type.getComponentType();
+            Object arr = Array.get(array, index);
+            if(arr != null){
+                TreeElement tree = new TreeElement();
+                int len = Array.getLength(arr);
+                for(int i = 0; i < len; i++){
+                    int ii = i;
+                    tree.add(new TreeElementNode(new Label(i + "")).children(ap -> {
+                        Table at = new Table();
+
+                        arrayTermEditor(arr, ii, arrType, at);
+
+                        ap.get(new TreeElementNode(at).hoverable(false));
+                    }));
+                }
+            }
+        }else if(Object.class.isAssignableFrom(type)){
+            Object o = Array.get(array, index);
+            if(o != null){
+                TreeElement tree = new TreeElement();
+                tree.add(new TreeElementNode(new Label("edit")).children(op -> {
+                    Table ot = new Table();
+
+                    for(Field f : type.getFields()){
+                        addField(o, ot, f);
+                    }
+                    op.get(new TreeElementNode(ot).hoverable(false));
                 }));
 
                 table.add(tree);
