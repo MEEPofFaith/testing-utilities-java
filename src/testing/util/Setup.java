@@ -68,8 +68,10 @@ public class Setup{
         TeamChanger.add(team);
         add(team);
 
-        Fields.add(fields);
-        add(fields);
+        if(Core.settings.getBool("tu-field-editor")){
+            Fields.add(fields);
+            add(fields);
+        }
 
         Statuses.add(status);
         add(status);
