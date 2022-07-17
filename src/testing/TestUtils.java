@@ -27,14 +27,15 @@ public class TestUtils extends Mod{
 
     public TestUtils(){
         if(!headless){
+            if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
+
             if(mobile){
                 loadLogger();
             }
+
             experimental = true; //Also dev mode
             renderer.minZoom = 0.667f; //Zoom out farther
             renderer.maxZoom = 24f; //Get a closer look at yourself
-
-            if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
 
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
