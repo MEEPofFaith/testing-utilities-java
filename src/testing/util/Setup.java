@@ -22,7 +22,9 @@ public class Setup{
     sandbox = newTable(),
     status = newTable(),
     units = newTable(),
-    console = newTable();
+    console = newTable(),
+
+    interp = newTable();
 
     public static Table newTable(){
         return new Table().bottom().left();
@@ -54,6 +56,9 @@ public class Setup{
             Console.add(console);
             add(console);
         }
+
+        Interp.add(interp);
+        add(interp);
 
         Spawn.add(units);
         add(units);
