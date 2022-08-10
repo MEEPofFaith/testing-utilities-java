@@ -15,6 +15,7 @@ public class Setup{
     static boolean selfInit;
 
     static Table buttons = newTable(), temp;
+    static int rows = 3;
 
     public static Table
     team = newTable(),
@@ -30,12 +31,13 @@ public class Setup{
         return new Table().bottom().left();
     }
 
-    public static void row(boolean bottom){
+    public static void row(){
         buttons.row();
         buttons.table(t -> {
-            if(!bottom) t.defaults().padBottom(-4);
+            if(rows > 1) t.defaults().padBottom(-4);
             temp = t;
         }).left();
+        rows--;
     }
 
     public static void add(Table table){
@@ -50,12 +52,15 @@ public class Setup{
         buttons.setOrigin(Align.bottomLeft);
 
         //First row
-        row(false);
+        row();
 
         if(Vars.mobile && Core.settings.getBool("console")){
             Console.add(console);
             add(console);
         }
+
+        //Second row
+        row();
 
         Interp.add(interp);
         add(interp);
@@ -66,8 +71,8 @@ public class Setup{
         Sandbox.add(sandbox);
         add(sandbox);
 
-        //Second row
-        row(true);
+        //Third row
+        row();
 
         TeamChanger.add(team);
         add(team);

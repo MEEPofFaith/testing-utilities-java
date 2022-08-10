@@ -49,7 +49,7 @@ public class Console{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> {
+        table.table(Tex.buttonEdge3, t -> {
             addToggleButton(t).size(TUVars.iconSize, 40f);
             addRefreshButton(t).size(TUVars.iconSize, 40f);
             addTerminalButton(t).size(TUVars.iconSize, 40f);
