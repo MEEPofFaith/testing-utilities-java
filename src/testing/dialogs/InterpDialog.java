@@ -23,7 +23,7 @@ public class InterpDialog extends BaseDialog{
     int bounceB = 4;
 
     public InterpDialog(){
-        super("interp-dialog");
+        super("@tu-interp-menu.name");
 
         cont.add(graph = new InterpGraph()).grow();
         cont.row();
@@ -133,7 +133,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(powP));
                         inputInterp();
                     },
-                    "power", "@tu-tooltip.interp-power"
+                    "power", null
                 );
             }
             case 4, 5, 6 -> { //Exp
@@ -148,7 +148,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(expV));
                         inputInterp();
                     },
-                    "value", "@tu-tooltip.interp-value"
+                    "value", null
                 );
                 TUElements.sliderSet(
                     configTable, text -> {
@@ -161,7 +161,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(expP));
                         inputInterp();
                     },
-                    "power", "@tu-tooltip.interp-power"
+                    "power", null
                 );
             }
             case 7, 8, 9 -> { //Elastic
@@ -176,7 +176,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(elasticV));
                         inputInterp();
                     },
-                    "value", "@tu-tooltip.interp-value"
+                    "value", null
                 );
                 TUElements.sliderSet(
                     configTable, text -> {
@@ -189,7 +189,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(elasticP));
                         inputInterp();
                     },
-                    "power", "@tu-tooltip.interp-power"
+                    "power", null
                 );
                 TUElements.sliderSet(
                     configTable, text -> {
@@ -202,7 +202,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(elasticB));
                         inputInterp();
                     },
-                    "bounces", "@tu-tooltip.interp-bounces"
+                    "bounces", null
                 );
                 TUElements.sliderSet(
                     configTable, text -> {
@@ -215,7 +215,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(elasticS));
                         inputInterp();
                     },
-                    "scale", "@tu-tooltip.interp-scale"
+                    "scale", null
                 );
             }
             case 10, 11, 12 -> { //Swing
@@ -230,7 +230,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(swingS));
                         inputInterp();
                     },
-                    "scale", "@tu-tooltip.interp-scale"
+                    "scale", null
                 );
             }
             case 13, 14, 15 -> { //Bounce
@@ -245,7 +245,7 @@ public class InterpDialog extends BaseDialog{
                         f.setText(String.valueOf(bounceB));
                         inputInterp();
                     },
-                    "bounces", "@tu-tooltip.interp-bounces"
+                    "bounces", null
                 );
             }
         }
