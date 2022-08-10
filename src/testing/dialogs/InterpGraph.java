@@ -11,8 +11,7 @@ import mindustry.ui.*;
 
 public class InterpGraph extends Table{
     static final float lerpTime = 120f;
-    static final int points = 100;
-
+    int points;
     Interp oldInterp = Interp.linear;
     Interp interp = Interp.linear;
     float oldMinVal = 0f, oldMaxVal = 1f,
@@ -36,6 +35,7 @@ public class InterpGraph extends Table{
             float graphX = x + offsetX, graphW = width - offsetX;
             float baseY = y + offsetY, baseH = height - offsetY;
             float graphY = baseY + baseH * (-min / range), graphH = baseH - baseH * ((-min + (max - 1)) / range);
+            points = Mathf.round(graphW, 2) + 1;
             float spacing = graphW / (points - 1);
 
             Draw.color(Color.lightGray);
@@ -127,7 +127,8 @@ public class InterpGraph extends Table{
         interp = newInterp;
         lerp = 0;
 
-        minVal = maxVal = newInterp.apply(0f);
+        minVal = Float.MAX_VALUE;
+        maxVal = Float.MIN_VALUE;
         for(int i = 0; i < points; i++){
             float v = newInterp.apply(i / (points - 1f));
             if(v < minVal){
