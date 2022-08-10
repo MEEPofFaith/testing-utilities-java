@@ -64,12 +64,9 @@ public class UnitDialog extends BaseDialog{
             all.row();
 
             all.table(s -> {
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveInt(field.getText())){
-                            amount = Strings.parseInt(field.getText());
-                        }
-                    },
-                    () -> String.valueOf(amount), TextFieldFilter.digitsOnly,
+                TUElements.sliderSet(
+                    s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
+                    TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
                     1, maxAmount, 1, amount, (n, f) -> {
                         amount = n.intValue();
                         f.setText(String.valueOf(n));
@@ -79,12 +76,9 @@ public class UnitDialog extends BaseDialog{
                 );
                 s.row();
 
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveFloat(field.getText())){
-                            radius = Strings.parseFloat(field.getText());
-                        }
-                    },
-                    () -> String.valueOf(radius), TextFieldFilter.floatsOnly,
+                TUElements.sliderSet(
+                    s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
+                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                     minRadius, maxRadius, 1, radius, (n, f) -> {
                         radius = n;
                         f.setText(String.valueOf(n));

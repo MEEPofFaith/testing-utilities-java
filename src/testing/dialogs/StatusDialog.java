@@ -48,11 +48,9 @@ public class StatusDialog extends BaseDialog{
             all.add(selection);
             all.row();
 
-            all.collapser(s -> TUElements.sliderSet(s, field -> {
-                    if(Strings.canParsePositiveFloat(field.getText())){
-                        duration = Strings.parseFloat(field.getText());
-                    }
-                }, () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
+            all.collapser(s -> TUElements.sliderSet(
+                s, text -> duration = Strings.parseFloat(text), () -> String.valueOf(duration),
+                TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                 minDur, maxDur, 0.125f, duration, (n, f) -> {
                     duration = n;
                     f.setText(String.valueOf(n));

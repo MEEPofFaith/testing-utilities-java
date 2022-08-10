@@ -1,5 +1,6 @@
 package testing.dialogs;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -78,7 +79,12 @@ public class InterpGraph extends Table{
 
         update(() -> {
             if(lerp < 1){
-                lerp = Mathf.clamp(lerp + Time.delta / lerpTime);
+                float t = Core.settings.getInt("tu-lerp-time") / 4f * 60f;
+                if(t <= 0){
+                    lerp = 1;
+                }else{
+                    lerp = Mathf.clamp(lerp + Time.delta / t);
+                }
             }
         });
     }
