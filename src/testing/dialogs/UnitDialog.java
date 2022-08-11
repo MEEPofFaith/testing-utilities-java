@@ -121,10 +121,7 @@ public class UnitDialog extends BaseDialog{
                 TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
                 sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
 
-                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
-                    hide();
-                    waveChangeDialog.show();
-                }).expandX().get();
+                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
                 TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
                 wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
 
