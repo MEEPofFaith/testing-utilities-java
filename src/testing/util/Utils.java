@@ -3,7 +3,6 @@ package testing.util;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.content.*;
 
 import static mindustry.Vars.*;

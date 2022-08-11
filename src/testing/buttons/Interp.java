@@ -3,7 +3,6 @@ package testing.buttons;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.ui.*;
 import testing.util.*;
 

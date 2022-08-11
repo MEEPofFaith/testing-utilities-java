@@ -10,7 +10,9 @@ import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static arc.math.Interp.*;;
+import static arc.math.Interp.*;
+
+;
 
 public class InterpDialog extends BaseDialog{
     InterpGraph graph;
