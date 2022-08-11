@@ -2,6 +2,7 @@ package testing.buttons;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -40,7 +41,7 @@ public class TeamChanger{
         Button b = i.get();
         b.update(() -> {
             if(b.isPressed()){
-                tTimer += graphics.getDeltaTime() * 60f;
+                tTimer += Time.delta;
                 if(tTimer > TUVars.longPress){
                     teamDialog.show(curTeam(), TeamChanger::changeTeam);
                 }

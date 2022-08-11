@@ -30,6 +30,9 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class UnitDialog extends BaseDialog{
+
+    final int maxAmount = 100;
+    final float minRadius = 0f, maxRadius = 10f;
     TextField search;
     Table selection = new Table();
     UnitType spawnUnit = UnitTypes.dagger;
@@ -37,12 +40,8 @@ public class UnitDialog extends BaseDialog{
     Vec2 spawnPos = new Vec2();
     int amount = 1;
     float radius = 2;
-    static boolean despawns = true, initialized;
-
-    boolean expectingPos;
-
-    final int maxAmount = 100;
-    final float minRadius = 0f, maxRadius = 10f;
+    boolean initialized, despawns, expectingPos;
+    float cTimer;
 
     public UnitDialog(){
         super("@tu-unit-menu.name");
@@ -120,6 +119,33 @@ public class UnitDialog extends BaseDialog{
                 ImageButton sb = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::spawn).expandX().get();
                 TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
                 sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
+
+                ImageButton cb = b.button(TUIcons.get(Icon.units), TUStyles.centeri, TUVars.buttonSize, this::mitosis).expandX().get();
+                TUElements.boxTooltip(cb, "@tu-tooltip.unit-clone");
+                cb.label(() -> "@tu-unit-menu.clone").padLeft(6).expandX();
+                cb.setDisabled(() -> player.unit() == null || player.unit().type.internal);
+                Stack clone = new Stack();
+                Image unit = new Image(), plus = new Image(TUIcons.clone);
+                unit.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
+                cb.update(() -> {
+                    if(cb.isPressed()){
+                        cTimer += Time.delta;
+                        if(cTimer > TUVars.longPress){
+                            mitosis();
+                        }
+                    }else{
+                        cTimer = 0f;
+                    }
+
+                    if(state.isGame()){
+                        Unit u = player.unit();
+                        unit.setDrawable(u != null ? u.type.uiIcon : Icon.units.getRegion());
+                        clone.clearChildren();
+                        clone.add(unit);
+                        clone.add(plus);
+                        cb.replaceImage(clone);
+                    }
+                });
 
                 ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
                 TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
@@ -246,6 +272,20 @@ public class UnitDialog extends BaseDialog{
                 Fx.unitControl.at(u, true);
             }
             hide();
+        }
+    }
+
+    void mitosis(){
+        if(Utils.noCheat()){
+            if(net.client()){
+                Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+            }else{
+                Unit u = player.unit();
+                if(u != null){
+                    u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+                    Fx.spawn.at(u);
+                }
+            }
         }
     }
 
