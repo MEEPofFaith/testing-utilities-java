@@ -36,7 +36,7 @@ public class InterpGraph extends Table{
             float graphX = x + offsetX, graphW = width - offsetX;
             float baseY = y + offsetY, baseH = height - offsetY;
             float graphY = baseY + baseH * (-min / range), graphH = baseH - baseH * ((-min + (max - 1)) / range);
-            points = Mathf.round(graphW, 2) + 1;
+            points = Mathf.round(graphW / 10, 2) + 1; //Ensure a center (0.5) point
             float spacing = graphW / (points - 1);
 
             Draw.color(Color.lightGray);
