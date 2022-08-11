@@ -126,22 +126,18 @@ public class WaveChangeDialog extends BaseDialog{
     }
 
     void sendWave(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.logic.runWave()");
-            }else{
-                logic.runWave();
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.logic.runWave()");
+        }else{
+            logic.runWave();
         }
     }
 
     void setWave(int wave){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.state.wave = " + wave);
-            }else{
-                state.wave = wave;
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.state.wave = " + wave);
+        }else{
+            state.wave = wave;
         }
     }
 }

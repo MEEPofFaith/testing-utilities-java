@@ -119,32 +119,26 @@ public class WeatherDialog extends BaseDialog{
     }
 
     void createWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
-            }else{
-                weather.create(intensity / 100f, duration * 60f);
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
+        }else{
+            weather.create(intensity / 100f, duration * 60f);
         }
     }
 
     void removeWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
-            }else{
-                Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
-            }
+        if(net.client()){
+            Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
+        }else{
+            Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
         }
     }
 
     void clearWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Groups.weather.each(w=>w.remove())");
-            }else{
-                Groups.weather.each(WeatherState::remove);
-            }
+        if(net.client()){
+            Utils.runCommand("Groups.weather.each(w=>w.remove())");
+        }else{
+            Groups.weather.each(WeatherState::remove);
         }
     }
 }

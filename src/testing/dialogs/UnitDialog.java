@@ -241,50 +241,44 @@ public class UnitDialog extends BaseDialog{
     }
 
     void spawn(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
-                Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
-            }else{
-                for(int i = 0; i < amount; i++){
-                    float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-                    Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                    spawnUnit.spawn(spawnTeam, Tmp.v1);
-                }
+        if(net.client()){
+            Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
+            Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
+        }else{
+            for(int i = 0; i < amount; i++){
+                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
+                spawnUnit.spawn(spawnTeam, Tmp.v1);
             }
         }
     }
 
     void transform(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayer(
-                    "let spawned = Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p.x, p.y);" +
-                    "Call.unitControl(p, spawned);"
-                );
-                if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
-            }else if(player.unit() != null){
-                Unit u = spawnUnit.spawn(player.team(), player);
-                float rot = player.unit().rotation;
-                u.controller(player);
-                u.rotation(rot);
-                u.spawnedByCore(despawns);
-                Fx.unitControl.at(u, true);
-            }
-            hide();
+        if(net.client()){
+            Utils.runCommandPlayer(
+                "let spawned = Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p.x, p.y);" +
+                "Call.unitControl(p, spawned);"
+            );
+            if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
+        }else if(player.unit() != null){
+            Unit u = spawnUnit.spawn(player.team(), player);
+            float rot = player.unit().rotation;
+            u.controller(player);
+            u.rotation(rot);
+            u.spawnedByCore(despawns);
+            Fx.unitControl.at(u, true);
         }
+        hide();
     }
 
     void mitosis(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
-            }else{
-                Unit u = player.unit();
-                if(u != null){
-                    u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
-                    Fx.spawn.at(u);
-                }
+        if(net.client()){
+            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+        }else{
+            Unit u = player.unit();
+            if(u != null){
+                u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+                Fx.spawn.at(u);
             }
         }
     }

@@ -132,22 +132,18 @@ public class StatusDialog extends BaseDialog{
     }
 
     void apply(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
-            }else if(player.unit() != null){
-                player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
-            }
+        if(net.client()){
+            Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+        }else if(player.unit() != null){
+            player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
     }
 
     void clearStatus(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayerFast(".unit().clearStatuses();");
-            }else if(player.unit() != null){
-                player.unit().clearStatuses();
-            }
+        if(net.client()){
+            Utils.runCommandPlayerFast(".unit().clearStatuses();");
+        }else if(player.unit() != null){
+            player.unit().clearStatuses();
         }
     }
 

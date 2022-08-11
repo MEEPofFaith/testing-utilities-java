@@ -19,12 +19,10 @@ public class TeamChanger{
     static float tTimer;
 
     public static void changeTeam(Team team){
-        if(Utils.noCheat()){
-            if(Vars.net.client()){
-                Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
-            }else{
-                player.team(team);
-            }
+        if(Vars.net.client()){
+            Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
+        }else{
+            player.team(team);
         }
     }
 
