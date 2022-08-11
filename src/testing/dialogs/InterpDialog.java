@@ -1,9 +1,11 @@
 package testing.dialogs;
 
 import arc.math.*;
+import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
@@ -27,8 +29,9 @@ public class InterpDialog extends BaseDialog{
 
         cont.add(graph = new InterpGraph()).grow();
         cont.row();
-        cont.table(b -> {
-            b.defaults().size(140f, 60f);
+        ScrollPane pane = cont.pane(Styles.horizontalPane, p -> {
+            p.table(b -> {
+                b.defaults().size(140f, 60f);
 
             /* Button layout (Wow... that's a lot of different interps)
                 Linear    Pow         Sine      Exp      Circle      Elastic      Swing      Bounce
@@ -36,77 +39,80 @@ public class InterpDialog extends BaseDialog{
                 Slope     PowOut      SineOut   ExpOut   CircleOut   ElasticOut   SwingOut   BounceOut
              */
 
-            b.button("linear", () -> {
-                graph.setInterp(linear);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("pow", () -> setConfigType(1));
-            b.button("sine", () -> {
-                graph.setInterp(sine);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("exp", () -> setConfigType(4));
-            b.button("circle", () -> {
-                graph.setInterp(circle);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("elastic", () -> setConfigType(7));
-            b.button("swing", () -> setConfigType(10));
-            b.button("bounce", () -> setConfigType(13));
+                b.button("linear", () -> {
+                    graph.setInterp(linear);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("pow", () -> setConfigType(1));
+                b.button("sine", () -> {
+                    graph.setInterp(sine);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("exp", () -> setConfigType(4));
+                b.button("circle", () -> {
+                    graph.setInterp(circle);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("elastic", () -> setConfigType(7));
+                b.button("swing", () -> setConfigType(10));
+                b.button("bounce", () -> setConfigType(13));
 
-            b.row();
+                b.row();
 
-            b.button("reverse", () -> {
-                graph.setInterp(reverse);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("powIn", () -> setConfigType(2));
-            b.button("sineIn", () -> {
-                graph.setInterp(sineIn);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("expIn", () -> setConfigType(5));
-            b.button("circleIn", () -> {
-                graph.setInterp(circleIn);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("elasticIn", () -> setConfigType(8));
-            b.button("swingIn", () -> setConfigType(11));
-            b.button("bounceIn", () -> setConfigType(14));
+                b.button("reverse", () -> {
+                    graph.setInterp(reverse);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("powIn", () -> setConfigType(2));
+                b.button("sineIn", () -> {
+                    graph.setInterp(sineIn);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("expIn", () -> setConfigType(5));
+                b.button("circleIn", () -> {
+                    graph.setInterp(circleIn);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("elasticIn", () -> setConfigType(8));
+                b.button("swingIn", () -> setConfigType(11));
+                b.button("bounceIn", () -> setConfigType(14));
 
-            b.row();
+                b.row();
 
-            b.button("slope", () -> {
-                graph.setInterp(slope);
-                configType = 0;
-                rebuildConfig();
+                b.button("slope", () -> {
+                    graph.setInterp(slope);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("powOut", () -> setConfigType(3));
+                b.button("sineOut", () -> {
+                    graph.setInterp(sineOut);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("expOut", () -> setConfigType(6));
+                b.button("circleOut", () -> {
+                    graph.setInterp(circleOut);
+                    configType = 0;
+                    rebuildConfig();
+                });
+                b.button("elasticOut", () -> setConfigType(9));
+                b.button("swingOut", () -> setConfigType(12));
+                b.button("bounceOut", () -> setConfigType(15));
             });
-            b.button("powOut", () -> setConfigType(3));
-            b.button("sineOut", () -> {
-                graph.setInterp(sineOut);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("expOut", () -> setConfigType(6));
-            b.button("circleOut", () -> {
-                graph.setInterp(circleOut);
-                configType = 0;
-                rebuildConfig();
-            });
-            b.button("elasticOut", () -> setConfigType(9));
-            b.button("swingOut", () -> setConfigType(12));
-            b.button("bounceOut", () -> setConfigType(15));
-        });
-        cont.row();
-        cont.add(configTable = new Table()).height(TUVars.iconSize);
+            p.row();
+            p.add(configTable = new Table()).height(TUVars.iconSize).padTop(8f).padBottom(8f);
+        }).fill().padTop(8f).get();
+        pane.setScrollingDisabled(false, true);
+
         rebuildConfig();
-
+        
         addCloseButton();
     }
 
