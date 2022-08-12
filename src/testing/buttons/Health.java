@@ -16,13 +16,24 @@ public class Health{
             Utils.runCommandPlayer(
                 "p.unit().dead=false;" +
                 "p.unit().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().type.health") + ";" +
-                "p.unit().health=p.unit().maxHealth;"
+                "p.unit().health=p.unit().maxHealth;" +
+                "if(p.unit() instanceof BlockUnitUnit){" +
+                "p.unit().tile().dead=false;" +
+                "p.unit().tile().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().tile().block.health") + ";" +
+                "p.unit().maxHealth=p.unit().tile().maxHealth;" +
+                "p.unit().health=p.unit().maxHealth;}"
             );
         }else if(player.unit() != null && player.unit().type != null){
             Unit u = player.unit();
             u.dead = false;
-            u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u.type.health);
+            u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u instanceof BlockUnitUnit b ? b.tile().block.health : u.type.health);
             u.health = u.maxHealth;
+            if(u instanceof BlockUnitUnit b){
+                Building build = b.tile();
+                build.dead = false;
+                build.maxHealth(invincibility ? Float.POSITIVE_INFINITY : build.block.health);
+                build.health = build.maxHealth;
+            }
         }
         Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
     }
