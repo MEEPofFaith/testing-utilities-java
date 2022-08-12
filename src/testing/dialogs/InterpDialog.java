@@ -20,7 +20,7 @@ public class InterpDialog extends BaseDialog{
     //Configs
     int configType = 0;
     int powP = 2;
-    float expV = 2, expP = 10;
+    float expV = 2, expP = 5;
     float elasticV = 2, elasticP = 10, elasticS = 1;
     int elasticB = 6;
     float swingS = 1.5f;
@@ -35,29 +35,34 @@ public class InterpDialog extends BaseDialog{
             p.table(b -> {
                 b.defaults().size(140f, 60f);
 
-            /* Button layout (Wow... that's a lot of different interps)
-                Linear    Pow         Sine      Exp      Circle      Elastic      Swing      Bounce
-                Reverse   PowIn       SineIn    ExpIn    CircleIn    ElasticIn    SwingIn    BounceIn
-                Slope     PowOut      SineOut   ExpOut   CircleOut   ElasticOut   SwingOut   BounceOut
-             */
+                /* Button layout (Wow... that's a lot of different interps)
+                    Linear    Smooth     Sine      Circle      Pow      Exp      Elastic      Swing      Bounce
+                    Reverse   Smooth2    SineIn    CircleIn    PowIn    ExpIn    ElasticIn    SwingIn    BounceIn
+                    Slope     Smoother   SineOut   CircleOut   PowOut   ExpOut   ElasticOut   SwingOut   BounceOut
+                 */
 
                 b.button("linear", () -> {
                     graph.setInterp(linear);
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("pow", () -> setConfigType(1));
+                b.button("smooth", () -> {
+                    graph.setInterp(smooth);
+                    configType = 0;
+                    rebuildConfig();
+                });
                 b.button("sine", () -> {
                     graph.setInterp(sine);
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("exp", () -> setConfigType(4));
                 b.button("circle", () -> {
                     graph.setInterp(circle);
                     configType = 0;
                     rebuildConfig();
                 });
+                b.button("pow", () -> setConfigType(1));
+                b.button("exp", () -> setConfigType(4));
                 b.button("elastic", () -> setConfigType(7));
                 b.button("swing", () -> setConfigType(10));
                 b.button("bounce", () -> setConfigType(13));
@@ -69,18 +74,23 @@ public class InterpDialog extends BaseDialog{
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("powIn", () -> setConfigType(2));
+                b.button("smooth2", () -> {
+                    graph.setInterp(smooth2);
+                    configType = 0;
+                    rebuildConfig();
+                });
                 b.button("sineIn", () -> {
                     graph.setInterp(sineIn);
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("expIn", () -> setConfigType(5));
                 b.button("circleIn", () -> {
                     graph.setInterp(circleIn);
                     configType = 0;
                     rebuildConfig();
                 });
+                b.button("powIn", () -> setConfigType(2));
+                b.button("expIn", () -> setConfigType(5));
                 b.button("elasticIn", () -> setConfigType(8));
                 b.button("swingIn", () -> setConfigType(11));
                 b.button("bounceIn", () -> setConfigType(14));
@@ -92,18 +102,23 @@ public class InterpDialog extends BaseDialog{
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("powOut", () -> setConfigType(3));
+                b.button("smoother", () -> {
+                    graph.setInterp(smoother);
+                    configType = 0;
+                    rebuildConfig();
+                });
                 b.button("sineOut", () -> {
                     graph.setInterp(sineOut);
                     configType = 0;
                     rebuildConfig();
                 });
-                b.button("expOut", () -> setConfigType(6));
                 b.button("circleOut", () -> {
                     graph.setInterp(circleOut);
                     configType = 0;
                     rebuildConfig();
                 });
+                b.button("powOut", () -> setConfigType(3));
+                b.button("expOut", () -> setConfigType(6));
                 b.button("elasticOut", () -> setConfigType(9));
                 b.button("swingOut", () -> setConfigType(12));
                 b.button("bounceOut", () -> setConfigType(15));
