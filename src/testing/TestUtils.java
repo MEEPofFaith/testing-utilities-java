@@ -3,7 +3,9 @@ package testing;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.utils.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -101,14 +103,15 @@ public class TestUtils extends Mod{
 
     void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.tu-title"), "test-utils-settings-icon", t -> {
-            t.pref(new TeamSetting("tu-default-team"));
+            t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-despawns", true);
             t.checkPref("tu-permanent", false);
             t.checkPref("tu-show-hidden", false);
             t.checkPref("tu-fill-all", false);
-            t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
-            t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.pref(new TeamSetting("tu-default-team"));
+            t.pref(new ButtonSetting("tu-interp", TUIcons.get(Icon.line), () -> interpDialog.show()));
 
             if(OS.username.equals("MEEP")) t.checkPref("tu-mobile-test", false);
         });
@@ -120,22 +123,44 @@ public class TestUtils extends Mod{
         return state.isCampaign() && !OS.username.equals("MEEP");
     }
 
-    static class TeamSetting extends Setting{
-        public TeamSetting(String name){
+    /** Not a setting, but rather a button in the settings menu. */
+    static class ButtonSetting extends Setting{
+        Drawable icon;
+        Runnable listener;
+
+        public ButtonSetting(String name, Drawable icon, Runnable listener){
             super(name);
-            title = "setting." + name + ".name";
+            this.icon = icon;
+            this.listener = listener;
         }
 
         @Override
         public void add(SettingsTable table){
-            ImageButton b = table.button(Icon.defense, () -> teamDialog.show(getTeam(), team -> settings.put("tu-default-team", team.id))).get();
-            b.label(() -> bundle.format(title, "[#" + getTeam().color + "]" + teamDialog.teamName(getTeam()) + "[]")).padLeft(6).growX();
+            ImageButton b = Elem.newImageButton(icon, listener);
+            b.resizeImage(TUVars.buttonSize);
+            b.label(() -> title).padLeft(6).growX();
+            b.left();
+
+            addDesc(table.add(b).left().padTop(3f).get());
+            table.row();
+        }
+    }
+
+    static class TeamSetting extends Setting{
+        public TeamSetting(String name){
+            super(name);
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            ImageButton b = table.button(TUIcons.get(Icon.defense), TUVars.buttonSize, () -> teamDialog.show(getTeam(), team -> settings.put("tu-default-team", team.id))).left().padTop(3f).get();
+            b.label(() -> bundle.format("setting." + name + ".name", "[#" + getTeam().color + "]" + teamDialog.teamName(getTeam()) + "[]")).padLeft(6).growX();
             table.row();
 
             addDesc(b);
         }
 
-        public static Team getTeam(){
+        public Team getTeam(){
             return Team.get(settings.getInt("tu-default-team", Team.sharded.id));
         }
     }
