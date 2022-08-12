@@ -1,14 +1,19 @@
 package testing.dialogs;
 
+import arc.*;
 import arc.math.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextButton.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
+
+import java.util.*;
 
 import static arc.math.Interp.*;
 
@@ -25,6 +30,7 @@ public class InterpDialog extends BaseDialog{
     int elasticB = 6;
     float swingS = 1.5f;
     int bounceB = 4;
+    String lastPressed = "linear";
 
     public InterpDialog(){
         super("@tu-interp-menu.name");
@@ -40,6 +46,12 @@ public class InterpDialog extends BaseDialog{
                     Reverse   Smooth2    SineIn    CircleIn    PowIn    ExpIn    ElasticIn    SwingIn    BounceIn
                     Slope     Smoother   SineOut   CircleOut   PowOut   ExpOut   ElasticOut   SwingOut   BounceOut
                  */
+
+                TextButtonStyle style = Styles.togglet;
+                style.checked = Tex.buttonOver;
+
+                TextButtonStyle oldStyle = Core.scene.getStyle(TextButtonStyle.class);
+                Core.scene.addStyle(TextButtonStyle.class, style);
 
                 b.button("linear", () -> {
                     graph.setInterp(linear);
@@ -122,6 +134,18 @@ public class InterpDialog extends BaseDialog{
                 b.button("elasticOut", () -> setConfigType(9));
                 b.button("swingOut", () -> setConfigType(12));
                 b.button("bounceOut", () -> setConfigType(15));
+
+                //ButtonGroup<TextButton> group = new ButtonGroup<>();
+
+                b.getChildren().each(c -> {
+                    if(c instanceof TextButton t){
+                        Log.info(t.getText());
+                        //group.add(t);
+                        setupButton(t);
+                    }
+                });
+
+                Core.scene.addStyle(TextButtonStyle.class, oldStyle);
             });
             p.row();
             p.add(configTable = new Table()).height(TUVars.iconSize).padTop(8f).padBottom(8f);
@@ -131,6 +155,11 @@ public class InterpDialog extends BaseDialog{
         rebuildConfig();
         
         addCloseButton();
+    }
+
+    void setupButton(TextButton t){
+        t.clicked(() -> lastPressed = t.getText().toString());
+        t.update(() -> t.setChecked(Objects.equals(lastPressed, t.getText().toString())));
     }
 
     void setConfigType(int type){
