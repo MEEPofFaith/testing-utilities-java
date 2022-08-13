@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.scene.utils.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
@@ -103,17 +104,22 @@ public class TestUtils extends Mod{
 
     void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.tu-title"), "test-utils-settings-icon", t -> {
+            t.pref(new Banner("test-utils-settings-banner", -1));
             t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
-            t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-despawns", true);
             t.checkPref("tu-permanent", false);
             t.checkPref("tu-show-hidden", false);
             t.checkPref("tu-fill-all", false);
             t.pref(new TeamSetting("tu-default-team"));
+            t.pref(new Separator(8));
             t.pref(new ButtonSetting("tu-interp", TUIcons.get(Icon.line), () -> interpDialog.show()));
+            t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
 
-            if(OS.username.equals("MEEP")) t.checkPref("tu-mobile-test", false);
+            if(OS.username.equals("MEEP")){
+                t.pref(new Separator(8));
+                t.checkPref("tu-mobile-test", false);
+            }
         });
 
         ui.settings.game.checkPref("console", true); //Dev Mode
@@ -121,6 +127,46 @@ public class TestUtils extends Mod{
 
     public static boolean disableCampaign(){
         return state.isCampaign() && !OS.username.equals("MEEP");
+    }
+
+    /** Not a setting, but rather adds an image to the settings menu. */
+    static class Banner extends Setting{
+        float width;
+
+        public Banner(String name, float width){
+            super(name);
+            this.width = width;
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            Image i = new Image(new TextureRegionDrawable(atlas.find(name)), Scaling.fit);
+            Cell<Image> ci = table.add(i).padTop(3f);
+
+            if(width > 0){
+                ci.width(width);
+            }else{
+                ci.grow();
+            }
+
+            table.row();
+        }
+    }
+
+    /** Not a setting, but rather a space between settings. */
+    static class Separator extends Setting{
+        float height;
+
+        public Separator(float height){
+            super("");
+            this.height = height;
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            table.image(Tex.clear).height(height).padTop(3f);
+            table.row();
+        }
     }
 
     /** Not a setting, but rather a button in the settings menu. */

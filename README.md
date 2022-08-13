@@ -1,4 +1,4 @@
-![Logo](images/TestUtils.png)
+![Logo](assets/sprites/settings-banner.png)
 
 [![Commit Compiling](https://github.com/MEEPofFaith/testing-utilities-java/workflows/Commit%20Testing/badge.svg)](https://github.com/MEEPofFaith/testing-utilities-java/actions/workflows/commitTest.yml)
 [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=ffd37f&label=Mindustry)](https://discord.com/invite/mindustry)
