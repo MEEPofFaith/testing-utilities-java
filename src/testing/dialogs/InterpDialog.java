@@ -17,8 +17,6 @@ import java.util.*;
 
 import static arc.math.Interp.*;
 
-;
-
 public class InterpDialog extends BaseDialog{
     InterpGraph graph;
     Table configTable;
@@ -136,10 +134,8 @@ public class InterpDialog extends BaseDialog{
                 b.button("bounceOut", () -> setConfigType(15));
 
                 //ButtonGroup<TextButton> group = new ButtonGroup<>();
-
                 b.getChildren().each(c -> {
                     if(c instanceof TextButton t){
-                        Log.info(t.getText());
                         //group.add(t);
                         setupButton(t);
                     }
