@@ -4,9 +4,11 @@ import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import testing.*;
 import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
@@ -15,21 +17,25 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Death{
-    static float sTimer;
+    static float sTimer, cTimer;
 
-    static Stack kill = new Stack();
-    static Image unit = new Image(), knife = new Image();
+    static Stack kill = new Stack(), dupe = new Stack();
+    static Image unit1 = new Image(), unit2 = new Image(), knife = new Image(), plus = new Image();
 
     public static void init(){
         knife.setDrawable(TUIcons.seppuku);
+        plus.setDrawable(TUIcons.clone);
 
-        unit.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
+        unit1.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
+        unit2.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
         knife.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
+        plus.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
 
         Events.run(Trigger.update, () -> {
             if(state.isGame()){
                 Unit u = player.unit();
-                unit.setDrawable(u != null ? u.type.uiIcon : Icon.units.getRegion());
+                unit1.setDrawable(u != null ? u.type.uiIcon : Icon.units.getRegion());
+                unit2.setDrawable(u != null ? u.type.uiIcon : Icon.units.getRegion());
             }
         });
     }
@@ -62,6 +68,18 @@ public class Death{
         }
     }
 
+    public static void mitosis(){
+        if(net.client()){
+            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+        }else{
+            Unit u = player.unit();
+            if(u != null){
+                u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+                Fx.spawn.at(u);
+            }
+        }
+    }
+
     public static Cell<ImageButton> seppuku(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
             if(sTimer > TUVars.longPress) return;
@@ -82,7 +100,7 @@ public class Death{
             }
 
             kill.clearChildren();
-            kill.add(unit);
+            kill.add(unit1);
             kill.add(knife);
             b.replaceImage(kill);
             b.resizeImage(40f);
@@ -92,8 +110,40 @@ public class Death{
         return i;
     }
 
+    public static Cell<ImageButton> clone(Table t){
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
+            if(cTimer > TUVars.longPress) return;
+            mitosis();
+        }).growX();
+
+        ImageButton b = i.get();
+        TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
+        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
+        b.update(() -> {
+            if(b.isPressed()){
+                cTimer += Time.delta;
+                if(cTimer > TUVars.longPress){
+                    mitosis();
+                }
+            }else{
+                cTimer = 0f;
+            }
+
+            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
+
+            dupe.clearChildren();
+            dupe.add(unit2);
+            dupe.add(plus);
+            b.replaceImage(dupe);
+            b.resizeImage(40f);
+        });
+
+        return i;
+    }
+
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
+            clone(t).size(TUVars.iconSize, 40);
             seppuku(t).size(TUVars.iconSize, 40);
         });
     }
