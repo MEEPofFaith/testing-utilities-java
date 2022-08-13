@@ -87,14 +87,13 @@ public class Sandbox{
     }
 
     public static Cell<ImageButton> filling(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
             if(!swap) coreItems();
         }).color(TUVars.curTeam.color).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 timer += graphics.getDeltaTime() * 60;
@@ -116,8 +115,8 @@ public class Sandbox{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            toggling(t).size(TUVars.iconSize, 40);
-            filling(t).size(TUVars.iconSize, 40);
+            toggling(t).size(TUVars.iconSize, TUVars.buttonSize);
+            filling(t).size(TUVars.iconSize, TUVars.buttonSize);
         });
     }
 }

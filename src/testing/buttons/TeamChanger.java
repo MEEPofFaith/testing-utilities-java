@@ -33,7 +33,7 @@ public class TeamChanger{
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;
             changeTeam(getNextTeam());
-        }).size(40).color(curTeam().color);
+        }).size(TUVars.buttonSize).color(curTeam().color);
 
         Button b = i.get();
         b.update(() -> {

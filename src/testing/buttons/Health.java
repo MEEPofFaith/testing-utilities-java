@@ -41,7 +41,7 @@ public class Health{
     }
 
     public static Cell<ImageButton> healing(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
             heal(false);
         }).growX();
 
@@ -49,7 +49,6 @@ public class Health{
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
         b.setDisabled(TestUtils::disableCampaign);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
-        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
@@ -58,7 +57,7 @@ public class Health{
     }
 
     public static Cell<ImageButton> invincibility(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
             heal(true);
         }).growX();
 
@@ -66,7 +65,6 @@ public class Health{
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
         b.setDisabled(TestUtils::disableCampaign);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
-        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });

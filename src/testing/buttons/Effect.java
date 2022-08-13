@@ -16,7 +16,6 @@ public class Effect{
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);
         });
@@ -36,8 +35,8 @@ public class Effect{
 
     public static void add(Table table){
         table.table(Tex.pane, t -> {
-            statusButton(t).size(TUVars.iconSize, 40f);
-            weatherButton(t).size(TUVars.iconSize, 40f);
+            statusButton(t).size(TUVars.iconSize, TUVars.buttonSize);
+            weatherButton(t).size(TUVars.iconSize, TUVars.buttonSize);
         });
     }
 }

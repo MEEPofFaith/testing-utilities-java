@@ -28,8 +28,6 @@ public class Death{
 
         unit1.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
         unit2.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
-        knife.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
-        plus.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
 
         Events.run(Trigger.update, () -> {
             if(state.isGame()){
@@ -81,14 +79,14 @@ public class Death{
     }
 
     public static Cell<ImageButton> seppuku(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed()){
                 sTimer += Time.delta;
@@ -103,7 +101,6 @@ public class Death{
             kill.add(unit1);
             kill.add(knife);
             b.replaceImage(kill);
-            b.resizeImage(40f);
         });
         b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
 
@@ -111,7 +108,7 @@ public class Death{
     }
 
     public static Cell<ImageButton> clone(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
         }).growX();
@@ -135,7 +132,6 @@ public class Death{
             dupe.add(unit2);
             dupe.add(plus);
             b.replaceImage(dupe);
-            b.resizeImage(40f);
         });
 
         return i;
@@ -143,8 +139,8 @@ public class Death{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            clone(t).size(TUVars.iconSize, 40);
-            seppuku(t).size(TUVars.iconSize, 40);
+            clone(t).size(TUVars.iconSize, TUVars.buttonSize);
+            seppuku(t).size(TUVars.iconSize, TUVars.buttonSize);
         });
     }
 }

@@ -45,8 +45,8 @@ public class Spawn{
 
     public static void add(Table table){
         table.table(Tex.pane, t -> {
-            unitMenu(t).size(TUVars.iconSize, 40f);
-            blockMenu(t).size(TUVars.iconSize, 40f);
+            unitMenu(t).size(TUVars.iconSize, TUVars.buttonSize);
+            blockMenu(t).size(TUVars.iconSize, TUVars.buttonSize);
         });
     }
 }

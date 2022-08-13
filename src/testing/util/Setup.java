@@ -95,8 +95,8 @@ public class Setup{
             if(!selfInit){
                 Table healthUI = placement();
                 healthUI.row();
-                Health.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
-                Health.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
+                Health.healing(healthUI).height(TUVars.buttonSize).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
+                Health.invincibility(healthUI).height(TUVars.buttonSize).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
                 selfInit = true;
             }
         });
