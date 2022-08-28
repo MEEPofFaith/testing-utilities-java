@@ -33,7 +33,7 @@ public class TeamChanger{
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;
             changeTeam(getNextTeam());
-        }).size(TUVars.buttonSize).color(curTeam().color);
+        }).size(TUVars.iconSize).color(curTeam().color);
 
         Button b = i.get();
         b.update(() -> {
@@ -65,7 +65,7 @@ public class TeamChanger{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> addMini(t).width(100));
+        table.table(Tex.pane, t -> addMini(t).size(100, TUVars.iconSize));
     }
 
     static String teamName(){

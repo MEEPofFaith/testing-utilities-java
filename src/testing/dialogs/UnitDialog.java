@@ -90,11 +90,11 @@ public class UnitDialog extends BaseDialog{
             all.row();
 
             all.table(t -> {
-                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get();
+                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.iconSize, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get();
                 tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
                 TUElements.boxTooltip(tb, "@tu-tooltip.unit-set-team");
 
-                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
+                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.iconSize, () -> {
                     hide();
                     expectingPos = true;
                 }).get();
@@ -104,12 +104,12 @@ public class UnitDialog extends BaseDialog{
             all.row();
 
             all.table(b -> {
-                ImageButton ib = b.button(TUIcons.get(Icon.units), TUStyles.lefti, TUVars.buttonSize, this::transform).expandX().get();
+                ImageButton ib = b.button(TUIcons.get(Icon.units), TUStyles.lefti, TUVars.iconSize, this::transform).expandX().get();
                 TUElements.boxTooltip(ib, "@tu-tooltip.unit-transform");
                 ib.setDisabled(() -> player.unit().type == UnitTypes.block);
                 ib.label(() -> "@tu-unit-menu.transform").padLeft(6).expandX();
 
-                ImageButton db = b.button(TUIcons.alpha, TUStyles.toggleRighti, TUVars.buttonSize, () -> despawns = !despawns).expandX().get();
+                ImageButton db = b.button(TUIcons.alpha, TUStyles.toggleRighti, TUVars.iconSize, () -> despawns = !despawns).expandX().get();
                 TUElements.boxTooltip(db, "@tu-tooltip.unit-despawns");
                 db.update(() -> db.setChecked(despawns));
                 db.label(() -> "@tu-unit-menu.despawns").padLeft(6).expandX();
@@ -117,11 +117,11 @@ public class UnitDialog extends BaseDialog{
 
             all.row();
             all.table(b -> {
-                ImageButton sb = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::spawn).expandX().get();
+                ImageButton sb = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.iconSize, this::spawn).expandX().get();
                 TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
                 sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
 
-                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
+                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.iconSize, () -> waveChangeDialog.show()).expandX().get();
                 TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
                 wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
 

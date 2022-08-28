@@ -47,9 +47,9 @@ public class Console{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            addToggleButton(t).size(TUVars.iconSize, TUVars.buttonSize);
-            addRefreshButton(t).size(TUVars.iconSize, TUVars.buttonSize);
-            addTerminalButton(t).size(TUVars.iconSize, TUVars.buttonSize);
+            addToggleButton(t).size(TUVars.iconSize, TUVars.iconSize);
+            addRefreshButton(t).size(TUVars.iconSize, TUVars.iconSize);
+            addTerminalButton(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

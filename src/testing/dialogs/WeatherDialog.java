@@ -69,18 +69,18 @@ public class WeatherDialog extends BaseDialog{
             });
             all.row();
 
-            ImageButton wb = all.button(TUIcons.get(Icon.add), TUVars.buttonSize, this::createWeather).get();
+            ImageButton wb = all.button(TUIcons.get(Icon.add), TUVars.iconSize, this::createWeather).get();
             TUElements.boxTooltip(wb, "@tu-tooltip.weather-create");
             wb.label(() -> "@tu-weather-menu.create").padLeft(6).growX();
             wb.setDisabled(() -> intensity <= 0 || duration <= 0);
             all.row();
 
             all.table(b -> {
-                ImageButton rb = b.button(TUIcons.get(Icon.cancel), TUStyles.lefti, TUVars.buttonSize, this::removeWeather).get();
+                ImageButton rb = b.button(TUIcons.get(Icon.cancel), TUStyles.lefti, TUVars.iconSize, this::removeWeather).get();
                 TUElements.boxTooltip(rb, "@tu-tooltip.weather-remove");
                 rb.label(() -> "@tu-weather-menu.remove").padLeft(6).growX();
 
-                ImageButton cb = b.button(TUIcons.get(Icon.trash), TUStyles.righti, TUVars.buttonSize, this::clearWeather).get();
+                ImageButton cb = b.button(TUIcons.get(Icon.trash), TUStyles.righti, TUVars.iconSize, this::clearWeather).get();
                 cb.label(() -> "@tu-weather-menu.clear").padLeft(6).growX();
             });
         });

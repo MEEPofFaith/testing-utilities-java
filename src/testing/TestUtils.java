@@ -202,7 +202,7 @@ public class TestUtils extends Mod{
         @Override
         public void add(SettingsTable table){
             ImageButton b = Elem.newImageButton(icon, listener);
-            b.resizeImage(TUVars.buttonSize);
+            b.resizeImage(TUVars.iconSize);
             b.label(() -> title).padLeft(6).growX();
             b.left();
 
@@ -218,7 +218,7 @@ public class TestUtils extends Mod{
 
         @Override
         public void add(SettingsTable table){
-            ImageButton b = table.button(TUIcons.get(Icon.defense), TUVars.buttonSize, () -> teamDialog.show(getTeam(), team -> settings.put("tu-default-team", team.id))).left().padTop(3f).get();
+            ImageButton b = table.button(TUIcons.get(Icon.defense), TUVars.iconSize, () -> teamDialog.show(getTeam(), team -> settings.put("tu-default-team", team.id))).left().padTop(3f).get();
             b.label(() -> bundle.format("setting." + name + ".name", "[#" + getTeam().color + "]" + teamDialog.teamName(getTeam()) + "[]")).padLeft(6).growX();
             table.row();
 

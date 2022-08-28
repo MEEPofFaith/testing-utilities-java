@@ -35,8 +35,8 @@ public class Effect{
 
     public static void add(Table table){
         table.table(Tex.pane, t -> {
-            statusButton(t).size(TUVars.iconSize, TUVars.buttonSize);
-            weatherButton(t).size(TUVars.iconSize, TUVars.buttonSize);
+            statusButton(t).size(TUVars.iconSize, TUVars.iconSize);
+            weatherButton(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

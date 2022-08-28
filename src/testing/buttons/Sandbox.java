@@ -87,7 +87,7 @@ public class Sandbox{
     }
 
     public static Cell<ImageButton> filling(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(!swap) coreItems();
         }).color(TUVars.curTeam.color).growX();
 
@@ -115,8 +115,8 @@ public class Sandbox{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            toggling(t).size(TUVars.iconSize, TUVars.buttonSize);
-            filling(t).size(TUVars.iconSize, TUVars.buttonSize);
+            toggling(t).size(TUVars.iconSize, TUVars.iconSize);
+            filling(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

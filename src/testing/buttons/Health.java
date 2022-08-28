@@ -41,7 +41,7 @@ public class Health{
     }
 
     public static Cell<ImageButton> healing(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             heal(false);
         }).growX();
 
@@ -57,7 +57,7 @@ public class Health{
     }
 
     public static Cell<ImageButton> invincibility(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             heal(true);
         }).growX();
 

@@ -79,7 +79,7 @@ public class Death{
     }
 
     public static Cell<ImageButton> seppuku(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
         }).growX();
@@ -108,7 +108,7 @@ public class Death{
     }
 
     public static Cell<ImageButton> clone(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.buttonSize, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
         }).growX();
@@ -139,8 +139,8 @@ public class Death{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            clone(t).size(TUVars.iconSize, TUVars.buttonSize);
-            seppuku(t).size(TUVars.iconSize, TUVars.buttonSize);
+            clone(t).size(TUVars.iconSize, TUVars.iconSize);
+            seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }
