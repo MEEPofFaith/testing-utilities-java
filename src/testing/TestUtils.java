@@ -27,7 +27,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    boolean teleport;
+    boolean teleport, hasProc;
 
     public TestUtils(){
         if(!headless){
@@ -71,7 +71,14 @@ public class TestUtils extends Mod{
 
             //position drawing + sk7725/whynotteleport
             if(mobile) return;
-            Events.on(WorldLoadEvent.class, e -> Spawn.spawnHover = Spawn.blockHover = false);
+            Events.on(WorldLoadEvent.class, e -> {
+                Spawn.spawnHover = Spawn.blockHover = false;
+
+                //reset
+                hasProc = Groups.build.contains(b -> b.block.privileged);
+                renderer.minZoom = 0.667f;
+                renderer.maxZoom = 24f;
+            });
             Events.run(Trigger.draw, () -> {
                 unitDialog.drawPos();
                 blockDialog.drawPos();
@@ -79,24 +86,36 @@ public class TestUtils extends Mod{
             });
 
             Events.run(Trigger.update, () -> {
-                if(!disableCampaign() && state.isGame() && !player.unit().type.internal &&
-                    input.ctrl() && input.alt() && input.isTouched()
-                ){
-                    if(teleport) return;
-                    teleport = true;
+                if(state.isGame()){
+                    //zomm range
+                    if(hasProc){
+                        if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                            renderer.minZoom = 1.5f;
+                            renderer.maxZoom = 6f;
+                        }else{
+                            renderer.minZoom = 0.667f;
+                            renderer.maxZoom = 24f;
+                        }
+                    }
 
-                    float oldX = player.x, oldY = player.y;
+                    //sk7725/whynotteleport
+                    if(!disableCampaign() && !player.unit().type.internal && input.ctrl() && input.alt() && input.isTouched()){
+                        if(teleport) return;
+                        teleport = true;
 
-                    player.unit().set(input.mouseWorld());
-                    player.snapInterpolation();
+                        float oldX = player.x, oldY = player.y;
 
-                    TUFx.teleport.at(
-                        input.mouseWorldX(), input.mouseWorldY(),
-                        player.unit().rotation - 90f, player.team().color,
-                        new TPData(player.unit().type, oldX, oldY)
-                    );
-                }else{
-                    teleport = false;
+                        player.unit().set(input.mouseWorld());
+                        player.snapInterpolation();
+
+                        TUFx.teleport.at(
+                            input.mouseWorldX(), input.mouseWorldY(),
+                            player.unit().rotation - 90f, player.team().color,
+                            new TPData(player.unit().type, oldX, oldY)
+                        );
+                    }else{
+                        teleport = false;
+                    }
                 }
             });
         }
