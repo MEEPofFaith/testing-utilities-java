@@ -38,8 +38,6 @@ public class TestUtils extends Mod{
             }
 
             experimental = true; //Also dev mode
-            renderer.minZoom = 0.667f; //Zoom out farther
-            renderer.maxZoom = 24f; //Get a closer look at yourself
 
             Events.on(ClientLoadEvent.class, e -> {
                 TUIcons.init();
@@ -69,35 +67,40 @@ public class TestUtils extends Mod{
             }
             tu.meta.description = tools.toString();
 
-            //position drawing + sk7725/whynotteleport
-            if(mobile) return;
+            //Increase zoom range
+            renderer.minZoom = 0.667f; //Zoom out farther
+            renderer.maxZoom = 24f; //Get a closer look at yourself
             Events.on(WorldLoadEvent.class, e -> {
-                Spawn.spawnHover = Spawn.blockHover = false;
-
                 //reset
                 hasProc = Groups.build.contains(b -> b.block.privileged);
                 renderer.minZoom = 0.667f;
                 renderer.maxZoom = 24f;
+            });
+            Events.run(Trigger.update, () -> {
+                //zomm range
+                if(hasProc){
+                    if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                        renderer.minZoom = 1.5f;
+                        renderer.maxZoom = 6f;
+                    }else{
+                        renderer.minZoom = 0.667f;
+                        renderer.maxZoom = 24f;
+                    }
+                }
+            });
+
+            //position drawing + sk7725/whynotteleport
+            if(mobile) return;
+            Events.on(WorldLoadEvent.class, e -> {
+                Spawn.spawnHover = Spawn.blockHover = false;
             });
             Events.run(Trigger.draw, () -> {
                 unitDialog.drawPos();
                 blockDialog.drawPos();
                 Draw.reset();
             });
-
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
-                    //zomm range
-                    if(hasProc){
-                        if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
-                            renderer.minZoom = 1.5f;
-                            renderer.maxZoom = 6f;
-                        }else{
-                            renderer.minZoom = 0.667f;
-                            renderer.maxZoom = 24f;
-                        }
-                    }
-
                     //sk7725/whynotteleport
                     if(!disableCampaign() && !player.unit().type.internal && input.ctrl() && input.alt() && input.isTouched()){
                         if(teleport) return;
