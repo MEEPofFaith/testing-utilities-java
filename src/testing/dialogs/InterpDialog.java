@@ -144,7 +144,7 @@ public class InterpDialog extends BaseDialog{
                 Core.scene.addStyle(TextButtonStyle.class, oldStyle);
             });
             p.row();
-            p.add(configTable = new Table()).height(TUVars.iconSize).padTop(8f).padBottom(8f);
+            p.add(configTable = new Table()).height(TUVars.buttonSize).padTop(8f).padBottom(8f);
         }).fill().padTop(8f).get();
         pane.setScrollingDisabled(false, true);
 
@@ -166,7 +166,7 @@ public class InterpDialog extends BaseDialog{
 
     void rebuildConfig(){
         configTable.clear();
-        configTable.defaults().height(TUVars.iconSize);
+        configTable.defaults().height(TUVars.buttonSize);
 
         switch(configType){
             case 1, 2, 3 -> { //Pow
