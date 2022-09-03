@@ -85,8 +85,7 @@ public class Setup{
             if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
             if(!mobile) return true;
 
-            MobileInput input = (MobileInput)control.input;
-            return input.lastSchematic == null || input.selectPlans.isEmpty();
+            return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
         });
         ui.hudGroup.addChild(buttons);
         buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
