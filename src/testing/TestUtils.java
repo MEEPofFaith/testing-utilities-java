@@ -140,6 +140,7 @@ public class TestUtils extends Mod{
 
             if(OS.username.equals("MEEP")){
                 t.pref(new Separator(8));
+                t.checkPref("tu-meep-privileges", true);
                 t.checkPref("tu-mobile-test", false);
             }
         });
@@ -148,7 +149,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableCampaign(){
-        return state.isCampaign() && !OS.username.equals("MEEP");
+        return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
     }
 
     /** Not a setting, but rather adds an image to the settings menu. */
