@@ -88,7 +88,7 @@ public class Death{
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
-            if(b.isPressed()){
+            if(b.isPressed() && !b.isDisabled()){
                 sTimer += Time.delta;
                 if(sTimer > TUVars.longPress){
                     spontaniumCombustum();
@@ -117,7 +117,7 @@ public class Death{
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
         b.update(() -> {
-            if(b.isPressed()){
+            if(b.isPressed() && !b.isDisabled()){
                 cTimer += Time.delta;
                 if(cTimer > TUVars.longPress){
                     mitosis();
