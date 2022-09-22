@@ -17,7 +17,6 @@ ext{
     mindustryVersion = 'v138'
     jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-    moveFileName = ""
 }
 
 //java 8 backwards compatibility flag
@@ -40,7 +39,7 @@ task jarAndroid{
     dependsOn "jar"
 
     doLast{
-        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.");
+        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
 
         def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists()}
 
@@ -87,17 +86,13 @@ task deploy(type: Jar){
 }
 
 task moveDesktop {
-    moveFileName = "${project.archivesBaseName}Desktop.jar"
-
-    doFirst {
-        exec {
-            workingDir "$rootDir"
-            if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
-                println "Yeeting TU to the shadow realm."
-                commandLine("cmd", "/C", "move", "/Y", "build\\libs\\$moveFileName", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
-            } else {
-                println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet PM into the mods folder."
-            }
+    exec {
+        workingDir "$rootDir"
+        if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")) {
+            println "Yeeting TU to the shadow realm."
+            commandLine("cmd", "/C", "move", "/Y", "build\\libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
+        } else {
+            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet TU into the mods folder."
         }
     }
 }
