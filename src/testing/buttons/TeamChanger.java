@@ -2,6 +2,7 @@ package testing.buttons;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -10,7 +11,6 @@ import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
-import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
@@ -18,12 +18,10 @@ public class TeamChanger{
     static float tTimer;
 
     public static void changeTeam(Team team){
-        if(Utils.noCheat()){
-            if(Vars.net.client()){
-                Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
-            }else{
-                player.team(team);
-            }
+        if(Vars.net.client()){
+            Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
+        }else{
+            player.team(team);
         }
     }
 
@@ -35,12 +33,12 @@ public class TeamChanger{
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;
             changeTeam(getNextTeam());
-        }).size(40).color(curTeam().color);
+        }).size(TUVars.iconSize).color(curTeam().color);
 
         Button b = i.get();
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
-                tTimer += graphics.getDeltaTime() * 60f;
+                tTimer += Time.delta;
                 if(tTimer > TUVars.longPress){
                     teamDialog.show(curTeam(), TeamChanger::changeTeam);
                 }
@@ -67,7 +65,7 @@ public class TeamChanger{
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> addMini(t).width(100));
+        table.table(Tex.pane, t -> addMini(t).size(100, TUVars.iconSize));
     }
 
     static String teamName(){

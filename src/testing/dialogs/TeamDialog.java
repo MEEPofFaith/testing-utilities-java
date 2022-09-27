@@ -12,6 +12,7 @@ import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.ui.dialogs.*;
 import testing.ui.*;
+import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -49,15 +50,12 @@ public class TeamDialog extends BaseDialog{
 
             TextField tField = TUElements.textField(
                 String.valueOf(curTeam.id),
-                field -> {
-                    if(Strings.canParsePositiveInt(field.getText())){
-                        changed.get(Team.get(Strings.parseInt(field.getText())));
-                    }
-                },
+                text -> changed.get(Team.get(Strings.parseInt(text))),
                 () -> String.valueOf(curTeam.id),
-                TextFieldFilter.digitsOnly
+                TextFieldFilter.digitsOnly,
+                Strings::canParsePositiveInt
             );
-            t.add(tField).left().padLeft(6);
+            t.add(tField).left().padLeft(6).width(TUVars.fieldWidth);
         }).left().padBottom(6);
         all.row();
 

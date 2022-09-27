@@ -20,5 +20,5 @@ jobs:
     - name: Upload built jar file
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ github.event.repository.name }}
+        name: TestUtils (zipped)
         path: build/libs/${{ github.event.repository.name }}.jar

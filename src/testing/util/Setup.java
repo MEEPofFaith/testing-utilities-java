@@ -15,6 +15,7 @@ public class Setup{
     static boolean selfInit;
 
     static Table buttons = newTable(), temp;
+    static int rows = 3;
 
     public static Table
     team = newTable(),
@@ -29,12 +30,13 @@ public class Setup{
         return new Table().bottom().left();
     }
 
-    public static void row(boolean bottom){
+    public static void row(){
         buttons.row();
         buttons.table(t -> {
-            if(!bottom) t.defaults().padBottom(-4);
+            if(rows > 1) t.defaults().padBottom(-4);
             temp = t;
         }).left();
+        rows--;
     }
 
     public static void add(Table table){
@@ -49,12 +51,15 @@ public class Setup{
         buttons.setOrigin(Align.bottomLeft);
 
         //First row
-        row(false);
+        row();
 
         if(Vars.mobile && Core.settings.getBool("console")){
             Console.add(console);
             add(console);
         }
+
+        //Second row
+        row();
 
         Spawn.add(units);
         add(units);
@@ -62,8 +67,8 @@ public class Setup{
         Sandbox.add(sandbox);
         add(sandbox);
 
-        //Second row
-        row(true);
+        //Third row
+        row();
 
         TeamChanger.add(team);
         add(team);
@@ -84,8 +89,7 @@ public class Setup{
             if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
             if(!mobile) return true;
 
-            MobileInput input = (MobileInput)control.input;
-            return input.lastSchematic == null || input.selectPlans.isEmpty();
+            return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
         });
         ui.hudGroup.addChild(buttons);
         buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
@@ -94,8 +98,8 @@ public class Setup{
             if(!selfInit){
                 Table healthUI = placement();
                 healthUI.row();
-                Health.healing(healthUI).size(96, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
-                Health.invincibility(healthUI).size(164, 40).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
+                Health.healing(healthUI).height(TUVars.iconSize).color(TUVars.curTeam.color).pad(0).left().padLeft(4);
+                Health.invincibility(healthUI).height(TUVars.iconSize).color(TUVars.curTeam.color).pad(0).left().padLeft(-20);
                 selfInit = true;
             }
         });

@@ -44,12 +44,9 @@ public class WeatherDialog extends BaseDialog{
             all.row();
 
             all.table(s -> {
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveFloat(field.getText())){
-                            intensity = Mathf.clamp(Strings.parseFloat(field.getText()), 0f, 100f);
-                        }
-                    },
-                    () -> String.valueOf(intensity), TextFieldFilter.floatsOnly,
+                TUElements.sliderSet(
+                    s, text -> intensity = Mathf.clamp(Strings.parseFloat(text), 0f, 100f), () -> String.valueOf(intensity),
+                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                     0f, 100f, 1f, intensity, (n, f) -> {
                         intensity = Mathf.clamp(n, 0f, 100f);
                         f.setText(String.valueOf(intensity));
@@ -59,12 +56,9 @@ public class WeatherDialog extends BaseDialog{
                 );
                 s.row();
 
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveFloat(field.getText())){
-                            duration = Strings.parseFloat(field.getText());
-                        }
-                    },
-                    () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
+                TUElements.sliderSet(
+                    s, text -> duration = Strings.parseFloat(text), () -> String.valueOf(duration),
+                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                     minDur, maxDur, 0.125f, duration, (n, f) -> {
                         duration = n;
                         f.setText(String.valueOf(n));
@@ -125,32 +119,26 @@ public class WeatherDialog extends BaseDialog{
     }
 
     void createWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
-            }else{
-                weather.create(intensity / 100f, duration * 60f);
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
+        }else{
+            weather.create(intensity / 100f, duration * 60f);
         }
     }
 
     void removeWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
-            }else{
-                Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
-            }
+        if(net.client()){
+            Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
+        }else{
+            Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
         }
     }
 
     void clearWeather(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Groups.weather.each(w=>w.remove())");
-            }else{
-                Groups.weather.each(WeatherState::remove);
-            }
+        if(net.client()){
+            Utils.runCommand("Groups.weather.each(w=>w.remove())");
+        }else{
+            Groups.weather.each(WeatherState::remove);
         }
     }
 }

@@ -28,8 +28,6 @@ public class Death{
 
         unit1.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
         unit2.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
-        knife.setScaling(Scaling.fit).setSize(TUIcons.seppuku.imageSize());
-        plus.setScaling(Scaling.fit).setSize(TUIcons.clone.imageSize());
 
         Events.run(Trigger.update, () -> {
             if(state.isGame()){
@@ -69,31 +67,29 @@ public class Death{
     }
 
     public static void mitosis(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
-            }else{
-                Unit u = player.unit();
-                if(u != null){
-                    u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
-                    Fx.spawn.at(u);
-                }
+        if(net.client()){
+            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+        }else{
+            Unit u = player.unit();
+            if(u != null){
+                u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+                Fx.spawn.at(u);
             }
         }
     }
 
     public static Cell<ImageButton> seppuku(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block);
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
-            if(b.isPressed()){
-                sTimer += graphics.getDeltaTime() * 60f;
+            if(b.isPressed() && !b.isDisabled()){
+                sTimer += Time.delta;
                 if(sTimer > TUVars.longPress){
                     spontaniumCombustum();
                 }
@@ -105,7 +101,6 @@ public class Death{
             kill.add(unit1);
             kill.add(knife);
             b.replaceImage(kill);
-            b.resizeImage(40f);
         });
         b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
 
@@ -113,7 +108,7 @@ public class Death{
     }
 
     public static Cell<ImageButton> clone(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
         }).growX();
@@ -122,8 +117,8 @@ public class Death{
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
         b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
         b.update(() -> {
-            if(b.isPressed()){
-                cTimer += graphics.getDeltaTime() * 60f;
+            if(b.isPressed() && !b.isDisabled()){
+                cTimer += Time.delta;
                 if(cTimer > TUVars.longPress){
                     mitosis();
                 }
@@ -137,7 +132,6 @@ public class Death{
             dupe.add(unit2);
             dupe.add(plus);
             b.replaceImage(dupe);
-            b.resizeImage(40f);
         });
 
         return i;
@@ -145,8 +139,8 @@ public class Death{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            clone(t).size(TUVars.iconSize, 40);
-            seppuku(t).size(TUVars.iconSize, 40);
+            clone(t).size(TUVars.iconSize, TUVars.iconSize);
+            seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

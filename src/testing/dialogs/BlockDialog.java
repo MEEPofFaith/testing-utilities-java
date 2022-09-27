@@ -204,34 +204,30 @@ public class BlockDialog extends BaseDialog{
     }
 
     void placeBlock(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                if(block.isOverlay()){
-                    Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
-                }else if(block.isFloor()){
-                    Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-                }else{
-                    Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
-                }
+        if(net.client()){
+            if(block.isOverlay()){
+                Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
+            }else if(block.isFloor()){
+                Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))");
             }else{
-                if(block.isOverlay()){
-                    world.tile(placePos).setOverlayNet(block);
-                }else if(block.isFloor()){
-                    world.tile(placePos).setFloorNet(block);
-                }else{
-                    world.tile(placePos).setNet(block, placeTeam, rotation);
-                }
+                Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
+            }
+        }else{
+            if(block.isOverlay()){
+                world.tile(placePos).setOverlayNet(block);
+            }else if(block.isFloor()){
+                world.tile(placePos).setFloorNet(block);
+            }else{
+                world.tile(placePos).setNet(block, placeTeam, rotation);
             }
         }
     }
 
     void deleteBlock(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setAir()");
-            }else{
-                world.tile(placePos).setAir();
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.world.tile(" + placePos + ").setAir()");
+        }else{
+            world.tile(placePos).setAir();
         }
     }
 

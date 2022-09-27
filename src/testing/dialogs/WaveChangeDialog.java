@@ -36,31 +36,29 @@ public class WaveChangeDialog extends BaseDialog{
             w.add("@tu-unit-menu.wave-start").left();
             TextField minField = TUElements.textField(
                 String.valueOf(startWave),
-                field -> {
-                    if(Strings.canParsePositiveInt(field.getText())){
-                        startWave = Math.max(Strings.parseInt(field.getText()), 1);
-                        rebuild();
-                    }
+                text -> {
+                    startWave = Math.max(Strings.parseInt(text), 1);
+                    rebuild();
                 },
                 () -> String.valueOf(startWave),
-                TextFieldFilter.digitsOnly
+                TextFieldFilter.digitsOnly,
+                Strings::canParsePositiveInt
             );
-            w.add(minField).left().padLeft(6).width(60f);
+            w.add(minField).left().padLeft(6).width(TUVars.fieldWidth);
             w.row();
 
             w.add("@tu-unit-menu.wave-waves").left();
             TextField maxField = TUElements.textField(
                 String.valueOf(waves),
-                field -> {
-                    if(Strings.canParsePositiveInt(field.getText())){
-                        waves = Math.max(Strings.parseInt(field.getText()), 1);
-                        rebuild();
-                    }
+                text -> {
+                    waves = Math.max(Strings.parseInt(text), 1);
+                    rebuild();
                 },
                 () -> String.valueOf(waves),
-                TextFieldFilter.digitsOnly
+                TextFieldFilter.digitsOnly,
+                Strings::canParsePositiveInt
             );
-            w.add(maxField).left().padLeft(6).width(60f);
+            w.add(maxField).left().padLeft(6).width(TUVars.fieldWidth);
         }).left();
         cont.row();
         cont.label(() -> bundle.format("tu-unit-menu.wave-current", state.wave)).colspan(2);
@@ -128,22 +126,18 @@ public class WaveChangeDialog extends BaseDialog{
     }
 
     void sendWave(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.logic.runWave()");
-            }else{
-                logic.runWave();
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.logic.runWave()");
+        }else{
+            logic.runWave();
         }
     }
 
     void setWave(int wave){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("Vars.state.wave = " + wave);
-            }else{
-                state.wave = wave;
-            }
+        if(net.client()){
+            Utils.runCommand("Vars.state.wave = " + wave);
+        }else{
+            state.wave = wave;
         }
     }
 }

@@ -9,21 +9,29 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.gen.*;
+import testing.util.*;
 
 public class TUElements{
-    public static void sliderSet(Table t, Cons<TextField> changed, Prov<String> fieldText, TextFieldFilter filter, float min, float max, float step, float def, Cons2<Float, TextField> sliderChanged, String title, String tooltip){
-        TextField field = textField(String.valueOf(def), changed, fieldText, filter);
+    public static void sliderSet(Table t, Cons<String> changed, Prov<String> fieldText, TextFieldFilter filter, TextFieldValidator valid, float min, float max, float step, float def, Cons2<Float, TextField> sliderChanged, String title, String tooltip){
+        TextField field = textField(String.valueOf(def), changed, fieldText, filter, valid);
 
-        Tooltip tip = new Tooltip(to -> to.background(Tex.button).add(tooltip));
-        t.add(title).right().padRight(6f).get().addListener(tip);
-        t.slider(min, max, step, def, s -> sliderChanged.get(s, field)).right().minWidth(120).get().addListener(tip);
-        t.add(field).left().padLeft(6f).get().addListener(tip);
+        Label tab = t.add(title).right().padRight(6f).get();
+        Slider sl = t.slider(min, max, step, def, s -> sliderChanged.get(s, field)).right().width(TUVars.sliderWidth).get();
+        TextField f = t.add(field).left().padLeft(6f).width(TUVars.fieldWidth).get();
+
+        if(tooltip != null){
+            Tooltip tip = new Tooltip(to -> to.background(Tex.button).add(tooltip));
+            tab.addListener(tip);
+            sl.addListener(tip);
+            f.addListener(tip);
+        }
     }
 
-    public static TextField textField(String text, Cons<TextField> changed, Prov<String> setText, TextFieldFilter filter){
+    public static TextField textField(String text, Cons<String> changed, Prov<String> setText, TextFieldFilter filter, TextFieldValidator valid){
         TextField field = new TextField(text);
         if(filter != null) field.setFilter(filter);
-        field.changed(() -> changed.get(field));
+        if(valid != null) field.setValidator(valid);
+        field.changed(() -> changed.get(field.getText()));
         if(setText != null){
             field.update(() -> {
                 Scene stage = field.getScene();

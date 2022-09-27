@@ -12,23 +12,36 @@ import static mindustry.Vars.*;
 
 public class Health{
     public static void heal(boolean invincibility){
+        if(player.unit() == null) return;
+
+        Unit u = player.unit();
         if(net.client()){
-            Utils.runCommandPlayer(
-                "p.unit().dead=false;" +
-                "p.unit().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().type.health") + ";" +
-                "p.unit().health=p.unit().maxHealth;"
-            );
-        }else if(player.unit() != null && player.unit().type != null){
-            Unit u = player.unit();
-            u.dead = false;
-            u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u.type.health);
-            u.health = u.maxHealth;
+            if(u instanceof BlockUnitc){
+                Utils.runCommandPlayer(
+                    "p.unit().tile().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().tile().block.health") + ";" +
+                    "p.unit().tile().health=p.unit().tile().maxHealth;"
+                );
+            }else{
+                Utils.runCommandPlayer(
+                    "p.unit().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().type.health") + ";" +
+                    "p.unit().health=p.unit().maxHealth;"
+                );
+            }
+        }else{
+            if(u instanceof BlockUnitc bu){
+                Building b = bu.tile();
+                b.maxHealth(invincibility ? Float.POSITIVE_INFINITY : b.block.health);
+                b.health = b.maxHealth;
+            }else{
+                u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u.type.health);
+                u.health = u.maxHealth;
+            }
         }
         Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
     }
 
     public static Cell<ImageButton> healing(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             heal(false);
         }).growX();
 
@@ -36,7 +49,6 @@ public class Health{
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
         b.setDisabled(TestUtils::disableCampaign);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
-        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
@@ -45,7 +57,7 @@ public class Health{
     }
 
     public static Cell<ImageButton> invincibility(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             heal(true);
         }).growX();
 
@@ -53,7 +65,6 @@ public class Health{
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
         b.setDisabled(TestUtils::disableCampaign);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
-        b.resizeImage(40f);
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });

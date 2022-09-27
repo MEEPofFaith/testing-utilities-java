@@ -21,7 +21,6 @@ public class Console{
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-show");
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
 
         return i;
     }
@@ -32,7 +31,6 @@ public class Console{
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-clear");
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
 
         return i;
     }
@@ -43,16 +41,15 @@ public class Console{
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-input");
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
 
         return i;
     }
 
     public static void add(Table table){
-        table.table(Tex.pane, t -> {
-            addToggleButton(t).size(TUVars.iconSize, 40f);
-            addRefreshButton(t).size(TUVars.iconSize, 40f);
-            addTerminalButton(t).size(TUVars.iconSize, 40f);
+        table.table(Tex.buttonEdge3, t -> {
+            addToggleButton(t).size(TUVars.iconSize, TUVars.iconSize);
+            addRefreshButton(t).size(TUVars.iconSize, TUVars.iconSize);
+            addTerminalButton(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

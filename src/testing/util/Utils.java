@@ -3,7 +3,6 @@ package testing.util;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.content.*;
 
 import static mindustry.Vars.*;
@@ -11,21 +10,6 @@ import static mindustry.Vars.*;
 public class Utils{
     public static void spawnIconEffect(String sprite){
         TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
-    }
-
-    public static boolean noCheat(){
-        if(!net.client() && TestUtils.disableCampaign()){
-            /* lmao
-            Groups.build.each(b -> {
-                if(b.team == state.rules.defaultTeam){
-                    b.kill();
-                }
-            });
-            */
-            Threads.throwAppException(new Throwable("No cheating! Don't use Testing Utilities in campaign!"));
-            return false;
-        }
-        return true;
     }
 
     public static void runCommand(String command){

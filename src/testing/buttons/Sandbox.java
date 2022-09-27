@@ -17,13 +17,11 @@ public class Sandbox{
     static boolean swap;
 
     public static void toggle(){
-        if(Utils.noCheat()){
-            Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
-            if(net.client()){
-                Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;Call.setRules(Vars.state.rules);");
-            }else{
-                state.rules.infiniteResources = !state.rules.infiniteResources;
-            }
+        Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
+        if(net.client()){
+            Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;Call.setRules(Vars.state.rules);");
+        }else{
+            state.rules.infiniteResources = !state.rules.infiniteResources;
         }
     }
 
@@ -36,45 +34,41 @@ public class Sandbox{
     }
 
     public static void fillCore(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                CoreBuild core = player.core();
-                if(core == null) return;
-                float capacity = core.storageCapacity;
-                if(settings.getBool("tu-fill-all")){
-                    Utils.runCommandPlayer(
-                        "Vars.content.items().each(" +
-                            "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
-                            "i=>p.core().items.set(i," + capacity + ")" +
-                        ");"
-                    );
-                }else{ //Separate to prevent unnecessary command length.
-                    Utils.runCommandPlayer(
-                        "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
-                    );
-                }
-            }else{
-                CoreBuild core = player.core();
-                if(core != null){
-                    content.items().each(
-                        i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
-                        i -> core.items.set(i, core.storageCapacity)
-                    );
-                }
+        if(net.client()){
+            CoreBuild core = player.core();
+            if(core == null) return;
+            float capacity = core.storageCapacity;
+            if(settings.getBool("tu-fill-all")){
+                Utils.runCommandPlayer(
+                    "Vars.content.items().each(" +
+                        "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
+                        "i=>p.core().items.set(i," + capacity + ")" +
+                    ");"
+                );
+            }else{ //Separate to prevent unnecessary command length.
+                Utils.runCommandPlayer(
+                    "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
+                );
             }
-            Utils.spawnIconEffect("core");
+        }else{
+            CoreBuild core = player.core();
+            if(core != null){
+                content.items().each(
+                    i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
+                    i -> core.items.set(i, core.storageCapacity)
+                );
+            }
         }
+        Utils.spawnIconEffect("core");
     }
 
     public static void dumpCore(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayerFast(".core().items.clear()");
-            }else{
-                if(player.core() != null) player.core().items.clear();
-            }
-            Utils.spawnIconEffect("dump");
+        if(net.client()){
+            Utils.runCommandPlayerFast(".core().items.clear()");
+        }else{
+            if(player.core() != null) player.core().items.clear();
         }
+        Utils.spawnIconEffect("dump");
     }
 
     public static Cell<ImageButton> toggling(Table t){
@@ -93,14 +87,13 @@ public class Sandbox{
     }
 
     public static Cell<ImageButton> filling(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, () -> {
+        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
             if(!swap) coreItems();
         }).color(TUVars.curTeam.color).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
         b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 timer += graphics.getDeltaTime() * 60;
@@ -122,8 +115,8 @@ public class Sandbox{
 
     public static void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
-            toggling(t).size(TUVars.iconSize, 40);
-            filling(t).size(TUVars.iconSize, 40);
+            toggling(t).size(TUVars.iconSize, TUVars.iconSize);
+            filling(t).size(TUVars.iconSize, TUVars.iconSize);
         });
     }
 }

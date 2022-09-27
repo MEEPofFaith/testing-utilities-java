@@ -48,11 +48,9 @@ public class StatusDialog extends BaseDialog{
             all.add(selection);
             all.row();
 
-            all.collapser(s -> TUElements.sliderSet(s, field -> {
-                    if(Strings.canParsePositiveFloat(field.getText())){
-                        duration = Strings.parseFloat(field.getText());
-                    }
-                }, () -> String.valueOf(duration), TextFieldFilter.floatsOnly,
+            all.collapser(s -> TUElements.sliderSet(
+                s, text -> duration = Strings.parseFloat(text), () -> String.valueOf(duration),
+                TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                 minDur, maxDur, 0.125f, duration, (n, f) -> {
                     duration = n;
                     f.setText(String.valueOf(n));
@@ -134,22 +132,18 @@ public class StatusDialog extends BaseDialog{
     }
 
     void apply(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
-            }else if(player.unit() != null){
-                player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
-            }
+        if(net.client()){
+            Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+        }else if(player.unit() != null){
+            player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
     }
 
     void clearStatus(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayerFast(".unit().clearStatuses();");
-            }else if(player.unit() != null){
-                player.unit().clearStatuses();
-            }
+        if(net.client()){
+            Utils.runCommandPlayerFast(".unit().clearStatuses();");
+        }else if(player.unit() != null){
+            player.unit().clearStatuses();
         }
     }
 

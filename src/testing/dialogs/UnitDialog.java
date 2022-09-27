@@ -64,12 +64,9 @@ public class UnitDialog extends BaseDialog{
             all.row();
 
             all.table(s -> {
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveInt(field.getText())){
-                            amount = Strings.parseInt(field.getText());
-                        }
-                    },
-                    () -> String.valueOf(amount), TextFieldFilter.digitsOnly,
+                TUElements.sliderSet(
+                    s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
+                    TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
                     1, maxAmount, 1, amount, (n, f) -> {
                         amount = n.intValue();
                         f.setText(String.valueOf(n));
@@ -79,12 +76,9 @@ public class UnitDialog extends BaseDialog{
                 );
                 s.row();
 
-                TUElements.sliderSet(s, field -> {
-                        if(Strings.canParsePositiveFloat(field.getText())){
-                            radius = Strings.parseFloat(field.getText());
-                        }
-                    },
-                    () -> String.valueOf(radius), TextFieldFilter.floatsOnly,
+                TUElements.sliderSet(
+                    s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
+                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
                     minRadius, maxRadius, 1, radius, (n, f) -> {
                         radius = n;
                         f.setText(String.valueOf(n));
@@ -127,10 +121,7 @@ public class UnitDialog extends BaseDialog{
                 TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
                 sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
 
-                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
-                    hide();
-                    waveChangeDialog.show();
-                }).expandX().get();
+                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
                 TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
                 wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
 
@@ -224,40 +215,35 @@ public class UnitDialog extends BaseDialog{
     }
 
     void spawn(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
-                Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
-            }else{
-                for(int i = 0; i < amount; i++){
-                    float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-                    Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                    spawnUnit.spawn(spawnTeam, Tmp.v1);
-                }
+        if(net.client()){
+            Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
+            Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
+        }else{
+            for(int i = 0; i < amount; i++){
+                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
+                spawnUnit.spawn(spawnTeam, Tmp.v1);
             }
         }
     }
 
     void transform(){
-        if(Utils.noCheat()){
-            if(net.client()){
-                Utils.runCommandPlayer(
-                    "let spawned = Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p.x, p.y);" +
-                    "Call.unitControl(p, spawned);"
-                );
-                if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
-            }else if(player.unit() != null){
-                Unit u = spawnUnit.spawn(player.team(), player);
-                float rot = player.unit().rotation;
-                u.controller(player);
-                u.rotation(rot);
-                u.spawnedByCore(despawns);
-                Fx.unitControl.at(u, true);
-            }
-            hide();
+        if(net.client()){
+            Utils.runCommandPlayer(
+                "let spawned = Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p.x, p.y);" +
+                "Call.unitControl(p, spawned);"
+            );
+            if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
+        }else if(player.unit() != null){
+            Unit u = spawnUnit.spawn(player.team(), player);
+            float rot = player.unit().rotation;
+            u.controller(player);
+            u.rotation(rot);
+            u.spawnedByCore(despawns);
+            Fx.unitControl.at(u, true);
         }
+        hide();
     }
-
     String teamName(){
         return teamDialog.teamName(spawnTeam);
     }
