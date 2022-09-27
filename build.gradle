@@ -3,8 +3,7 @@ apply plugin: "java"
 version '1.0'
 
 targetCompatibility = 8
-//switch to JavaVersion.VERSION_17 to use Java 17 features; this requires adding jabel (see dependencies block below)
-sourceCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_16
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -15,6 +14,8 @@ repositories{
 
 ext{
     mindustryVersion = 'v138'
+    mindustryHash = '385af57d1b'
+    arcHash = 'd3b6ab563b'
     jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
@@ -27,15 +28,17 @@ allprojects{
 }
 
 dependencies{
+    //Release
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     
     //flabel v138 is broken, yay!
     compileOnly "com.github.Anuken.Arc:flabel:v137"
 
-    //compileOnly "com.github.Anuken.MindustryJitpack:core:69f0126eca"
-    //compileOnly "com.github.Anuken.Arc:arc-core:b1b88883e2"
-    
+    //BE
+    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
+    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
+
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
@@ -43,7 +46,7 @@ task jarAndroid{
     dependsOn "jar"
 
     doLast{
-        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
+        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.");
 
         def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists()}
 
@@ -54,7 +57,7 @@ task jarAndroid{
 
         //dex and desugar files - this requires d8 in your PATH
         "d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
-                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
+            .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 
