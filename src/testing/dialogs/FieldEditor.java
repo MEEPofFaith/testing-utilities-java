@@ -187,15 +187,11 @@ public class FieldEditor extends BaseDialog{
     void makeFieldEditor(Object content, Class<?> type, Field field, Table table){
         if(type == int.class){
             table.field(Reflect.get(content, field) + "", out -> {
-                if(Strings.canParseInt(out)){
-                    Reflect.set(content, field, Strings.parseInt(out));
-                }
+                Reflect.set(content, field, Strings.parseInt(out));
             }).size(250f, height).valid(Strings::canParseInt);
         }else if(type == float.class){
             table.field(Reflect.get(content, field) + "", out -> {
-                if(Strings.canParseFloat(out)){
-                    Reflect.set(content, field, Strings.parseFloat(out));
-                }
+                Reflect.set(content, field, Strings.parseFloat(out));
             }).size(250f, height).valid(Strings::canParseFloat);
         }else if(type == String.class){
             table.field(Reflect.get(content, field), out -> Reflect.set(content, field, out)).size(250f, height);
@@ -287,15 +283,11 @@ public class FieldEditor extends BaseDialog{
     void arrayTermEditor(Object array, int index, Class<?> type, Table table){
         if(type == int.class){
             table.field(Array.getInt(array, index) + "", out -> {
-                if(Strings.canParseInt(out)){
-                    Array.setInt(array, index, Strings.parseInt(out));
-                }
+                Array.setInt(array, index, Strings.parseInt(out));
             }).size(250f, height).valid(Strings::canParseInt);
         }else if(type == float.class){
             table.field(Array.getFloat(array, index) + "", out -> {
-                if(Strings.canParseFloat(out)){
-                    Array.setFloat(array, index, Strings.parseFloat(out));
-                }
+                Array.setFloat(array, index, Strings.parseFloat(out));
             }).size(250f, height).valid(Strings::canParseFloat);
         }else if(type == String.class){
             table.field((String)Array.get(array, index), out -> Array.set(array, index, out)).size(250f, height);
