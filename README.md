@@ -19,7 +19,7 @@ Just some small utilities for sandbox/modding
 - Weather Menu: Start/stop weather. (Disabled in campaign)
 - Unit Menu: Spawn units or transform into a different unit. Includes a wave selector. (Disabled in campaign)
 - Block Menu: Place blocks anywhere, even ones you're supposed to. (Disabled in campaign)
-- [sk7725/whynotteleport](https://github.com/sk7725/WhyNotTeleport): Ctrl + Alt + Click to teleport to your cursor. Sorry if your on mobile. (Disabled in campaign)
+- [sk7725/whynotteleport](https://github.com/sk7725/WhyNotTeleport): Alt + Click to teleport to your cursor. Sorry if your on mobile. (Disabled in campaign)
 - Enables console and increases zoom range.
 
 Original repo here: [MEEPofFaith/testing-utilities-js](https://github.com/MEEPofFaith/testing-utilities-js).
