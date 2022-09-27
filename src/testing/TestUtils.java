@@ -3,6 +3,8 @@ package testing;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -11,6 +13,7 @@ import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
@@ -95,8 +98,25 @@ public class TestUtils extends Mod{
                 Spawn.spawnHover = Spawn.blockHover = false;
             });
             Events.run(Trigger.draw, () -> {
+                Draw.z(Layer.endPixeled);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
+                if(!teleport && !disableCampaign() && !player.unit().type.internal && input.alt()){
+                    Draw.z(Layer.effect);
+                    Lines.stroke(2f, Pal.accent);
+                    float x1 = player.x, y1 = player.y,
+                        x2 = input.mouseWorldX(), y2 = input.mouseWorldY();
+
+                    Lines.line(x1, y1, x2, y2, false);
+                    Fill.circle(x1, y1, 1f);
+                    Fill.circle(x2, y2, 1f);
+
+                    for(int j = 0; j < 4; j++){
+                        float rot = j * 90f + 45f + (-Time.time) % 360f;
+                        float length = 8f;
+                        Draw.rect("select-arrow", x2 + Angles.trnsx(rot, length), y2 + Angles.trnsy(rot, length), length / 1.9f, length / 1.9f, rot - 135f);
+                    }
+                }
                 Draw.reset();
             });
             Events.run(Trigger.update, () -> {
