@@ -102,7 +102,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableCampaign() && !player.unit().type.internal && input.ctrl() && input.alt() && input.isTouched()){
+                    if(!disableCampaign() && !player.unit().type.internal && input.alt() && input.isTouched()){
                         if(teleport) return;
                         teleport = true;
 
