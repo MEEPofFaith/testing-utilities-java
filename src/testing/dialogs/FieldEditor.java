@@ -1,5 +1,6 @@
 package testing.dialogs;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.*;
@@ -16,6 +17,8 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.Content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
+import mindustry.entities.Units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -31,7 +34,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class FieldEditor extends BaseDialog{
-    static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class);
+    static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class, Boolf.class);
     static Seq<String> skipFieldNames = Seq.with("name", "iconId", "id", "outineColor", "outputItem", "outputLiquid", "scaledHealth");
     static TextField search, fieldsSearch;
     static Table selection = new Table(), fields = new Table();
@@ -225,6 +228,20 @@ public class FieldEditor extends BaseDialog{
                     Reflect.set(content, field, out[0]);
                 }
             }).valid(t -> atlas.has(t) || t.isEmpty()).size(250f, height).padLeft(4f);
+        }else if(type == BuildVisibility.class){
+            //TODO do in b139 - BuildVisibility is no longer an enum
+        }else if(type == Sortf.class){
+            table.table(t -> {
+                Sortf s = Reflect.get(content, field);
+                ButtonGroup<CheckBox> group = new ButtonGroup<>();
+                for(Field sort : UnitSorts.class.getDeclaredFields()){
+                    try{
+                        Sortf cSort = (Sortf)sort.get(null);
+                        t.check(sort.getName(), s == cSort, val -> Reflect.set(content, field, cSort)).left().group(group);
+                        t.row();
+                    }catch(Exception ignored){}
+                }
+            }).left();
         }else if(UnlockableContent.class.isAssignableFrom(type)){
             UnlockableContent[] c = {Reflect.get(content, field)};
             ContentType cType = getType(type);
