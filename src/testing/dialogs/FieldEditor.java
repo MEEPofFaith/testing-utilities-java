@@ -32,8 +32,8 @@ import static mindustry.Vars.*;
 
 public class FieldEditor extends BaseDialog{
     static Seq<Class<?>> skipFields = Seq.with(ModContentInfo.class, Stats.class);
-    static Seq<String> skipFieldNames = Seq.with("name", "iconId", "outineColor", "outputItem", "outputLiquid");
-    static TextField search;
+    static Seq<String> skipFieldNames = Seq.with("name", "iconId", "id", "outineColor", "outputItem", "outputLiquid", "scaledHealth");
+    static TextField search, fieldsSearch;
     static Table selection = new Table(), fields = new Table();
     static ContentType selectedType = ContentType.block;
     static UnlockableContent selectedContent;
@@ -76,8 +76,15 @@ public class FieldEditor extends BaseDialog{
         cont.pane(all -> {
             all.add(selection).top().center(); //Content Selection
             all.row();
-            //TODO field search
-            all.add(fields); //Field Editor
+            all.table(f -> {
+                f.table(s -> {
+                    s.image(Icon.zoom).padRight(8);
+                    fieldsSearch = s.field(null, text -> rebuildFields()).growX().get();
+                    fieldsSearch.setMessageText("@players.search");
+                }).fillX().padBottom(4).row();
+                f.row();
+                f.add(fields); //Field Editor
+            }).visible(() -> selectedContent != null);
         }).expandY().top();
     }
 
@@ -158,8 +165,9 @@ public class FieldEditor extends BaseDialog{
 
         Class<?> c = selectedContent.getClass();
 
+        String text = fieldsSearch.getText();
         for(Field field : c.getFields()){
-            addField(selectedContent, fields, field);
+            if(!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && (text.isEmpty() || field.getName().toLowerCase().contains(text))) addField(selectedContent, fields, field);
         }
     }
 
