@@ -1,5 +1,6 @@
 package testing.ui;
 
+import arc.*;
 import testing.dialogs.*;
 
 public class TUDialogs{
@@ -19,7 +20,7 @@ public class TUDialogs{
         waveChangeDialog = new WaveChangeDialog();
         statusDialog = new StatusDialog();
         weatherDialog = new WeatherDialog();
-        fieldEditor = new FieldEditor();
+        if(Core.settings.getBool("tu-field-editor")) fieldEditor = new FieldEditor();
         interpDialog = new InterpDialog();
     }
 }

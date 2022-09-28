@@ -61,6 +61,11 @@ public class Setup{
         //Second row
         row();
 
+        if(Core.settings.getBool("tu-field-editor")){
+            Fields.add(fields);
+            add(fields);
+        }
+
         Spawn.add(units);
         add(units);
 
@@ -72,11 +77,6 @@ public class Setup{
 
         TeamChanger.add(team);
         add(team);
-
-        if(Core.settings.getBool("tu-field-editor")){
-            Fields.add(fields);
-            add(fields);
-        }
 
         Statuses.add(status);
         add(status);
