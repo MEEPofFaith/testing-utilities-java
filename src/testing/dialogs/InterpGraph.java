@@ -22,6 +22,7 @@ public class InterpGraph extends Table{
     public InterpGraph(){
         background(Tex.pane);
 
+        float dotColumnWidth = 40f;
         rect((x, y, width, height) -> {
             Lines.stroke(Scl.scl(3f));
 
@@ -30,12 +31,17 @@ public class InterpGraph extends Table{
 
             lay.setText(font, "-0.00");
 
+            boolean interpColumn = width > 300 + dotColumnWidth;
             float min = min(), max = max(), range = max - min;
             float offsetX = Scl.scl(lay.width + 6f), offsetY = Scl.scl(5f);
 
             float graphX = x + offsetX, graphW = width - offsetX;
             float baseY = y + offsetY, baseH = height - offsetY;
             float graphY = baseY + baseH * (-min / range), graphH = baseH - baseH * ((-min + (max - 1)) / range);
+
+            if(interpColumn) graphW -= dotColumnWidth;
+            float colCenter = x + width - dotColumnWidth / 2f;
+
             points = Mathf.round(graphW / 4, 2) + 1; //Ensure a center (0.5) point
             float spacing = graphW / (points - 1);
 
@@ -48,6 +54,16 @@ public class InterpGraph extends Table{
                 Lines.line(graphX, baseY + baseH, graphX + graphW, baseY + baseH);
             }
 
+            if(interpColumn){
+                Lines.lineAngleCenter(colCenter, graphY, 0, dotColumnWidth / 3f, false);
+                Lines.lineAngleCenter(colCenter, graphY + graphH, 0, dotColumnWidth / 3f, false);
+
+                if(range != 1){
+                    Lines.lineAngleCenter(colCenter, baseY, 0, dotColumnWidth / 3f, false);
+                    Lines.lineAngleCenter(colCenter, baseY + baseH, 0, dotColumnWidth / 3f, false);
+                }
+            }
+
             Draw.color(Color.red);
             Lines.beginLine();
             for(int i = 0; i < points; i++){
@@ -56,6 +72,13 @@ public class InterpGraph extends Table{
                 Lines.linePoint(cx, cy);
             }
             Lines.endLine();
+
+            float a = Time.time % 180f / 180f;
+            Fill.circle(graphX + graphW * a, graphY + applyInterp(a) * graphH, 4f);
+
+            if(interpColumn){
+                Fill.circle(colCenter, graphY + applyInterp(a) * graphH, 4f);
+            }
 
             lay.setText(font, "0.00");
             font.draw("0.00", graphX, graphY + lay.height / 2f, Align.right);

@@ -144,9 +144,10 @@ public class InterpDialog extends BaseDialog{
                 Core.scene.addStyle(TextButtonStyle.class, oldStyle);
             });
             p.row();
-            p.add(configTable = new Table()).height(TUVars.buttonSize).padTop(8f).padBottom(8f);
+            p.add(configTable = new Table()).padTop(8f).padBottom(8f);
         }).fill().padTop(8f).get();
         pane.setScrollingDisabled(false, true);
+        pane.setScrollbarsOnTop(true);
 
         rebuildConfig();
         
@@ -166,7 +167,6 @@ public class InterpDialog extends BaseDialog{
 
     void rebuildConfig(){
         configTable.clear();
-        configTable.defaults().height(TUVars.buttonSize);
 
         switch(configType){
             case 1, 2, 3 -> { //Pow
@@ -287,7 +287,7 @@ public class InterpDialog extends BaseDialog{
                         bounceB = Strings.parseInt(text);
                         inputInterp();
                     }, () -> String.valueOf(bounceB),
-                    TextFieldFilter.digitsOnly, s -> Strings.canParseInt(s) && Strings.parseInt(s) >= 2 && Strings.parseInt(s) <= 5,
+                    TextFieldFilter.digitsOnly, s -> Strings.parseInt(s) >= 2 && Strings.parseInt(s) <= 5,
                     2, 5, 1, bounceB, (n, f) -> {
                         bounceB = Mathf.round(n);
                         f.setText(String.valueOf(bounceB));

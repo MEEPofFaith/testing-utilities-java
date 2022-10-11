@@ -31,7 +31,9 @@ public class TUElements{
         TextField field = new TextField(text);
         if(filter != null) field.setFilter(filter);
         if(valid != null) field.setValidator(valid);
-        field.changed(() -> changed.get(field.getText()));
+        field.changed(() -> {
+            if(field.isValid()) changed.get(field.getText());
+        });
         if(setText != null){
             field.update(() -> {
                 Scene stage = field.getScene();
