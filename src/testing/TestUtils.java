@@ -4,7 +4,6 @@ import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -165,7 +164,7 @@ public class TestUtils extends Mod{
             }
         });
 
-        ui.settings.game.checkPref("console", true); //Dev Mode
+        if(mobile) ui.settings.game.checkPref("console", true); //Dev Mode
     }
 
     public static boolean disableCampaign(){
