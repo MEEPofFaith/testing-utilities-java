@@ -73,7 +73,7 @@ public class InterpGraph extends Table{
             }
             Lines.endLine();
 
-            float a = Time.time % 180f / 180f;
+            float a = Time.globalTime % 180f / 180f;
             Fill.circle(graphX + graphW * a, graphY + applyInterp(a) * graphH, 4f);
 
             if(interpColumn){
