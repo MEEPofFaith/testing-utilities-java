@@ -176,7 +176,12 @@ public class UnitDialog extends BaseDialog{
         ).padBottom(6);
         selection.row();
 
-        Seq<UnitType> array = content.units().select(e -> !e.internal && (!e.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
+        Seq<UnitType> array = content.units()
+            .select(e -> !e.internal &&
+                (!e.isHidden() || settings.getBool("tu-show-hidden")) &&
+                (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
+        if(array.size == 0) return;
+
         selection.table(list -> {
             list.left();
 
