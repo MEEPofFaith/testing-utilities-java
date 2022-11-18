@@ -13,7 +13,7 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v140'
+    mindustryVersion = 'v140.4'
     mindustryHash = '385af57d1b'
     arcHash = 'd3b6ab563b'
     jabelVersion = "0.7.0"
@@ -33,7 +33,7 @@ dependencies{
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     
     //flabel v138 is broken, yay!
-    compileOnly "com.github.Anuken.Arc:flabel:v137"
+    //compileOnly "com.github.Anuken.Arc:flabel:$mindustryVersion"
 
     //BE
     //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"

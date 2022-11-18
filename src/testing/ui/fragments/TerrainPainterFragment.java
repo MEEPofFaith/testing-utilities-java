@@ -1,6 +1,7 @@
 package testing.ui.fragments;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
@@ -9,12 +10,12 @@ import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
-import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.editor.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -35,9 +36,10 @@ public class TerrainPainterFragment{
     Table selection = new Table();
     Block block = Blocks.boulder;
     boolean drawing, erasing, changed;
-    int stroke = 1;
+    int brushSize;
     private boolean initialized;
     float hold;
+    private Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -61,18 +63,20 @@ public class TerrainPainterFragment{
                 all.row();
 
                 all.table(b -> {
-                    b.table(sl -> {
-                        TUElements.sliderSet(
-                            sl, text -> {
-                                stroke = Strings.parseInt(text);
-                            }, () -> String.valueOf(stroke),
-                            TextFieldFilter.digitsOnly, s -> Strings.canParseInt(s) && Strings.parseInt(s) > 0,
-                            1, 10, 1, stroke, (n, f) -> {
-                                stroke = Mathf.round(n);
-                                f.setText(String.valueOf(stroke));
-                            }, "@tu-painter.size", null
-                        );
-                    }).row();
+                    Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
+                    slider.moved(f -> brushSize = (int)f);
+                    for(int j = 0; j < MapEditor.brushSizes.length; j++){
+                        if(j == brushSize){
+                            slider.setValue(j);
+                        }
+                    }
+
+                    var label = new Label("@editor.brush");
+                    label.setAlignment(Align.center);
+                    label.touchable = Touchable.disabled;
+
+                    b.top().stack(slider, label);
+                    b.row();
 
                     b.table(d -> {
                         ImageButton db = TUElements.imageButton(
@@ -125,6 +129,12 @@ public class TerrainPainterFragment{
         rebuild();
 
         if(!initialized){
+            for(int i = 0; i < MapEditor.brushSizes.length; i++){
+                float size = MapEditor.brushSizes[i];
+                float mod = size % 1f;
+                brushPolygons[i] = Geometry.pixelCircle(size, (index, x, y) -> Mathf.dst(x, y, index - mod, index - mod) <= size - 0.5f);
+            }
+
             Events.run(Trigger.update, () -> {
                 if(!state.isGame()){
                     show = drawing = erasing = false;
@@ -140,40 +150,25 @@ public class TerrainPainterFragment{
                     }
 
                     int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
-                    float wx = tx * tilesize, wy = ty * tilesize;
 
                     if(drawing){
                         if(block instanceof SteamVent){
                             placeFloor(Tmp.p1.set(tx, ty).pack());
                         }else{
-                            for(int x = tx - stroke - 2; x <= tx + stroke + 2; x++){
-                                for(int y = ty - stroke - 2; y <= ty + stroke + 2; y++){
-                                    if(Mathf.within(x * tilesize, y * tilesize, wx, wy, stroke * tilesize)){
-                                        Tile other = world.tile(x, y);
-                                        if(other != null){
-                                            if(block.isOverlay()){
-                                                placeOverlayFloor(other.pos());
-                                            }else if(block.isFloor()){
-                                                placeFloor(other.pos());
-                                            }else{
-                                                placeBlock(other.pos());
-                                            }
-                                        }
-                                    }
+                            paintCircle(tx, ty, t -> {
+                                if(block.isOverlay()){
+                                    placeOverlayFloor(t.pos());
+                                }else if(block.isFloor()){
+                                    placeFloor(t.pos());
+                                }else{
+                                    placeBlock(t.pos());
                                 }
-                            }
+                            });
                         }
                     }else if(erasing){
-                        for(int x = tx - stroke - 2; x <= tx + stroke + 2; x++){
-                            for(int y = ty - stroke - 2; y <= ty + stroke + 2; y++){
-                                if(Mathf.within(x * tilesize, y * tilesize, wx, wy, stroke * tilesize)){
-                                    Tile other = world.tile(x, y);
-                                    if(other != null){
-                                        erase(other.pos());
-                                    }
-                                }
-                            }
-                        }
+                        paintCircle(tx, ty, t -> {
+                            erase(t.pos());
+                        });
                     }
                 }
             });
@@ -187,17 +182,41 @@ public class TerrainPainterFragment{
     }
 
     public void drawPos(){
-        if((drawing || erasing) && state.isGame() && !scene.hasMouse()){ //TODO how draw for larger brush sizes
-            float x = World.toTile(input.mouseWorldX()) * tilesize,
-                y = World.toTile(input.mouseWorldY()) * tilesize;
-            float size = drawing && block instanceof SteamVent ? 3 : 1,
-                offset = (1 - size % 2) * tilesize / 2f;
-            size *= tilesize;
+        if((drawing || erasing) && state.isGame() && !scene.hasMouse()){
+            int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
+            float wx = tx * tilesize, wy = ty * tilesize;
 
             Draw.z(Layer.overlayUI);
             Lines.stroke(1f, drawing ? Pal.accent : Pal.remove);
-            Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
-            Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
+
+            if(block instanceof SteamVent){
+                float size = 3;
+                float offset = (1 - size % 2) * tilesize / 2f;
+                size *= tilesize;
+                Lines.rect(wx - size / 2 + offset, wy - size / 2 + offset, size, size);
+            }else{
+                Lines.poly(brushPolygons[brushSize], wx - tilesize / 2, wy - tilesize / 2, tilesize);
+            }
+            Draw.rect(Icon.cancel.getRegion(), wx, wy, tilesize / 2f, tilesize / 2f);
+        }
+    }
+
+    /** Taken from {@link MapEditor::drawCircle} */
+    public void paintCircle(int x, int y, Cons<Tile> drawer){
+        float bSize = MapEditor.brushSizes[brushSize];
+        int clamped = (int)bSize;
+        for(int rx = -clamped; rx <= clamped; rx++){
+            for(int ry = -clamped; ry <= clamped; ry++){
+                if(Mathf.within(rx, ry, bSize - 0.5f + 0.0001f)){
+                    int wx = x + rx, wy = y + ry;
+
+                    if(wx < 0 || wy < 0 || wx >= world.width() || wy >= world.height()){
+                        continue;
+                    }
+
+                    drawer.get(world.tile(wx, wy));
+                }
+            }
         }
     }
 
