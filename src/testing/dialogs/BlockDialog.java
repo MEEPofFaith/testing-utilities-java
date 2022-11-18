@@ -27,6 +27,7 @@ import mindustry.world.blocks.legacy.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
+import testing.ui.fragments.*;
 import testing.util.*;
 
 import static arc.Core.*;
@@ -57,51 +58,58 @@ public class BlockDialog extends BaseDialog{
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        cont.label(() -> bundle.get("tu-menu.selection") + block.localizedName).padBottom(6).row();
 
-            all.table(t -> {
-                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(placeTeam, team -> placeTeam = team)).get();
-                tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + placeTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
-                TUElements.boxTooltip(tb, "@tu-tooltip.block-set-team");
+        cont.pane(all -> all.add(selection)).fillX().row();
 
-                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
+        cont.table(t -> {
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize,
+                () -> teamDialog.show(placeTeam, team -> placeTeam = team),
+                () -> bundle.format("tu-unit-menu.set-team", "[#" + placeTeam.color + "]" + teamName() + "[]"),
+                "@tu-tooltip.block-set-team"
+            );
+
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> {
                     hide();
                     expectingPos = true;
-                }).get();
-                pb.label(() -> bundle.format("tu-unit-menu.pos", Point2.x(placePos), Point2.y(placePos))).padLeft(6).expandX();
-                TUElements.boxTooltip(pb, "@tu-tooltip.block-pos");
-            }).padTop(6);
-            all.row();
+                },
+                () -> bundle.format("tu-unit-menu.pos", Point2.x(placePos), Point2.y(placePos)),
+                "@tu-tooltip.block-pos"
+            );
+        }).padTop(6).row();
 
-            all.table(p -> {
-                ImageButton rb = p.button(TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize, () -> {
-                    rotation = Mathf.mod(rotation - 1, 4);
-                    Log.info(rotation);
-                }).get();
-                TUElements.boxTooltip(rb, "@tu-tooltip.block-rotate");
-                rb.setDisabled(() -> !block.rotate);
-                rb.update(() -> {
-                    ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection());
-                });
+        cont.table(p -> {
+            ImageButton rb = TUElements.imageButton(
+                p, TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize,
+                () -> rotation = Mathf.mod(rotation - 1, 4),
+                null, "@tu-tooltip.block-rotate"
+            );
+            rb.setDisabled(() -> !block.rotate);
+            rb.update(() -> ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection()));
 
-                ImageButton pb = p.button(new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize, this::placeBlock).expandX().get();
-                TUElements.boxTooltip(pb, "@tu-tooltip.block-place");
-                pb.setDisabled(() -> Vars.world.tile(placePos) == null);
-                pb.label(() -> "@tu-block-menu.place")
-                    .update(l -> l.setColor(pb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
-                pb.update(() -> {
-                    ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
-                });
+            ImageButton pb = TUElements.imageButton(
+                p, new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize,
+                this::placeBlock,
+                () -> "@tu-block-menu.place",
+                (b, l) -> l.setColor(b.isDisabled() ? Color.lightGray : Color.white),
+                "@tu-tooltip.block-place"
+            );
+            pb.setDisabled(() -> Vars.world.tile(placePos) == null);
+            pb.update(() -> {
+                ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
+            });
 
-                ImageButton cb = p.button(TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize, this::deleteBlock).expandX().get();
-                TUElements.boxTooltip(cb, "@tu-tooltip.block-delete");
-                cb.setDisabled(() -> Vars.world.tile(placePos) == null);
-                cb.label(() -> "@tu-block-menu.delete")
-                    .update(l -> l.setColor(pb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
-            }).padTop(6f);
-        });
+            ImageButton cb = TUElements.imageButton(
+                p, TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize,
+                this::deleteBlock,
+                () -> "@tu-block-menu.delete",
+                (b, l) -> l.setColor(b.isDisabled() ? Color.lightGray : Color.white),
+                "@tu-tooltip.block-delete"
+            );
+        }).padTop(6f);
 
         if(!initialized){
             Events.run(Trigger.update, () -> {
@@ -149,11 +157,6 @@ public class BlockDialog extends BaseDialog{
         expectingPos = false;
         selection.clear();
         String text = search.getText();
-
-        selection.label(
-            () -> bundle.get("tu-menu.selection") + block.localizedName
-        ).padBottom(6);
-        selection.row();
 
         Seq<Block> array = content.blocks()
             .select(b -> !b.isFloor() && !b.isStatic() &&

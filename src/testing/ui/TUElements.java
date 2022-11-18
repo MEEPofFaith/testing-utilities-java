@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
@@ -43,6 +44,21 @@ public class TUElements{
         }
 
         return field;
+    }
+
+    public static ImageButton imageButton(Table t, Drawable icon, ImageButtonStyle style, float isize, Runnable listener, Prov<CharSequence> label, Cons2<ImageButton, Label> labelUpdate, String tooltip){
+        ImageButton b = t.button(icon, style, isize, listener).get();
+        if(label != null){
+            Cell<Label> lab = b.label(label).padLeft(6f).expandX().name("label");
+            if(labelUpdate != null) lab.update(l -> labelUpdate.get(b, l));
+        }
+        boxTooltip(b, tooltip);
+
+        return b;
+    }
+
+    public static ImageButton imageButton(Table t, Drawable icon, ImageButtonStyle style, float isize, Runnable listener, Prov<CharSequence> label, String tooltip){
+        return imageButton(t, icon, style, isize, listener, label, null, tooltip);
     }
 
     public static Stack itemImage(TextureRegionDrawable region, Prov<CharSequence> text){

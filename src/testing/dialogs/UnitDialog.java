@@ -59,74 +59,87 @@ public class UnitDialog extends BaseDialog{
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        cont.label(() -> bundle.get("tu-menu.selection") + spawnUnit.localizedName).padBottom(6).row();
 
-            all.table(s -> {
-                TUElements.sliderSet(
-                    s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
-                    TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
-                    1, maxAmount, 1, amount, (n, f) -> {
-                        amount = n.intValue();
-                        f.setText(String.valueOf(n));
-                    },
-                    "@tu-unit-menu.amount",
-                    "@tu-tooltip.unit-amount"
-                );
-                s.row();
+        cont.pane(all -> all.add(selection)).row();
 
-                TUElements.sliderSet(
-                    s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
-                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
-                    minRadius, maxRadius, 1, radius, (n, f) -> {
-                        radius = n;
-                        f.setText(String.valueOf(n));
-                    },
-                    "@tu-unit-menu.radius",
-                    "@tu-tooltip.unit-radius"
-                );
-            });
-            all.row();
+        cont.table(s -> {
+            TUElements.sliderSet(
+                s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
+                TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
+                1, maxAmount, 1, amount, (n, f) -> {
+                    amount = n.intValue();
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.amount",
+                "@tu-tooltip.unit-amount"
+            );
+            s.row();
 
-            all.table(t -> {
-                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get();
-                tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
-                TUElements.boxTooltip(tb, "@tu-tooltip.unit-set-team");
+            TUElements.sliderSet(
+                s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
+                TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
+                minRadius, maxRadius, 1, radius, (n, f) -> {
+                    radius = n;
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.radius",
+                "@tu-tooltip.unit-radius"
+            );
+        }).padTop(6).row();
 
-                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
+        cont.table(t -> {
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize,
+                () -> teamDialog.show(spawnTeam, team -> spawnTeam = team),
+                () -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]"),
+                "@tu-tooltip.unit-set-team"
+            );
+
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> {
                     hide();
                     expectingPos = true;
-                }).get();
-                pb.label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).expandX();
-                TUElements.boxTooltip(pb, "@tu-tooltip.unit-pos");
-            }).padTop(6);
-            all.row();
+                },
+                () -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f),
+                "@tu-tooltip.unit-pos"
+            );
+        }).padTop(6).row();
 
-            all.table(b -> {
-                ImageButton ib = b.button(TUIcons.get(Icon.units), TUStyles.lefti, TUVars.buttonSize, this::transform).expandX().get();
-                TUElements.boxTooltip(ib, "@tu-tooltip.unit-transform");
-                ib.setDisabled(() -> player.unit().type == UnitTypes.block);
-                ib.label(() -> "@tu-unit-menu.transform").padLeft(6).expandX();
+        cont.table(b -> {
+            ImageButton ib = TUElements.imageButton(
+                b, TUIcons.get(Icon.units), TUStyles.lefti, TUVars.buttonSize,
+                this::transform,
+                () -> "@tu-unit-menu.transform",
+                "@tu-tooltip.unit-transform"
+            );
+            ib.setDisabled(() -> player.unit().type.internal);
 
-                ImageButton db = b.button(TUIcons.alpha, TUStyles.toggleRighti, TUVars.buttonSize, () -> despawns = !despawns).expandX().get();
-                TUElements.boxTooltip(db, "@tu-tooltip.unit-despawns");
-                db.update(() -> db.setChecked(despawns));
-                db.label(() -> "@tu-unit-menu.despawns").padLeft(6).expandX();
-            }).padTop(6);
+            ImageButton db = TUElements.imageButton(
+                b, TUIcons.alpha, TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> despawns = !despawns,
+                () -> "@tu-unit-menu.despawns",
+                "@tu-tooltip.unit-despawns"
+            );
+            db.update(() -> db.setChecked(despawns));
+        }).padTop(6).row();
 
-            all.row();
-            all.table(b -> {
-                ImageButton sb = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::spawn).expandX().get();
-                TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
-                sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
+        cont.table(b -> {
+            TUElements.imageButton(
+                b, TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize,
+                this::spawn,
+                () -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn"),
+                "@tu-tooltip.unit-spawn"
+            );
 
-                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
-                TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
-                wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
-
-            }).padTop(6);
-        });
+            TUElements.imageButton(
+                b, TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> waveChangeDialog.show(),
+                () -> "@tu-unit-menu.waves",
+                "@tu-tooltip.unit-set-wave"
+            );
+        }).padTop(6);
 
         if(!initialized){
             Events.run(Trigger.update, () -> {
@@ -170,11 +183,6 @@ public class UnitDialog extends BaseDialog{
         expectingPos = false;
         selection.clear();
         String text = search.getText();
-
-        selection.label(
-            () -> bundle.get("tu-menu.selection") + spawnUnit.localizedName
-        ).padBottom(6);
-        selection.row();
 
         Seq<UnitType> array = content.units()
             .select(e -> !e.internal &&
