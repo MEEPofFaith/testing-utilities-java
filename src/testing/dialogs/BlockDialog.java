@@ -109,7 +109,17 @@ public class BlockDialog extends BaseDialog{
                 (b, l) -> l.setColor(b.isDisabled() ? Color.lightGray : Color.white),
                 "@tu-tooltip.block-delete"
             );
-        }).padTop(6f);
+        }).padTop(6f).row();
+
+        TUElements.imageButton(
+            cont, TUIcons.get(Icon.terrain), Styles.defaulti, TUVars.buttonSize,
+            () -> {
+                TerrainPainterFragment.show = true;
+                hide();
+            },
+            () -> "@tu-block-menu.open-painter",
+            "@tu-tooltip.terrain-painter-open"
+        );
 
         if(!initialized){
             Events.run(Trigger.update, () -> {

@@ -52,7 +52,7 @@ public class TUElements{
             Cell<Label> lab = b.label(label).padLeft(6f).expandX().name("label");
             if(labelUpdate != null) lab.update(l -> labelUpdate.get(b, l));
         }
-        boxTooltip(b, tooltip);
+        if(tooltip != null) boxTooltip(b, tooltip);
 
         return b;
     }

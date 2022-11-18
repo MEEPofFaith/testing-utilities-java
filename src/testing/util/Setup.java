@@ -8,6 +8,7 @@ import mindustry.game.EventType.*;
 import mindustry.input.*;
 import testing.buttons.*;
 import testing.ui.*;
+import testing.ui.fragments.*;
 
 import static mindustry.Vars.*;
 
@@ -24,6 +25,8 @@ public class Setup{
     status = newTable(),
     units = newTable(),
     console = newTable();
+
+    public static TerrainPainterFragment terrainFrag;
 
     public static Table newTable(){
         return new Table().bottom().left();
@@ -89,6 +92,9 @@ public class Setup{
         });
         ui.hudGroup.addChild(buttons);
         buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
+
+        terrainFrag = new TerrainPainterFragment();
+        terrainFrag.build(ui.hudGroup);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(!selfInit){
