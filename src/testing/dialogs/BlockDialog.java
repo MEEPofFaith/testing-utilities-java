@@ -126,7 +126,7 @@ public class BlockDialog extends BaseDialog{
                 if(expectingPos){
                     if(!state.isGame()){
                         expectingPos = false;
-                    }else if(input.justTouched()){
+                    }else if(TestUtils.click()){
                         if(!scene.hasMouse()){
                             int x = World.toTile(input.mouseWorldX()),
                                 y = World.toTile(input.mouseWorldY());

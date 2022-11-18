@@ -147,7 +147,7 @@ public class UnitDialog extends BaseDialog{
                 if(expectingPos){
                     if(!state.isGame()){
                         expectingPos = false;
-                    }else if(input.justTouched()){
+                    }else if(TestUtils.click()){
                         if(!scene.hasMouse()){
                             spawnPos.set(input.mouseWorld());
                             ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);

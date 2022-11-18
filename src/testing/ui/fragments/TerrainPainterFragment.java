@@ -20,6 +20,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.legacy.*;
+import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -34,6 +35,7 @@ public class TerrainPainterFragment{
     Block block = Blocks.boulder;
     boolean drawing, erasing, changed;
     private boolean initialized;
+    float hold;
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -111,7 +113,17 @@ public class TerrainPainterFragment{
             Events.run(Trigger.update, () -> {
                 if(!state.isGame()){
                     show = drawing = erasing = false;
-                }else if(input.isTouched() && !scene.hasMouse()){
+                }else if(!scene.hasMouse()){
+                    if(!TestUtils.click()){
+                        hold = 0;
+                        return;
+                    }
+
+                    if(mobile){
+                        hold += Time.delta;
+                        if(hold < 5f * 60f) return;
+                    }
+
                     if(drawing){
                         int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
                         if(block.isOverlay()){
@@ -142,7 +154,7 @@ public class TerrainPainterFragment{
                     b.isFloor() || b.isOverlay() || b.isStatic() ||
                     b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock
                 ) &&
-                !b.isAir() && b.inEditor && b != Blocks.spawn &&
+                !b.isAir() && b.inEditor && b != Blocks.spawn && b != Blocks.empty &&
                 (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
                 (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         if(array.size == 0) return;

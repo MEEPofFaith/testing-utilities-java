@@ -3,6 +3,7 @@ package testing;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.input.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -137,7 +138,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableCampaign() && !player.unit().type.internal && input.alt() && input.isTouched()){
+                    if(!disableCampaign() && !player.unit().type.internal && input.alt() && click()){
                         if(teleport) return;
                         teleport = true;
 
@@ -185,6 +186,10 @@ public class TestUtils extends Mod{
 
     public static boolean disableCampaign(){
         return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
+    }
+
+    public static boolean click(){
+        return mobile ? input.isTouched() : input.keyDown(KeyCode.mouseLeft);
     }
 
     /** Not a setting, but rather adds an image to the settings menu. */
