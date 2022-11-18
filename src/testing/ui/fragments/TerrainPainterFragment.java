@@ -32,7 +32,7 @@ public class TerrainPainterFragment{
     TextField search;
     Table selection = new Table();
     Block block = Blocks.boulder;
-    boolean drawing, erasing;
+    boolean drawing, erasing, changed;
     private boolean initialized;
 
     public void build(Group parent){
@@ -80,16 +80,27 @@ public class TerrainPainterFragment{
                         eb.update(() -> eb.setChecked(erasing));
                     }).padTop(6f).row();
 
-                    TUElements.imageButton(
-                        b, TUIcons.get(Icon.left), Styles.defaulti, TUVars.buttonSize,
-                        () -> {
-                            show = false;
-                            drawing = false;
-                            erasing = false;
-                        },
-                        () -> "@close",
-                        null
-                    );
+                    b.table(c -> {
+                        ImageButton rb = TUElements.imageButton(
+                            c, TUIcons.get(Icon.rotate), TUStyles.lefti, TUVars.buttonSize,
+                            this::reload,
+                            () -> "@tu-painter.reload",
+                            "@tu-tooltip.painter-reload"
+                        );
+                        rb.setDisabled(() -> !changed);
+
+                        TUElements.imageButton(
+                            c, TUIcons.get(Icon.left), TUStyles.righti, TUVars.buttonSize,
+                            () -> {
+                                show = false;
+                                drawing = false;
+                                erasing = false;
+                                reload();
+                            },
+                            () -> "@close",
+                            "@tu-tooltip.painter-close"
+                        );
+                    });
                 }).fillX();
             });
         });
@@ -174,31 +185,44 @@ public class TerrainPainterFragment{
 
     void placeFloor(int pos){
         //TODO if(block instanceof SteamVent){place 3x3}
+        if(world.tile(pos).floor() == block) return;
 
         if(net.client()){
+            int overlay = world.tile(pos).overlayID();
+
             Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
         }else{
-            world.tile(pos).setFloorNet(block);
+            world.tile(pos).setFloorUnder((Floor)block);
         }
+        changed = true;
     }
 
     void placeOverlayFloor(int pos){
+        if(world.tile(pos).overlay() == block) return;
+
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
         }else{
             world.tile(pos).setOverlayNet(block);
         }
+        changed = true;
     }
 
     void placeBlock(int pos){
+        if(world.tile(pos).block() == block) return;
+
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
         }else{
             world.tile(pos).setNet(block);
         }
+        changed = true;
     }
 
     void erase(int pos){
+        if(world.tile(pos).overlay() == Blocks.air && world.tile(pos).block() == Blocks.air) return;
+
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Blocks.air)");
@@ -206,5 +230,12 @@ public class TerrainPainterFragment{
             world.tile(pos).setOverlayNet(Blocks.air);
             world.tile(pos).setNet(Blocks.air);
         }
+        changed = true;
+    }
+
+    void reload(){
+        if(changed) Events.fire(new WorldLoadEvent());
+
+        changed = false;
     }
 }
