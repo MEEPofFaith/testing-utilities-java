@@ -153,7 +153,9 @@ public class TerrainPainterFragment{
 
                     if(drawing){
                         if(block instanceof SteamVent){
-                            placeFloor(Tmp.p1.set(tx, ty).pack());
+                            paintSqure(tx, ty, 3, t -> {
+                                placeFloor(t.pos());
+                            });
                         }else{
                             paintCircle(tx, ty, t -> {
                                 if(block.isOverlay()){
@@ -220,6 +222,20 @@ public class TerrainPainterFragment{
         }
     }
 
+    public void paintSqure(int x, int y, int size, Cons<Tile> drawer){
+        for(int rx = 0; rx < size; rx++){
+            for(int ry = 0; ry < size; ry++){
+                int wx = x + rx - size/2, wy = y + ry - size/2;
+
+                if(wx < 0 || wy < 0 || wx >= world.width() || wy >= world.height()){
+                    continue;
+                }
+
+                drawer.get(world.tile(wx, wy));
+            }
+        }
+    }
+
     void rebuild(){
         selection.clear();
         String text = search.getText();
@@ -272,35 +288,17 @@ public class TerrainPainterFragment{
     }
 
     void placeFloor(int pos){
-        if(block instanceof SteamVent){
-            boolean ventChange = false;
-            for(int i = 0; i < SteamVent.offsets.length; i++){
-                Tmp.p2.set(Tmp.p1).add(SteamVent.offsets[i]).add(1, 1);
-                pos = Tmp.p2.pack();
+        if(world.tile(pos) == null || world.tile(pos).floor() == block) return;
 
-                if(world.tile(pos) == null || world.tile(pos).floor() == block) continue;
-                ventChange = true;
+        if(net.client()){
+            int overlay = world.tile(pos).overlayID();
 
-                if(net.client()){
-                    Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-                }else{
-                    world.tile(pos).setFloor((Floor)block);
-                }
-            }
-            if(ventChange) changed = true;
+            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
         }else{
-            if(world.tile(pos) == null || world.tile(pos).floor() == block) return;
-
-            if(net.client()){
-                int overlay = world.tile(pos).overlayID();
-
-                Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-                Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
-            }else{
-                world.tile(pos).setFloorUnder((Floor)block);
-            }
-            changed = true;
+            world.tile(pos).setFloorUnder((Floor)block);
         }
+        changed = true;
     }
 
     void placeOverlayFloor(int pos){
