@@ -16,7 +16,7 @@ public class TUStyles{
         buttonRight, buttonRightOver, buttonRightDown,
         paneBottom;
     public static ButtonStyle redButtonStyle;
-    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti, centeri;
+    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, togglei, lefti, toggleLefti, righti, toggleRighti, centeri;
 
     public static void init(){
         redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
@@ -44,6 +44,10 @@ public class TUStyles{
 
         tuRedImageStyle = new ImageButtonStyle(tuImageStyle){{
             disabled = redBack;
+        }};
+
+        togglei = new ImageButtonStyle(Styles.defaulti){{
+            checked = Tex.buttonOver;
         }};
 
         lefti = new ImageButtonStyle(Styles.defaulti){{

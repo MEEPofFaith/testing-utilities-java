@@ -23,6 +23,7 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.legacy.*;
 import testing.*;
 import testing.buttons.*;
@@ -94,7 +95,6 @@ public class BlockDialog extends BaseDialog{
                 p, new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize,
                 this::placeBlock,
                 () -> "@tu-block-menu.place",
-                (b, l) -> l.setColor(b.isDisabled() ? Color.lightGray : Color.white),
                 "@tu-tooltip.block-place"
             );
             pb.setDisabled(() -> Vars.world.tile(placePos) == null);
@@ -106,20 +106,20 @@ public class BlockDialog extends BaseDialog{
                 p, TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize,
                 this::deleteBlock,
                 () -> "@tu-block-menu.delete",
-                (b, l) -> l.setColor(b.isDisabled() ? Color.lightGray : Color.white),
                 "@tu-tooltip.block-delete"
             );
         }).padTop(6f).row();
 
-        TUElements.imageButton(
+        ImageButton pb = TUElements.imageButton(
             cont, TUIcons.get(Icon.terrain), Styles.defaulti, TUVars.buttonSize,
             () -> {
                 TerrainPainterFragment.show = true;
                 hide();
             },
             () -> "@tu-block-menu.open-painter",
-            "@tu-tooltip.terrain-painter-open"
+            "@tu-tooltip.block-terrain-painter-open"
         );
+        pb.update(() -> pb.setDisabled(TerrainPainterFragment.show));
 
         if(!initialized){
             Events.run(Trigger.update, () -> {
@@ -170,6 +170,9 @@ public class BlockDialog extends BaseDialog{
 
         Seq<Block> array = content.blocks()
             .select(b -> !b.isFloor() && !b.isStatic() &&
+                !(b instanceof Prop) &&
+                !(b instanceof TallBlock) &&
+                !(b instanceof TreeBlock) &&
                 !(b instanceof ConstructBlock) &&
                 !(b instanceof LegacyBlock) &&
                 (!b.isHidden() || settings.getBool("tu-show-hidden")) &&

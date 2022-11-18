@@ -1,8 +1,10 @@
 package testing.ui.fragments;
 
+import arc.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
@@ -10,6 +12,8 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -28,6 +32,8 @@ public class TerrainPainterFragment{
     TextField search;
     Table selection = new Table();
     Block block = Blocks.boulder;
+    boolean drawing;
+    boolean initialized;
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -44,13 +50,27 @@ public class TerrainPainterFragment{
 
                 int rows = 6;
                 float h = rows * (4 * 8) + (rows - 1) * 6 + 2 * 3;
-                all.pane(sel -> sel.add(selection)).fillX().padBottom(4).height(h);
+                all.pane(sel -> {
+                    sel.top();
+                    sel.add(selection);
+                }).fillX().padBottom(4).height(h);
                 all.row();
 
                 all.table(b -> {
+                    ImageButton db = TUElements.imageButton(
+                        b, TUIcons.get(Icon.pencil), TUStyles.togglei, TUVars.buttonSize,
+                        () -> drawing = !drawing,
+                        () -> "@tu-painter.draw",
+                        "@tu-tooltip.painter-draw"
+                    );
+                    db.update(() -> db.setChecked(drawing));
+
                     TUElements.imageButton(
                         b, TUIcons.get(Icon.left), Styles.defaulti, TUVars.buttonSize,
-                        () -> show = false,
+                        () -> {
+                            show = false;
+                            drawing = false;
+                        },
                         () -> "@close",
                         null
                     );
@@ -59,6 +79,27 @@ public class TerrainPainterFragment{
         });
 
         rebuild();
+
+        if(!initialized){
+            Events.run(Trigger.update, () -> { //TODO erasing
+                if(drawing){
+                    if(!state.isGame()){
+                        drawing = false;
+                    }else if(input.isTouched() && !scene.hasMouse()){
+                        int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
+                        if(block.isOverlay()){
+                            placeOverlayFloor(pos);
+                        }else if(block.isFloor()){
+                            placeFloor(pos);
+                        }else{
+                            placeBlock(pos);
+                        }
+                    }
+                }
+            });
+
+            initialized = true;
+        }
     }
 
     void rebuild(){
@@ -66,7 +107,11 @@ public class TerrainPainterFragment{
         String text = search.getText();
 
         Seq<Block> array = content.blocks()
-            .select(b -> (b.isFloor() || b.isOverlay() || b.isStatic()) &&
+            .select(b ->
+                (
+                    b.isFloor() || b.isOverlay() || b.isStatic() ||
+                    b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock
+                ) &&
                 !b.isAir() && b.inEditor && b != Blocks.spawn &&
                 (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
                 (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
@@ -106,5 +151,31 @@ public class TerrainPainterFragment{
                 }
             }
         }).growX().left().padBottom(10);
+    }
+
+    void placeFloor(int pos){
+        //TODO if(block instanceof SteamVent){place 3x3}
+
+        if(net.client()){
+            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+        }else{
+            world.tile(pos).setFloorNet(block);
+        }
+    }
+
+    void placeOverlayFloor(int pos){
+        if(net.client()){
+            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
+        }else{
+            world.tile(pos).setOverlayNet(block);
+        }
+    }
+
+    void placeBlock(int pos){
+        if(net.client()){
+            Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
+        }else{
+            world.tile(pos).setNet(block);
+        }
     }
 }

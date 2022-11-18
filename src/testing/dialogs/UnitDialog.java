@@ -96,6 +96,7 @@ public class UnitDialog extends BaseDialog{
                 "@tu-tooltip.unit-set-team"
             );
 
+
             TUElements.imageButton(
                 t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
                 () -> {
