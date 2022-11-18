@@ -102,7 +102,7 @@ public class TerrainPainterFragment{
                             () -> "@close",
                             "@tu-tooltip.painter-close"
                         );
-                    });
+                    }).padTop(6f);
                 }).fillX();
             });
         });
