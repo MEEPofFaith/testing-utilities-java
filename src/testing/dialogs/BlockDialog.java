@@ -113,13 +113,13 @@ public class BlockDialog extends BaseDialog{
         ImageButton pb = TUElements.imageButton(
             cont, TUIcons.get(Icon.terrain), Styles.defaulti, TUVars.buttonSize,
             () -> {
-                TerrainPainterFragment.show = true;
+                Setup.terrainFrag.show = true;
                 hide();
             },
             () -> "@tu-block-menu.open-painter",
             "@tu-tooltip.block-terrain-painter-open"
         );
-        pb.update(() -> pb.setDisabled(TerrainPainterFragment.show));
+        pb.update(() -> pb.setDisabled(Setup.terrainFrag.show));
 
         if(!initialized){
             Events.run(Trigger.update, () -> {

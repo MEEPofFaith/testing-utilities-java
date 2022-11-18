@@ -27,13 +27,13 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class TerrainPainterFragment{
-    public static boolean show = false;
+    public boolean show = false;
 
     TextField search;
     Table selection = new Table();
     Block block = Blocks.boulder;
-    boolean drawing;
-    boolean initialized;
+    boolean drawing, erasing;
+    private boolean initialized;
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -57,19 +57,35 @@ public class TerrainPainterFragment{
                 all.row();
 
                 all.table(b -> {
-                    ImageButton db = TUElements.imageButton(
-                        b, TUIcons.get(Icon.pencil), TUStyles.togglei, TUVars.buttonSize,
-                        () -> drawing = !drawing,
-                        () -> "@tu-painter.draw",
-                        "@tu-tooltip.painter-draw"
-                    );
-                    db.update(() -> db.setChecked(drawing));
+                    b.table(d -> {
+                        ImageButton db = TUElements.imageButton(
+                            d, TUIcons.get(Icon.pencil), TUStyles.toggleLefti, TUVars.buttonSize,
+                            () -> {
+                                drawing = !drawing;
+                                erasing = false;
+                            },
+                            () -> "@tu-painter.draw",
+                            "@tu-tooltip.painter-draw"
+                        );
+                        db.update(() -> db.setChecked(drawing));
+                        ImageButton eb = TUElements.imageButton(
+                            d, TUIcons.get(Icon.eraser), TUStyles.toggleRighti, TUVars.buttonSize,
+                            () -> {
+                                erasing = !erasing;
+                                drawing = false;
+                            },
+                            () -> "@tu-painter.erase",
+                            "@tu-tooltip.painter-erase"
+                        );
+                        eb.update(() -> eb.setChecked(erasing));
+                    }).padTop(6f).row();
 
                     TUElements.imageButton(
                         b, TUIcons.get(Icon.left), Styles.defaulti, TUVars.buttonSize,
                         () -> {
                             show = false;
                             drawing = false;
+                            erasing = false;
                         },
                         () -> "@close",
                         null
@@ -81,11 +97,11 @@ public class TerrainPainterFragment{
         rebuild();
 
         if(!initialized){
-            Events.run(Trigger.update, () -> { //TODO erasing
-                if(drawing){
-                    if(!state.isGame()){
-                        drawing = false;
-                    }else if(input.isTouched() && !scene.hasMouse()){
+            Events.run(Trigger.update, () -> {
+                if(!state.isGame()){
+                    show = drawing = erasing = false;
+                }else if(input.isTouched() && !scene.hasMouse()){
+                    if(drawing){
                         int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
                         if(block.isOverlay()){
                             placeOverlayFloor(pos);
@@ -94,6 +110,9 @@ public class TerrainPainterFragment{
                         }else{
                             placeBlock(pos);
                         }
+                    }else if(erasing){
+                        int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
+                        erase(pos);
                     }
                 }
             });
@@ -176,6 +195,16 @@ public class TerrainPainterFragment{
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
         }else{
             world.tile(pos).setNet(block);
+        }
+    }
+
+    void erase(int pos){
+        if(net.client()){
+            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
+            Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Blocks.air)");
+        }else{
+            world.tile(pos).setOverlayNet(Blocks.air);
+            world.tile(pos).setNet(Blocks.air);
         }
     }
 }
