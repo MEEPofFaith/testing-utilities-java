@@ -28,7 +28,6 @@ import mindustry.world.blocks.legacy.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
-import testing.ui.fragments.*;
 import testing.util.*;
 
 import static arc.Core.*;
