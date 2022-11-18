@@ -9,6 +9,7 @@ import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -34,6 +35,7 @@ public class TerrainPainterFragment{
     Table selection = new Table();
     Block block = Blocks.boulder;
     boolean drawing, erasing, changed;
+    int stroke = 1;
     private boolean initialized;
     float hold;
 
@@ -59,6 +61,19 @@ public class TerrainPainterFragment{
                 all.row();
 
                 all.table(b -> {
+                    b.table(sl -> {
+                        TUElements.sliderSet(
+                            sl, text -> {
+                                stroke = Strings.parseInt(text);
+                            }, () -> String.valueOf(stroke),
+                            TextFieldFilter.digitsOnly, s -> Strings.canParseInt(s) && Strings.parseInt(s) > 0,
+                            1, 10, 1, stroke, (n, f) -> {
+                                stroke = Mathf.round(n);
+                                f.setText(String.valueOf(stroke));
+                            }, "@tu-painter.size", null
+                        );
+                    }).row();
+
                     b.table(d -> {
                         ImageButton db = TUElements.imageButton(
                             d, TUIcons.get(Icon.pencil), TUStyles.toggleLefti, TUVars.buttonSize,
@@ -124,19 +139,41 @@ public class TerrainPainterFragment{
                         if(hold < 5f * 60f) return;
                     }
 
-                    int pos = Tmp.p1.set(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY())).pack();
-                    if(world.tile(pos) == null) return;
+                    int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
+                    float wx = tx * tilesize, wy = ty * tilesize;
 
                     if(drawing){
-                        if(block.isOverlay()){
-                            placeOverlayFloor(pos);
-                        }else if(block.isFloor()){
-                            placeFloor(pos);
+                        if(block instanceof SteamVent){
+                            placeFloor(Tmp.p1.set(tx, ty).pack());
                         }else{
-                            placeBlock(pos);
+                            for(int x = tx - stroke - 2; x <= tx + stroke + 2; x++){
+                                for(int y = ty - stroke - 2; y <= ty + stroke + 2; y++){
+                                    if(Mathf.within(x * tilesize, y * tilesize, wx, wy, stroke * tilesize)){
+                                        Tile other = world.tile(x, y);
+                                        if(other != null){
+                                            if(block.isOverlay()){
+                                                placeOverlayFloor(other.pos());
+                                            }else if(block.isFloor()){
+                                                placeFloor(other.pos());
+                                            }else{
+                                                placeBlock(other.pos());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }else if(erasing){
-                        erase(pos);
+                        for(int x = tx - stroke - 2; x <= tx + stroke + 2; x++){
+                            for(int y = ty - stroke - 2; y <= ty + stroke + 2; y++){
+                                if(Mathf.within(x * tilesize, y * tilesize, wx, wy, stroke * tilesize)){
+                                    Tile other = world.tile(x, y);
+                                    if(other != null){
+                                        erase(other.pos());
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });
@@ -150,7 +187,7 @@ public class TerrainPainterFragment{
     }
 
     public void drawPos(){
-        if((drawing || erasing) && state.isGame() && !scene.hasMouse()){
+        if((drawing || erasing) && state.isGame() && !scene.hasMouse()){ //TODO how draw for larger brush sizes
             float x = World.toTile(input.mouseWorldX()) * tilesize,
                 y = World.toTile(input.mouseWorldY()) * tilesize;
             float size = drawing && block instanceof SteamVent ? 3 : 1,
@@ -222,7 +259,7 @@ public class TerrainPainterFragment{
                 Tmp.p2.set(Tmp.p1).add(SteamVent.offsets[i]).add(1, 1);
                 pos = Tmp.p2.pack();
 
-                if(world.tile(pos).floor() == block) continue;
+                if(world.tile(pos) == null || world.tile(pos).floor() == block) continue;
                 ventChange = true;
 
                 if(net.client()){
@@ -233,7 +270,7 @@ public class TerrainPainterFragment{
             }
             if(ventChange) changed = true;
         }else{
-            if(world.tile(pos).floor() == block) return;
+            if(world.tile(pos) == null || world.tile(pos).floor() == block) return;
 
             if(net.client()){
                 int overlay = world.tile(pos).overlayID();
@@ -248,7 +285,7 @@ public class TerrainPainterFragment{
     }
 
     void placeOverlayFloor(int pos){
-        if(world.tile(pos).overlay() == block) return;
+        if(world.tile(pos) == null || world.tile(pos).overlay() == block) return;
 
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
@@ -259,7 +296,7 @@ public class TerrainPainterFragment{
     }
 
     void placeBlock(int pos){
-        if(world.tile(pos).block() == block) return;
+        if(world.tile(pos) == null || world.tile(pos).block() == block) return;
 
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
@@ -270,7 +307,7 @@ public class TerrainPainterFragment{
     }
 
     void erase(int pos){
-        if(world.tile(pos).overlay() == Blocks.air && world.tile(pos).block() == Blocks.air) return;
+        if(world.tile(pos) == null || (world.tile(pos).overlay() == Blocks.air && world.tile(pos).block() == Blocks.air)) return;
 
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
