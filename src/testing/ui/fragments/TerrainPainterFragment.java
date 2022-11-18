@@ -125,13 +125,13 @@ public class TerrainPainterFragment{
                     }
 
                     if(drawing){
-                        int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
+                        Tmp.p1.set(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
                         if(block.isOverlay()){
-                            placeOverlayFloor(pos);
+                            placeOverlayFloor(Tmp.p1.pack());
                         }else if(block.isFloor()){
-                            placeFloor(pos);
+                            placeFloor(Tmp.p1.pack());
                         }else{
-                            placeBlock(pos);
+                            placeBlock(Tmp.p1.pack());
                         }
                     }else if(erasing){
                         int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
@@ -196,18 +196,35 @@ public class TerrainPainterFragment{
     }
 
     void placeFloor(int pos){
-        //TODO if(block instanceof SteamVent){place 3x3}
-        if(world.tile(pos).floor() == block) return;
+        if(block instanceof SteamVent){
+            boolean ventChange = false;
+            for(int i = 0; i < SteamVent.offsets.length; i++){
+                Tmp.p2.set(Tmp.p1).add(SteamVent.offsets[i]).add(1, 1);
+                pos = Tmp.p2.pack();
 
-        if(net.client()){
-            int overlay = world.tile(pos).overlayID();
+                if(world.tile(pos).floor() == block) continue;
+                ventChange = true;
 
-            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
+                if(net.client()){
+                    Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+                }else{
+                    world.tile(pos).setFloor((Floor)block);
+                }
+            }
+            if(ventChange) changed = true;
         }else{
-            world.tile(pos).setFloorUnder((Floor)block);
+            if(world.tile(pos).floor() == block) return;
+
+            if(net.client()){
+                int overlay = world.tile(pos).overlayID();
+
+                Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
+                Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
+            }else{
+                world.tile(pos).setFloorUnder((Floor)block);
+            }
+            changed = true;
         }
-        changed = true;
     }
 
     void placeOverlayFloor(int pos){
