@@ -117,6 +117,7 @@ public class TestUtils extends Mod{
                 Draw.z(Layer.endPixeled);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
+                Setup.terrainFrag.drawPos();
                 if(!teleport && !disableCampaign() && !player.unit().type.internal && input.alt()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);

@@ -2,6 +2,7 @@ package testing.ui.fragments;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -15,6 +16,7 @@ import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
@@ -141,6 +143,21 @@ public class TerrainPainterFragment{
             });
 
             initialized = true;
+        }
+    }
+
+    public void drawPos(){
+        if((drawing || erasing) && state.isGame() && !scene.hasMouse()){
+            float x = World.toTile(input.mouseWorldX()) * tilesize,
+                y = World.toTile(input.mouseWorldY()) * tilesize;
+            float size = drawing && block instanceof SteamVent ? 3 : 1,
+                offset = (1 - size % 2) * tilesize / 2f;
+            size *= tilesize;
+
+            Draw.z(Layer.overlayUI);
+            Lines.stroke(1f, drawing ? Pal.accent : Pal.remove);
+            Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
+            Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
         }
     }
 

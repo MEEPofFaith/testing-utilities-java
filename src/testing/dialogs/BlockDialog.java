@@ -160,7 +160,7 @@ public class BlockDialog extends BaseDialog{
         Draw.z(Layer.overlayUI);
         Lines.stroke(1f, placeTeam.color);
         Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
-        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
     void rebuild(){

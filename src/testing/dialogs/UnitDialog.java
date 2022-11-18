@@ -177,7 +177,7 @@ public class UnitDialog extends BaseDialog{
         Draw.z(Layer.overlayUI);
         Lines.stroke(1f, spawnTeam.color);
         if(radius > 0.01f) Lines.circle(x, y, radius * tilesize);
-        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
     void rebuild(){
