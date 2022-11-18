@@ -113,7 +113,7 @@ public class TerrainPainterFragment{
             Events.run(Trigger.update, () -> {
                 if(!state.isGame()){
                     show = drawing = erasing = false;
-                }else if(!scene.hasMouse()){
+                }else if((drawing || erasing) && !scene.hasMouse()){
                     if(!TestUtils.click()){
                         hold = 0;
                         return;
@@ -124,20 +124,25 @@ public class TerrainPainterFragment{
                         if(hold < 5f * 60f) return;
                     }
 
+                    int pos = Tmp.p1.set(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY())).pack();
+                    if(world.tile(pos) == null) return;
+
                     if(drawing){
-                        Tmp.p1.set(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
                         if(block.isOverlay()){
-                            placeOverlayFloor(Tmp.p1.pack());
+                            placeOverlayFloor(pos);
                         }else if(block.isFloor()){
-                            placeFloor(Tmp.p1.pack());
+                            placeFloor(pos);
                         }else{
-                            placeBlock(Tmp.p1.pack());
+                            placeBlock(pos);
                         }
                     }else if(erasing){
-                        int pos = Point2.pack(World.toTile(input.mouseWorldX()), World.toTile(input.mouseWorldY()));
                         erase(pos);
                     }
                 }
+            });
+
+            Events.on(WorldLoadEvent.class, e -> {
+                show = drawing = erasing = changed = false;
             });
 
             initialized = true;

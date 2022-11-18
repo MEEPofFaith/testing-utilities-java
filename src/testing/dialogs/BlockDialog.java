@@ -96,7 +96,7 @@ public class BlockDialog extends BaseDialog{
                 () -> "@tu-block-menu.place",
                 "@tu-tooltip.block-place"
             );
-            pb.setDisabled(() -> Vars.world.tile(placePos) == null);
+            pb.setDisabled(() -> world.tile(placePos) == null);
             pb.update(() -> {
                 ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
             });
