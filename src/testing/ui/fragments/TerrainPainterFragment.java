@@ -143,6 +143,7 @@ public class TerrainPainterFragment{
                         hold = 0;
                         return;
                     }
+                    player.shooting(false);
 
                     if(mobile){
                         hold += Time.delta;
