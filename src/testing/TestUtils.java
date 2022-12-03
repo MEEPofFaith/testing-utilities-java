@@ -109,9 +109,9 @@ public class TestUtils extends Mod{
                     }
                 }
             });
-            Events.on(ClientPreConnectEvent.class, e -> {
+            /*Events.on(ClientPreConnectEvent.class, e -> {
                 hasJS = netServer.clientCommands.getCommandList().contains(c -> c.text.equals("js"));
-            });
+            });*/
 
             //position drawing + sk7725/whynotteleport
             if(mobile) return;
@@ -199,7 +199,8 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableServer(){
-        return net.client() && !hasJS;
+        //return net.client() && !hasJS;
+        return false;
     }
 
     public static boolean click(){
