@@ -39,7 +39,7 @@ public class TerrainPainterFragment{
     int brushSize;
     private boolean initialized;
     float hold;
-    private Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
+    private final Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -65,21 +65,17 @@ public class TerrainPainterFragment{
                 all.table(b -> {
                     Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
                     slider.moved(f -> brushSize = (int)f);
-                    for(int j = 0; j < MapEditor.brushSizes.length; j++){
-                        if(j == brushSize()){
-                            slider.setValue(j);
+                    slider.update(() -> {
+                        if(net.client()){
+                            slider.setValue(brushSize());
                         }
-                    }
+                    });
 
                     var label = new Label("@editor.brush");
                     label.setAlignment(Align.center);
                     label.touchable = Touchable.disabled;
 
                     b.top().stack(slider, label);
-                    b.update(() -> {
-                        slider.setDisabled(net.client());
-                        label.setColor(net.client() ? Color.lightGray : Color.white);
-                    });
                     b.row();
 
                     b.table(d -> {
@@ -242,7 +238,8 @@ public class TerrainPainterFragment{
     }
 
     int brushSize(){
-        return net.client() ? 0 : brushSize;
+        //Limit brush size on servers
+        return net.client() ? Math.min(brushSize, 2) : brushSize;
     }
 
     void rebuild(){
@@ -302,11 +299,9 @@ public class TerrainPainterFragment{
         if(net.client()){
             int overlay = world.tile(pos).overlayID();
 
-            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + overlay + "))");
-        }else{
-            world.tile(pos).setFloorUnder((Floor)block);
+            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "), Vars.content.block(" + overlay + "))");
         }
+        world.tile(pos).setFloorUnder((Floor)block);
         changed = true;
     }
 
@@ -315,9 +310,8 @@ public class TerrainPainterFragment{
 
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
-        }else{
-            world.tile(pos).setOverlayNet(block);
         }
+        world.tile(pos).setOverlay(block);
         changed = true;
     }
 
@@ -326,9 +320,8 @@ public class TerrainPainterFragment{
 
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
-        }else{
-            world.tile(pos).setNet(block);
         }
+        world.tile(pos).setBlock(block);
         changed = true;
     }
 
@@ -338,15 +331,18 @@ public class TerrainPainterFragment{
         if(net.client()){
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Blocks.air)");
-        }else{
-            world.tile(pos).setOverlayNet(Blocks.air);
-            world.tile(pos).setNet(Blocks.air);
         }
+        world.tile(pos).setOverlayNet(Blocks.air);
+        world.tile(pos).setNet(Blocks.air);
         changed = true;
     }
 
     void reload(){
-        if(changed) Events.fire(new WorldLoadEvent());
+        if(changed){
+            if(net.client()) Utils.runCommand("Events.fire(new WorldLoadEvent());");
+
+            Events.fire(new WorldLoadEvent());
+        }
 
         changed = false;
     }
