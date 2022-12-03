@@ -66,7 +66,7 @@ public class TerrainPainterFragment{
                     Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
                     slider.moved(f -> brushSize = (int)f);
                     for(int j = 0; j < MapEditor.brushSizes.length; j++){
-                        if(j == brushSize){
+                        if(j == brushSize()){
                             slider.setValue(j);
                         }
                     }
@@ -76,6 +76,10 @@ public class TerrainPainterFragment{
                     label.touchable = Touchable.disabled;
 
                     b.top().stack(slider, label);
+                    b.update(() -> {
+                        slider.setDisabled(net.client());
+                        label.setColor(net.client() ? Color.lightGray : Color.white);
+                    });
                     b.row();
 
                     b.table(d -> {
@@ -198,7 +202,7 @@ public class TerrainPainterFragment{
                 size *= tilesize;
                 Lines.rect(wx - size / 2 + offset, wy - size / 2 + offset, size, size);
             }else{
-                Lines.poly(brushPolygons[brushSize], wx - tilesize / 2, wy - tilesize / 2, tilesize);
+                Lines.poly(brushPolygons[brushSize()], wx - tilesize / 2, wy - tilesize / 2, tilesize);
             }
             Draw.rect(Icon.cancel.getRegion(), wx, wy, tilesize / 2f, tilesize / 2f);
         }
@@ -206,7 +210,7 @@ public class TerrainPainterFragment{
 
     /** Taken from {@link MapEditor::drawCircle} */
     public void paintCircle(int x, int y, Cons<Tile> drawer){
-        float bSize = MapEditor.brushSizes[brushSize];
+        float bSize = MapEditor.brushSizes[brushSize()];
         int clamped = (int)bSize;
         for(int rx = -clamped; rx <= clamped; rx++){
             for(int ry = -clamped; ry <= clamped; ry++){
@@ -235,6 +239,10 @@ public class TerrainPainterFragment{
                 drawer.get(world.tile(wx, wy));
             }
         }
+    }
+
+    int brushSize(){
+        return net.client() ? 0 : brushSize;
     }
 
     void rebuild(){
