@@ -118,7 +118,7 @@ public class BlockDialog extends BaseDialog{
             () -> "@tu-block-menu.open-painter",
             "@tu-tooltip.block-terrain-painter-open"
         );
-        pb.setDisabled(() -> Setup.terrainFrag.show);
+        pb.setDisabled(() -> net.client() || Setup.terrainFrag.show);
 
         if(!initialized){
             Events.run(Trigger.update, () -> {
