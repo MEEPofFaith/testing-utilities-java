@@ -20,7 +20,6 @@ public class Console{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-show");
-        b.setDisabled(TestUtils::disableCampaign);
 
         return i;
     }
@@ -30,7 +29,6 @@ public class Console{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-clear");
-        b.setDisabled(TestUtils::disableCampaign);
 
         return i;
     }
@@ -40,7 +38,6 @@ public class Console{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-input");
-        b.setDisabled(TestUtils::disableCampaign);
 
         return i;
     }

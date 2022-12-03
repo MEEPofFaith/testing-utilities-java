@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.scene.utils.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -31,6 +32,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
+    static boolean hasJS;
     boolean teleport, hasProc;
 
     public TestUtils(){
@@ -107,6 +109,9 @@ public class TestUtils extends Mod{
                     }
                 }
             });
+            Events.on(ClientPreConnectEvent.class, e -> {
+                hasJS = netServer.clientCommands.getCommandList().contains(c -> c.text.equals("js"));
+            });
 
             //position drawing + sk7725/whynotteleport
             if(mobile) return;
@@ -182,11 +187,19 @@ public class TestUtils extends Mod{
             }
         });
 
-        if(mobile) ui.settings.game.checkPref("console", true); //Dev Mode
+        if(mobile) ui.settings.game.checkPref("console", true);
+    }
+
+    public static boolean disableButton(){
+        return disableCampaign() || disableServer();
     }
 
     public static boolean disableCampaign(){
         return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
+    }
+
+    public static boolean disableServer(){
+        return net.client() && !hasJS;
     }
 
     public static boolean click(){

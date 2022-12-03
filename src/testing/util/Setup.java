@@ -78,8 +78,6 @@ public class Setup{
         Effect.add(status);
         add(status);
 
-        //TODO weather
-
         Death.init();
         Death.add(death);
         add(death);

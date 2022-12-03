@@ -28,7 +28,7 @@ public class TeamChanger{
     public static Cell<Button> addMini(Table t){
         Cell<Button> i = t.button(b -> {
             TUElements.boxTooltip(b, "@tu-tooltip.button-team");
-            b.setDisabled(() -> TestUtils.disableCampaign() || player.unit().type == UnitTypes.block);
+            b.setDisabled(() -> TestUtils.disableButton() || player.unit().type.internal);
             b.label(TeamChanger::teamName);
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;

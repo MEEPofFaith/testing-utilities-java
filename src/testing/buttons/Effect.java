@@ -15,7 +15,7 @@ public class Effect{
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
-        b.setDisabled(TestUtils::disableCampaign);
+        b.setDisabled(TestUtils::disableButton);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);
         });
@@ -27,7 +27,7 @@ public class Effect{
         ImageButton b = new ImageButton(TUIcons.weather, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-weather");
         b.clicked(weatherDialog::show);
-        b.setDisabled(TestUtils::disableCampaign);
+        b.setDisabled(TestUtils::disableButton);
         b.resizeImage(40f);
 
         return t.add(b).growX();

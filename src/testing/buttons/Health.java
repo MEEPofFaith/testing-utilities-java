@@ -47,7 +47,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
-        b.setDisabled(TestUtils::disableCampaign);
+        b.setDisabled(TestUtils::disableButton);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
@@ -63,7 +63,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
-        b.setDisabled(TestUtils::disableCampaign);
+        b.setDisabled(TestUtils::disableButton);
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);

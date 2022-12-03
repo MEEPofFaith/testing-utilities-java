@@ -150,7 +150,7 @@ public class BlockDialog extends BaseDialog{
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = World.toTile(input.mouseWorldX()) * tilesize;
             y = World.toTile(input.mouseWorldY()) * tilesize;
-        }else if(Spawn.blockHover && !TestUtils.disableCampaign()){
+        }else if(Spawn.blockHover && !TestUtils.disableButton()){
             x = Point2.x(placePos) * tilesize;
             y = Point2.y(placePos) * tilesize;
         }else{

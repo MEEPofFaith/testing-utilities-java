@@ -85,7 +85,7 @@ public class Death{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
-        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableServer());
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 sTimer += Time.delta;
@@ -114,7 +114,7 @@ public class Death{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
-        b.setDisabled(() -> player.unit() == null || player.unit().type == UnitTypes.block || TestUtils.disableCampaign());
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableButton());
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 cTimer += Time.delta;

@@ -168,7 +168,7 @@ public class UnitDialog extends BaseDialog{
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = input.mouseWorldX();
             y = input.mouseWorldY();
-        }else if(Spawn.spawnHover && !TestUtils.disableCampaign()){
+        }else if(Spawn.spawnHover && !TestUtils.disableButton()){
             x = spawnPos.x;
             y = spawnPos.y;
         }else{
