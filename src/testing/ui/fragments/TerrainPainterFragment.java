@@ -332,8 +332,8 @@ public class TerrainPainterFragment{
             Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
             Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Blocks.air)");
         }
-        world.tile(pos).setOverlayNet(Blocks.air);
-        world.tile(pos).setNet(Blocks.air);
+        world.tile(pos).setOverlay(Blocks.air);
+        world.tile(pos).setBlock(Blocks.air);
         changed = true;
     }
 
