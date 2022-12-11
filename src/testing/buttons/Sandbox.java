@@ -46,7 +46,7 @@ public class Sandbox{
                     ");"
                 );
             }else{ //Separate to prevent unnecessary command length.
-                Utils.runCommandPlayer(
+                Utils.runCommandPlayerShort(
                     "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
                 );
             }

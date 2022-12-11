@@ -41,7 +41,7 @@ public class Death{
     public static void spontaniumCombustum(){
         if(net.client()){
             if(settings.getBool("tu-instakill")){
-                Utils.runCommandPlayer(
+                Utils.runCommandPlayerShort(
                     "p.unit().elevation = 0;" +
                     "p.unit().health = -1;" +
                     "p.unit().dead = true;"
@@ -67,7 +67,7 @@ public class Death{
 
     public static void mitosis(){
         if(net.client()){
-            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+            Utils.runCommandPlayerShort("p.unit().type.spawn(p.team(), p.x, p.y);");
         }else{
             Unit u = player.unit();
             if(u != null){

@@ -17,15 +17,15 @@ public class Utils{
     }
 
     public static void runCommandPlayer(String command){
-        runCommand("let p = Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")");
+        runCommand("let p=Groups.player.find(p =>p.id==" + player.id + ");");
         runCommand(command);
     }
-    public static void runCommandPlayerFast(String command){
-        runCommand("Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")" + command);
-    }
 
-    public static String fixQuotes(String s){
-        return s.replaceAll("\"", "\\\\\"");
+    public static void runCommandPlayerShort(String command){
+        runCommand("let p=Groups.player.find(p => p.id == " + player.id + ");" + command);
+    }
+    public static void runCommandPlayerFast(String command){
+        runCommand("Groups.player.find(p=>p.id==" + player.id + ")" + command);
     }
 
     public static String round(float f){
