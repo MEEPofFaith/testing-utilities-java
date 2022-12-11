@@ -39,6 +39,12 @@ public class Death{
 
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public static void spontaniumCombustum(){
+        Unit u = player.unit();
+        if(u != null){
+            for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
+                TUFx.deathLightning.at(u, true);
+            }
+        }
         if(net.client()){
             if(settings.getBool("tu-instakill")){
                 Utils.runCommandPlayerShort(
@@ -49,12 +55,7 @@ public class Death{
             }
             Utils.runCommandPlayerFast(".unit().kill();");
         }else{
-            Unit u = player.unit();
             if(u != null){
-                for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
-                    TUFx.deathLightning.at(u, true);
-                }
-
                 if(settings.getBool("tu-instakill")){
                     u.elevation(0);
                     u.health(-1);
