@@ -16,11 +16,6 @@ public class Utils{
         Call.sendChatMessage("/js " + command);
     }
 
-    public static void runCommandPlayer(String command){
-        runCommand("let p=Groups.player.getByID(" + player.id + ");");
-        runCommand(command);
-    }
-
     public static void runCommandPlayerShort(String command){
         runCommand("let p=Groups.player.getByID(" + player.id + ");" + command);
     }

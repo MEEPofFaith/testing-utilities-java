@@ -39,7 +39,7 @@ public class Sandbox{
             if(core == null) return;
             float capacity = core.storageCapacity;
             if(settings.getBool("tu-fill-all")){
-                Utils.runCommandPlayer(
+                Utils.runCommandPlayerShort(
                     "Vars.content.items().each(" +
                         "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
                         "i=>p.core().items.set(i," + capacity + ")" +
