@@ -17,15 +17,15 @@ public class Utils{
     }
 
     public static void runCommandPlayer(String command){
-        runCommand("let p=Groups.player.find(p =>p.id==" + player.id + ");");
+        runCommand("let p=Groups.player.getByID(" + player.id + ");");
         runCommand(command);
     }
 
     public static void runCommandPlayerShort(String command){
-        runCommand("let p=Groups.player.find(p => p.id == " + player.id + ");" + command);
+        runCommand("let p=Groups.player.getByID(" + player.id + ");" + command);
     }
     public static void runCommandPlayerFast(String command){
-        runCommand("Groups.player.find(p=>p.id==" + player.id + ")" + command);
+        runCommand("Groups.player.getByID(" + player.id + ")" + command);
     }
 
     public static String round(float f){
