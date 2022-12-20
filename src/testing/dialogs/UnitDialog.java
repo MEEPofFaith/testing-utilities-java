@@ -34,7 +34,7 @@ public class UnitDialog extends BaseDialog{
     Table selection = new Table();
     UnitType spawnUnit = UnitTypes.dagger;
     Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
-    Vec2 spawnPos = new Vec2();
+    Vec2 spawnPos = new Vec2(Float.MIN_VALUE, Float.MIN_VALUE);
     int amount = 1;
     float radius = 2;
     static boolean despawns = true, initialized;
@@ -143,6 +143,12 @@ public class UnitDialog extends BaseDialog{
         }).padTop(6);
 
         if(!initialized){
+            Events.on(WorldLoadEndEvent.class, e -> {
+                if(spawnPos.x == Float.MIN_VALUE){
+                    spawnPos.set(world.unitWidth() / 2f, world.unitHeight() / 2f);
+                }
+            });
+
             Events.run(Trigger.update, () -> {
                 if(expectingPos){
                     if(!state.isGame()){

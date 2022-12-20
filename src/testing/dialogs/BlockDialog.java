@@ -39,7 +39,7 @@ public class BlockDialog extends BaseDialog{
     Table selection = new Table();
     Block block = Blocks.coreShard;
     Team placeTeam = Team.get(settings.getInt("tu-default-team", 1));
-    int placePos, rotation = 1;
+    int placePos = -1, rotation = 1;
     static boolean initialized;
 
     boolean expectingPos;
@@ -121,6 +121,12 @@ public class BlockDialog extends BaseDialog{
         pb.setDisabled(() -> Setup.terrainFrag.show);
 
         if(!initialized){
+            Events.on(WorldLoadEndEvent.class, e -> {
+                if(placePos == -1){
+                    placePos = Point2.pack(world.width() / 2, world.height() / 2);
+                }
+            });
+
             Events.run(Trigger.update, () -> {
                 if(expectingPos){
                     if(!state.isGame()){
