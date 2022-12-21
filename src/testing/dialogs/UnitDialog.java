@@ -68,12 +68,17 @@ public class UnitDialog extends BaseDialog{
                 s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
                 TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
                 1, maxAmount, 1, amount, (n, f) -> {
-                    amount = n.intValue();
+                    amount = net.client() ? Math.max(n.intValue(), 500) : n.intValue();
                     f.setText(String.valueOf(n));
                 },
                 "@tu-unit-menu.amount",
                 "@tu-tooltip.unit-amount"
             );
+            s.update(() -> {
+                if(net.client()){
+                    amount = Math.max(amount, 10);
+                }
+            });
             s.row();
 
             TUElements.sliderSet(
