@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
@@ -30,6 +31,8 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class UnitDialog extends BaseDialog{
+    static final int multiplayerLimit = 10;
+
     TextField search;
     Table selection = new Table();
     UnitType spawnUnit = UnitTypes.dagger;
@@ -64,7 +67,7 @@ public class UnitDialog extends BaseDialog{
         cont.pane(all -> all.add(selection)).row();
 
         cont.table(s -> {
-            TUElements.sliderSet(
+            Element[] elements = TUElements.sliderSet(
                 s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
                 TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
                 1, maxAmount, 1, amount, (n, f) -> {
@@ -74,9 +77,13 @@ public class UnitDialog extends BaseDialog{
                 "@tu-unit-menu.amount",
                 "@tu-tooltip.unit-amount"
             );
+            Slider sl = (Slider)elements[0];
+            TextField tf = (TextField)elements[1];
             s.update(() -> {
-                if(net.client()){
-                    amount = Math.max(amount, 10);
+                if(net.client() && amount > multiplayerLimit){
+                    amount = multiplayerLimit;
+                    sl.setValue(amount);
+                    tf.setText(amount + "");
                 }
             });
             s.row();

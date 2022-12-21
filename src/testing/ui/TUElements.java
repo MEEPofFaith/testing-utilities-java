@@ -13,7 +13,7 @@ import mindustry.gen.*;
 import testing.util.*;
 
 public class TUElements{
-    public static void sliderSet(Table t, Cons<String> changed, Prov<String> fieldText, TextFieldFilter filter, TextFieldValidator valid, float min, float max, float step, float def, Cons2<Float, TextField> sliderChanged, String title, String tooltip){
+    public static Element[] sliderSet(Table t, Cons<String> changed, Prov<String> fieldText, TextFieldFilter filter, TextFieldValidator valid, float min, float max, float step, float def, Cons2<Float, TextField> sliderChanged, String title, String tooltip){
         TextField field = textField(String.valueOf(def), changed, fieldText, filter, valid);
 
         Label tab = t.add(title).right().padRight(6f).get();
@@ -26,6 +26,8 @@ public class TUElements{
             sl.addListener(tip);
             f.addListener(tip);
         }
+
+        return new Element[]{sl, f};
     }
 
     public static TextField textField(String text, Cons<String> changed, Prov<String> setText, TextFieldFilter filter, TextFieldValidator valid){
