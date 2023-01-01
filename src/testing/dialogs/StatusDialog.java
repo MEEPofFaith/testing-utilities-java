@@ -133,7 +133,7 @@ public class StatusDialog extends BaseDialog{
 
     void apply(){
         if(net.client()){
-            Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+            Utils.runCommandPlayerShort(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
@@ -141,7 +141,7 @@ public class StatusDialog extends BaseDialog{
 
     void clearStatus(){
         if(net.client()){
-            Utils.runCommandPlayerFast(".unit().clearStatuses();");
+            Utils.runCommandPlayerShort(".unit().clearStatuses();");
         }else if(player.unit() != null){
             player.unit().clearStatuses();
         }

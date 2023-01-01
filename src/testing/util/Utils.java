@@ -1,5 +1,6 @@
 package testing.util;
 
+import arc.*;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.gen.*;
@@ -13,13 +14,22 @@ public class Utils{
     }
 
     public static void runCommand(String command){
-        Call.sendChatMessage("/js " + command);
+        boolean shown = ui.chatfrag.shown();
+        if(!shown){
+            ui.chatfrag.toggle();
+            Time.runTask(netClient.getPing() / 1000f * 2f, () -> {
+                Call.sendChatMessage("/js " + command);
+                ui.chatfrag.toggle();
+            });
+        }else{
+            Call.sendChatMessage("/js " + command);
+        }
     }
 
-    public static void runCommandPlayerShort(String command){
+    public static void runCommandPlayer(String command){
         runCommand("let p=Groups.player.getByID(" + player.id + ");" + command);
     }
-    public static void runCommandPlayerFast(String command){
+    public static void runCommandPlayerShort(String command){
         runCommand("Groups.player.getByID(" + player.id + ")" + command);
     }
 

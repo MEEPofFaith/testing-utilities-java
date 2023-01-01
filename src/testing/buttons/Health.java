@@ -18,13 +18,13 @@ public class Health{
         if(net.client()){
             if(u instanceof BlockUnitc b){
                 String health = invincibility ? "Number.MAX_VALUE" : (b.tile().block.health + "");
-                Utils.runCommandPlayerShort(
+                Utils.runCommandPlayer(
                     "p.unit().tile().maxHealth=" + health + ";" +
                     "p.unit().tile().health=" + health + ";"
                 );
             }else{
                 String health = invincibility ? "Number.MAX_VALUE" : (u.type.health + "");
-                Utils.runCommandPlayerShort(
+                Utils.runCommandPlayer(
                     "p.unit().maxHealth=" + health + ";" +
                     "p.unit().health=" + health + ";"
                 );

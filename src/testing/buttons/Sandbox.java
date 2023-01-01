@@ -39,14 +39,14 @@ public class Sandbox{
             if(core == null) return;
             float capacity = core.storageCapacity;
             if(settings.getBool("tu-fill-all")){
-                Utils.runCommandPlayerShort(
+                Utils.runCommandPlayer(
                     "Vars.content.items().each(" +
                         "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
                         "i=>p.core().items.set(i," + capacity + ")" +
                     ");"
                 );
             }else{ //Separate to prevent unnecessary command length.
-                Utils.runCommandPlayerShort(
+                Utils.runCommandPlayer(
                     "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
                 );
             }
@@ -64,7 +64,7 @@ public class Sandbox{
 
     public static void dumpCore(){
         if(net.client()){
-            Utils.runCommandPlayerFast(".core().items.clear()");
+            Utils.runCommandPlayerShort(".core().items.clear()");
         }else{
             if(player.core() != null) player.core().items.clear();
         }

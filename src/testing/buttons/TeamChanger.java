@@ -4,7 +4,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import testing.*;
@@ -19,7 +18,7 @@ public class TeamChanger{
 
     public static void changeTeam(Team team){
         if(Vars.net.client()){
-            Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
+            Utils.runCommandPlayerShort(".team(Team.get(" + team.id + "));");
         }else{
             player.team(team);
         }

@@ -261,7 +261,7 @@ public class UnitDialog extends BaseDialog{
 
     void transform(){
         if(net.client()){
-            Utils.runCommandPlayerShort("let spawned=Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p);Call.unitControl(p,spawned);" + (despawns ? "p.unit().spawnedByCore=true;" : ""));
+            Utils.runCommandPlayer("let spawned=Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p);Call.unitControl(p,spawned);" + (despawns ? "p.unit().spawnedByCore=true;" : ""));
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
