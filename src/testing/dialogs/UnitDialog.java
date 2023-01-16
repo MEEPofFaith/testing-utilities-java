@@ -84,6 +84,7 @@ public class UnitDialog extends TUBaseDialog{
                     amount = multiplayerLimit;
                     sl.setValue(amount);
                     tf.setText(amount + "");
+                    ui.showInfoToast("@tu-unit-menu.limit", 4f);
                 }
             });
             s.row();
@@ -91,7 +92,7 @@ public class UnitDialog extends TUBaseDialog{
             TUElements.sliderSet(
                 s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
                 TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
-                minRadius, maxRadius, 1, radius, (n, f) -> {
+                minRadius, maxRadius, 0.1f, radius, (n, f) -> {
                     radius = n;
                     f.setText(String.valueOf(n));
                 },
