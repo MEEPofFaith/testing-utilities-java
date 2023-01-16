@@ -28,7 +28,7 @@ public class Utils{
     }
 
     public static void runCommandPlayer(String command){
-        runCommand("let pl=Groups.player.getByID(" + player.id + ");" + command);
+        runCommand("let e=Groups.player.getByID(" + player.id + ");" + command);
     }
     public static void runCommandPlayerShort(String command){
         runCommand("Groups.player.getByID(" + player.id + ")" + command);

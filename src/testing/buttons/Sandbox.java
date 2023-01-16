@@ -42,12 +42,12 @@ public class Sandbox{
                 Utils.runCommandPlayer(
                     "Vars.content.items().each(" +
                         "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
-                        "i=>pl.core().items.set(i," + capacity + ")" +
+                        "i=>e.core().items.set(i," + capacity + ")" +
                     ");"
                 );
             }else{ //Separate to prevent unnecessary command length.
                 Utils.runCommandPlayer(
-                    "Vars.content.items().each(i=>pl.core().items.set(i," + capacity + "));"
+                    "Vars.content.items().each(i=>e.core().items.set(i," + capacity + "));"
                 );
             }
         }else{

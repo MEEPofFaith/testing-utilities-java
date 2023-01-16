@@ -48,9 +48,9 @@ public class Death{
         if(net.client()){
             if(settings.getBool("tu-instakill")){
                 Utils.runCommandPlayer(
-                    "pl.unit().elevation = 0;" +
-                    "pl.unit().health = -1;" +
-                    "pl.unit().dead = true;"
+                    "e.unit().elevation = 0;" +
+                    "e.unit().health = -1;" +
+                    "e.unit().dead = true;"
                 );
             }
             Utils.runCommandPlayerShort(".unit().kill();");
@@ -68,7 +68,7 @@ public class Death{
 
     public static void mitosis(){
         if(net.client()){
-            Utils.runCommandPlayer("pl.unit().type.spawn(pl.team(), pl.x, pl.y);");
+            Utils.runCommandPlayer("e.unit().type.spawn(pl.team(), pl.x, pl.y);");
         }else{
             Unit u = player.unit();
             if(u != null){

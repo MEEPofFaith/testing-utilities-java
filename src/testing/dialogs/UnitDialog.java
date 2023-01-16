@@ -71,7 +71,7 @@ public class UnitDialog extends TUBaseDialog{
                 s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
                 TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
                 1, maxAmount, 1, amount, (n, f) -> {
-                    amount = net.client() ? Math.max(n.intValue(), 500) : n.intValue();
+                    amount = n.intValue();
                     f.setText(String.valueOf(n));
                 },
                 "@tu-unit-menu.amount",
@@ -79,7 +79,7 @@ public class UnitDialog extends TUBaseDialog{
             );
             Slider sl = (Slider)elements[0];
             TextField tf = (TextField)elements[1];
-            s.update(() -> {
+            sl.update(() -> {
                 if(net.client() && !sl.isDragging() && amount > multiplayerLimit){
                     amount = multiplayerLimit;
                     sl.setValue(amount);
@@ -261,7 +261,7 @@ public class UnitDialog extends TUBaseDialog{
 
     void transform(){
         if(net.client()){
-            Utils.runCommandPlayer("let s=Vars.content.unit(" + spawnUnit.id + ").spawn(pl.team(), pl);Call.unitControl(pl,s);" + (despawns ? "pl.unit().spawnedByCore=true;" : ""));
+            Utils.runCommandPlayer("let s=Vars.content.unit(" + spawnUnit.id + ").spawn(e.team(), e);Call.unitControl(e,s);" + (despawns ? "e.unit().spawnedByCore=true;" : ""));
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
