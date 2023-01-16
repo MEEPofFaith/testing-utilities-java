@@ -20,7 +20,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
@@ -157,9 +156,7 @@ public class UnitDialog extends TUBaseDialog{
 
         if(!initialized){
             Events.on(WorldLoadEndEvent.class, e -> {
-                if(spawnPos.x == Float.MIN_VALUE){
-                    spawnPos.set(world.unitWidth() / 2f, world.unitHeight() / 2f);
-                }
+                spawnPos.set(world.unitWidth() / 2f, world.unitHeight() / 2f);
             });
 
             Events.run(Trigger.update, () -> {
@@ -169,6 +166,10 @@ public class UnitDialog extends TUBaseDialog{
                     }else if(TestUtils.click()){
                         if(!scene.hasMouse()){
                             spawnPos.set(input.mouseWorld());
+                            if(net.client()){
+                                spawnPos.x = Mathf.floor(spawnPos.x);
+                                spawnPos.y = Mathf.floor(spawnPos.y);
+                            }
                             ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
                             show();
                         }else{
@@ -187,6 +188,10 @@ public class UnitDialog extends TUBaseDialog{
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = input.mouseWorldX();
             y = input.mouseWorldY();
+            if(net.client()){
+                x = Mathf.floor(x);
+                y = Mathf.floor(y);
+            }
         }else if(Spawn.spawnHover && !TestUtils.disableButton()){
             x = spawnPos.x;
             y = spawnPos.y;
@@ -249,8 +254,13 @@ public class UnitDialog extends TUBaseDialog{
 
     void spawn(){
         if(net.client()){
-            Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
-            Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
+            String setPos = Utils.constructCommand("Tmp.v1.setToRandomDirection().setLength(@).add(@,@)",
+                radius * tilesize, Mathf.floor(spawnPos.x), Mathf.floor(spawnPos.y)
+            );
+
+            Utils.runCommand(Utils.constructCommand("for(let i=0;i<@;i++){Vars.content.unit(@).spawn(Team.get(@),@);}",
+                amount, spawnUnit.id, spawnTeam.id, setPos
+            ));
         }else{
             for(int i = 0; i < amount; i++){
                 float r = radius * tilesize * Mathf.sqrt(Mathf.random());
@@ -262,7 +272,9 @@ public class UnitDialog extends TUBaseDialog{
 
     void transform(){
         if(net.client()){
-            Utils.runCommandPlayer("let s=Vars.content.unit(" + spawnUnit.id + ").spawn(e.team(), e);Call.unitControl(e,s);" + (despawns ? "e.unit().spawnedByCore=true;" : ""));
+            Utils.runCommandPlayer(Utils.constructCommand("let s=Vars.content.unit(@).spawn(e.team(), e);Call.unitControl(e,s);@",
+                spawnUnit.id, (despawns ? "e.unit().spawnedByCore=true;" : "")
+            ));
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;

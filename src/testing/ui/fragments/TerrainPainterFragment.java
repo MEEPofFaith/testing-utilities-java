@@ -286,11 +286,6 @@ public class TerrainPainterFragment{
     void placeFloor(int pos){
         if(world.tile(pos) == null || world.tile(pos).floor() == block) return;
 
-        if(net.client()){
-            int overlay = world.tile(pos).overlayID();
-
-            Utils.runCommand("Vars.world.tile(" + pos + ").setFloorNet(Vars.content.block(" + block.id + "), Vars.content.block(" + overlay + "))");
-        }
         world.tile(pos).setFloorUnder((Floor)block);
         changed = true;
     }
@@ -298,9 +293,6 @@ public class TerrainPainterFragment{
     void placeOverlayFloor(int pos){
         if(world.tile(pos) == null || world.tile(pos).overlay() == block) return;
 
-        if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
-        }
         world.tile(pos).setOverlay(block);
         changed = true;
     }
@@ -308,9 +300,6 @@ public class TerrainPainterFragment{
     void placeBlock(int pos){
         if(world.tile(pos) == null || world.tile(pos).block() == block) return;
 
-        if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Vars.content.block(" + block.id + "))");
-        }
         world.tile(pos).setBlock(block);
         changed = true;
     }
@@ -318,10 +307,6 @@ public class TerrainPainterFragment{
     void erase(int pos){
         if(world.tile(pos) == null || (world.tile(pos).overlay() == Blocks.air && world.tile(pos).block() == Blocks.air)) return;
 
-        if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + pos + ").setOverlayNet(Blocks.air)");
-            Utils.runCommand("Vars.world.tile(" + pos + ").setNet(Blocks.air)");
-        }
         world.tile(pos).setOverlay(Blocks.air);
         world.tile(pos).setBlock(Blocks.air);
         changed = true;
@@ -329,8 +314,6 @@ public class TerrainPainterFragment{
 
     void reload(){
         if(changed){
-            if(net.client()) Utils.runCommand("Events.fire(new WorldLoadEvent());");
-
             Events.fire(new WorldLoadEvent());
         }
 

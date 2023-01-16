@@ -120,7 +120,9 @@ public class WeatherDialog extends TUBaseDialog{
 
     void createWeather(){
         if(net.client()){
-            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + (duration * 60f) + ")");
+            Utils.runCommand(Utils.constructCommand("Vars.content.getByID(ContentType.weather,@).create(@,@)",
+                weather.id, intensity / 100f, Mathf.floor(duration * 60f)
+            ));
         }else{
             weather.create(intensity / 100f, duration * 60f);
         }

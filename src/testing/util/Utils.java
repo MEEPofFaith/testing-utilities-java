@@ -34,6 +34,10 @@ public class Utils{
         runCommand("Groups.player.getByID(" + player.id + ")" + command);
     }
 
+    public static String constructCommand(String base, Object... args){
+        return Log.format(base, args);
+    }
+
     public static String round(float f){
         if(f >= 1_000_000_000){
             return Strings.autoFixed(f / 1_000_000_000, 1) + UI.billions;

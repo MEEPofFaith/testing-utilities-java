@@ -133,7 +133,9 @@ public class StatusDialog extends TUBaseDialog{
 
     void apply(){
         if(net.client()){
-            Utils.runCommandPlayerShort(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+            Utils.runCommandPlayerShort(Utils.constructCommand(".unit().apply(Vars.content.getByID(ContentType.status,@),@);",
+                status.id, (perma ? "Number.MAX_VALUE" : duration * 60)
+            ));
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }

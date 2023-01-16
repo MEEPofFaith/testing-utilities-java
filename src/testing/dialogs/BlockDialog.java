@@ -122,9 +122,7 @@ public class BlockDialog extends TUBaseDialog{
 
         if(!initialized){
             Events.on(WorldLoadEndEvent.class, e -> {
-                if(placePos == -1){
-                    placePos = Point2.pack(world.width() / 2, world.height() / 2);
-                }
+                placePos = Point2.pack(world.width() / 2, world.height() / 2);
             });
 
             Events.run(Trigger.update, () -> {
@@ -233,7 +231,9 @@ public class BlockDialog extends TUBaseDialog{
 
     void placeBlock(){
         if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
+            Utils.runCommand(Utils.constructCommand("Vars.world.tile(@).setNet(Vars.content.block(@),Team.get(@),@)",
+                placePos, block.id, placeTeam.id, rotation
+            ));
         }else{
             world.tile(placePos).setNet(block, placeTeam, rotation);
         }
@@ -241,7 +241,9 @@ public class BlockDialog extends TUBaseDialog{
 
     void deleteBlock(){
         if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Blocks.air)");
+            Utils.runCommand(Utils.constructCommand("Vars.world.tile(@).setNet(Blocks.air)",
+                placePos
+            ));
         }else{
             world.tile(placePos).setAir();
         }
