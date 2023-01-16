@@ -50,7 +50,11 @@ public class TeamDialog extends TUBaseDialog{
 
             TextField tField = TUElements.textField(
                 String.valueOf(curTeam.id),
-                text -> changed.get(Team.get(Strings.parseInt(text))),
+                text -> {
+                    Team team = Team.get(Strings.parseInt(text));
+                    changed.get(team);
+                    curTeam = team;
+                },
                 () -> String.valueOf(curTeam.id),
                 TextFieldFilter.digitsOnly,
                 Strings::canParsePositiveInt
