@@ -17,7 +17,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class TeamDialog extends BaseDialog{
+public class TeamDialog extends TUBaseDialog{
     Team curTeam;
     Cons<Team> changed;
 

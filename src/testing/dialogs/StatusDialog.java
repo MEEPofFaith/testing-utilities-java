@@ -20,7 +20,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class StatusDialog extends BaseDialog{
+public class StatusDialog extends TUBaseDialog{
     TextField search;
     Table selection = new Table();
     StatusEffect status = StatusEffects.burning;

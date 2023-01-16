@@ -19,14 +19,14 @@ public class Health{
             if(u instanceof BlockUnitc b){
                 String health = invincibility ? "Number.MAX_VALUE" : (b.tile().block.health + "");
                 Utils.runCommandPlayer(
-                    "p.unit().tile().maxHealth=" + health + ";" +
-                    "p.unit().tile().health=" + health + ";"
+                    "pl.unit().tile().maxHealth=" + health + ";" +
+                    "pl.unit().tile().health=" + health + ";"
                 );
             }else{
                 String health = invincibility ? "Number.MAX_VALUE" : (u.type.health + "");
                 Utils.runCommandPlayer(
-                    "p.unit().maxHealth=" + health + ";" +
-                    "p.unit().health=" + health + ";"
+                    "pl.unit().maxHealth=" + health + ";" +
+                    "pl.unit().health=" + health + ";"
                 );
             }
         }else{

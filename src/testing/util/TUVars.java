@@ -3,6 +3,7 @@ package testing.util;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.mod.Mods.*;
+import testing.dialogs.*;
 
 import static arc.Core.*;
 
@@ -10,6 +11,7 @@ public class TUVars{
     public static float longPress;
 
     public static Team curTeam = Team.sharded;
+    public static TUBaseDialog activeDialog;
 
     /** Offset for when sk7725/timecontrol is enabled */
     public static float TCOffset;

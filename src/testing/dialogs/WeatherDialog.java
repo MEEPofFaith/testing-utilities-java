@@ -17,7 +17,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class WeatherDialog extends BaseDialog{
+public class WeatherDialog extends TUBaseDialog{
     TextField search;
     Table selection = new Table();
     Weather weather = Weathers.rain;
@@ -120,7 +120,7 @@ public class WeatherDialog extends BaseDialog{
 
     void createWeather(){
         if(net.client()){
-            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
+            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + (duration * 60f) + ")");
         }else{
             weather.create(intensity / 100f, duration * 60f);
         }

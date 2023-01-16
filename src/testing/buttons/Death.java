@@ -48,9 +48,9 @@ public class Death{
         if(net.client()){
             if(settings.getBool("tu-instakill")){
                 Utils.runCommandPlayer(
-                    "p.unit().elevation = 0;" +
-                    "p.unit().health = -1;" +
-                    "p.unit().dead = true;"
+                    "pl.unit().elevation = 0;" +
+                    "pl.unit().health = -1;" +
+                    "pl.unit().dead = true;"
                 );
             }
             Utils.runCommandPlayerShort(".unit().kill();");
@@ -68,7 +68,7 @@ public class Death{
 
     public static void mitosis(){
         if(net.client()){
-            Utils.runCommandPlayer("p.unit().type.spawn(p.team(), p.x, p.y);");
+            Utils.runCommandPlayer("pl.unit().type.spawn(pl.team(), pl.x, pl.y);");
         }else{
             Unit u = player.unit();
             if(u != null){
@@ -88,7 +88,7 @@ public class Death{
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableServer());
         b.update(() -> {
-            if(b.isPressed() && !b.isDisabled()){
+            if(b.isPressed() && !b.isDisabled() && !net.client()){
                 sTimer += Time.delta;
                 if(sTimer > TUVars.longPress){
                     spontaniumCombustum();
@@ -117,7 +117,7 @@ public class Death{
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableButton());
         b.update(() -> {
-            if(b.isPressed() && !b.isDisabled()){
+            if(b.isPressed() && !b.isDisabled() && !net.client()){
                 cTimer += Time.delta;
                 if(cTimer > TUVars.longPress){
                     mitosis();

@@ -30,7 +30,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class UnitDialog extends BaseDialog{
+public class UnitDialog extends TUBaseDialog{
     static final int multiplayerLimit = 10;
 
     TextField search;
@@ -80,7 +80,7 @@ public class UnitDialog extends BaseDialog{
             Slider sl = (Slider)elements[0];
             TextField tf = (TextField)elements[1];
             s.update(() -> {
-                if(net.client() && amount > multiplayerLimit){
+                if(net.client() && !sl.isDragging() && amount > multiplayerLimit){
                     amount = multiplayerLimit;
                     sl.setValue(amount);
                     tf.setText(amount + "");
@@ -261,7 +261,7 @@ public class UnitDialog extends BaseDialog{
 
     void transform(){
         if(net.client()){
-            Utils.runCommandPlayer("let spawned=Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p);Call.unitControl(p,spawned);" + (despawns ? "p.unit().spawnedByCore=true;" : ""));
+            Utils.runCommandPlayer("let s=Vars.content.unit(" + spawnUnit.id + ").spawn(pl.team(), pl);Call.unitControl(pl,s);" + (despawns ? "pl.unit().spawnedByCore=true;" : ""));
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;

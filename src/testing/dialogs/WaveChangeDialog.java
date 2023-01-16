@@ -16,7 +16,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class WaveChangeDialog extends BaseDialog{
+public class WaveChangeDialog extends TUBaseDialog{
     Table all = new Table();
 
     int startWave = 1, waves = 50;

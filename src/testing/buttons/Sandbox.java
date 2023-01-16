@@ -37,17 +37,17 @@ public class Sandbox{
         if(net.client()){
             CoreBuild core = player.core();
             if(core == null) return;
-            float capacity = core.storageCapacity;
+            int capacity = core.storageCapacity;
             if(settings.getBool("tu-fill-all")){
                 Utils.runCommandPlayer(
                     "Vars.content.items().each(" +
                         "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
-                        "i=>p.core().items.set(i," + capacity + ")" +
+                        "i=>pl.core().items.set(i," + capacity + ")" +
                     ");"
                 );
             }else{ //Separate to prevent unnecessary command length.
                 Utils.runCommandPlayer(
-                    "Vars.content.items().each(i=>p.core().items.set(i," + capacity + "));"
+                    "Vars.content.items().each(i=>pl.core().items.set(i," + capacity + "));"
                 );
             }
         }else{

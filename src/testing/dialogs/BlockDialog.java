@@ -34,7 +34,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class BlockDialog extends BaseDialog{
+public class BlockDialog extends TUBaseDialog{
     TextField search;
     Table selection = new Table();
     Block block = Blocks.coreShard;
@@ -241,7 +241,7 @@ public class BlockDialog extends BaseDialog{
 
     void deleteBlock(){
         if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + placePos + ").setAir()");
+            Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Blocks.air)");
         }else{
             world.tile(placePos).setAir();
         }

@@ -16,18 +16,19 @@ public class Utils{
     public static void runCommand(String command){
         boolean shown = ui.chatfrag.shown();
         if(!shown){
+            if(TUVars.activeDialog != null) TUVars.activeDialog.hide();
             ui.chatfrag.toggle();
-            Time.runTask(netClient.getPing() / 1000f * 2f, () -> {
+            Timer.schedule(() -> Timer.schedule(() -> {
                 Call.sendChatMessage("/js " + command);
                 ui.chatfrag.toggle();
-            });
+            }, netClient.getPing() / 1000f), netClient.getPing() / 1000f);
         }else{
             Call.sendChatMessage("/js " + command);
         }
     }
 
     public static void runCommandPlayer(String command){
-        runCommand("let p=Groups.player.getByID(" + player.id + ");" + command);
+        runCommand("let pl=Groups.player.getByID(" + player.id + ");" + command);
     }
     public static void runCommandPlayerShort(String command){
         runCommand("Groups.player.getByID(" + player.id + ")" + command);

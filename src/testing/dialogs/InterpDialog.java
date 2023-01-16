@@ -16,7 +16,7 @@ import java.util.*;
 
 import static arc.math.Interp.*;
 
-public class InterpDialog extends BaseDialog{
+public class InterpDialog extends TUBaseDialog{
     InterpGraph graph;
     Table configTable;
     //Configs
