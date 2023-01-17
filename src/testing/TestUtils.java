@@ -170,6 +170,7 @@ public class TestUtils extends Mod{
         ui.settings.addCategory(bundle.get("setting.tu-title"), "test-utils-settings-icon", t -> {
             t.pref(new Banner("test-utils-settings-banner", -1));
             t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.checkPref("tu-clipboard", false);
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-despawns", true);
             t.checkPref("tu-permanent", false);

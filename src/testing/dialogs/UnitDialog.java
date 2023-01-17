@@ -272,9 +272,12 @@ public class UnitDialog extends TUBaseDialog{
 
     void transform(){
         if(net.client()){
-            Utils.runCommandPlayer(Utils.constructCommand("let s=Vars.content.unit(@).spawn(e.team(), e);Call.unitControl(e,s);@",
-                spawnUnit.id, (despawns ? "e.unit().spawnedByCore=true;" : "")
-            ));
+            char c = Utils.rand1();
+            char s = Utils.rand2(c);
+
+            Utils.runCommandPlayer(Utils.constructCommand("let @=Vars.content.unit(@).spawn(@.team(), @);Call.unitControl(@,@);@",
+                s, spawnUnit.id, c, c, c, s, (despawns ? (c + ".unit().spawnedByCore=true;") : "")
+            ), c);
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
@@ -283,7 +286,7 @@ public class UnitDialog extends TUBaseDialog{
             u.spawnedByCore(despawns);
             Fx.unitControl.at(u, true);
         }
-        hide();
+
     }
     String teamName(){
         return teamDialog.teamName(spawnTeam);
