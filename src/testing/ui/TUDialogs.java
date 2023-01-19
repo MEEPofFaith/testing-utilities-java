@@ -10,6 +10,7 @@ public class TUDialogs{
     public static StatusDialog statusDialog;
     public static WeatherDialog weatherDialog;
     public static InterpDialog interpDialog;
+    public static SoundDialog soundDialog;
 
     public static void load(){
         unitDialog = new UnitDialog();
@@ -19,5 +20,6 @@ public class TUDialogs{
         statusDialog = new StatusDialog();
         weatherDialog = new WeatherDialog();
         interpDialog = new InterpDialog();
+        soundDialog = new SoundDialog();
     }
 }
