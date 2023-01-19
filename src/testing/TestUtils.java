@@ -180,6 +180,7 @@ public class TestUtils extends Mod{
             t.pref(new Separator(8));
             t.pref(new ButtonSetting("tu-interp", TUIcons.get(Icon.line), () -> interpDialog.show()));
             t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.pref(new Separator(8));
             t.pref(new ButtonSetting("tu-sounds", TUIcons.get(Icon.effect), () -> soundDialog.show()));
 
             if(OS.username.equals("MEEP")){

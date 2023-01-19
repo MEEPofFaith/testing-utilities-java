@@ -3,9 +3,13 @@ package testing.dialogs;
 import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
+import arc.math.*;
 import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
+import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
@@ -18,6 +22,10 @@ public class SoundDialog extends TUBaseDialog{
     TextField search;
     Table selection = new Table();
     Sound sound = Sounds.pew;
+    int loopSoundID = -1;
+
+    float minVol = 1, maxVol = 1, minPitch = 0.8f, maxPitch = 1.2f;
+    float loopVol = 1, loopPitch = 1;
 
     public SoundDialog(){
         super("@tu-sound-menu.name");
@@ -49,7 +57,54 @@ public class SoundDialog extends TUBaseDialog{
         cont.pane(all -> all.add(selection)).row();
 
         cont.table(t -> {
-            t.button("a", () -> sound.play(69420));
+            t.defaults().left();
+            divider(t, "@tu-sound-menu.sound", Color.lightGray);
+            t.table(s -> {
+                s.button("@tu-sound-menu.play", () -> sound.play(Mathf.range(minVol, maxVol), Mathf.range(minPitch, maxPitch), 0f)).wrapLabel(false).grow();
+                s.table(f -> {
+                    f.defaults().left().growX();
+                    f.add("@tu-sound-menu.min-vol");
+                    f.field("" + minVol, TextFieldFilter.floatsOnly, v -> minVol = Strings.parseFloat(v)).padLeft(6f);
+                    f.add("-").padLeft(6f).padRight(6f);
+                    f.add("@tu-sound-menu.max-vol").padLeft(6f);
+                    f.field("" + maxVol, TextFieldFilter.floatsOnly, v -> maxVol = Strings.parseFloat(v)).get().setValidator(v -> Strings.parseFloat(v) >= minVol);
+                    f.row();
+                    f.add("@tu-sound-menu.min-pitch");
+                    f.field("" + minPitch, TextFieldFilter.floatsOnly, v -> minPitch = Strings.parseFloat(v));
+                    f.add("-").padLeft(6f).padRight(6f);
+                    f.add("@tu-sound-menu.max-pitch").padLeft(6f);
+                    f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get().setValidator(v -> Strings.parseFloat(v) >= minPitch);
+                }).padLeft(6f);
+            }).grow().row();
+            divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
+            t.table(l -> {
+                l.defaults().left();
+
+                l.button("@tu-sound-menu.start", () -> loopSoundID = sound.loop(loopVol, loopPitch, 0)).wrapLabel(false).disabled(b -> loopSoundID >= 0).uniform().grow();
+
+                l.add("@tu-sound-menu.vol").padLeft(6f).growX();
+                l.field("" + loopVol, TextFieldFilter.floatsOnly, v -> {
+                    loopVol = Strings.parseFloat(v);
+                    if(loopSoundID >= 0){
+                        Core.audio.setVolume(loopSoundID, loopVol);
+                    }
+                }).padLeft(6f).growX();
+
+                l.row();
+
+                l.button("@tu-sound-menu.stop", () -> {
+                    Core.audio.stop(loopSoundID);
+                    loopSoundID = -1;
+                }).wrapLabel(false).disabled(b -> loopSoundID < 0).uniform().grow();
+
+                l.add("@tu-sound-menu.pitch").padLeft(6f).growX();
+                l.field("" + loopPitch, TextFieldFilter.floatsOnly, v -> {
+                    loopPitch = Strings.parseFloat(v);
+                    if(loopSoundID >= 0){
+                        Core.audio.setPitch(loopSoundID, loopPitch);
+                    }
+                }).padLeft(6f).growX();
+            });
         }).padTop(6);
     }
 
@@ -61,10 +116,7 @@ public class SoundDialog extends TUBaseDialog{
         selection.table(list -> {
             Seq<Sound> vSounds = vanillaSounds.select(s -> getName(s).toLowerCase().contains(text.toLowerCase()));
             if(vSounds.size > 0){
-                list.add("@tu-sound-menu.vanilla").growX().left().color(Pal.accent);
-                list.row();
-                list.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(Pal.accent);
-                list.row();
+                divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
                 list.table(v -> {
                     soundList(v, vSounds);
@@ -74,10 +126,7 @@ public class SoundDialog extends TUBaseDialog{
 
             Seq<Sound> mSounds = modSounds.select(s -> getName(s).toLowerCase().contains(text.toLowerCase()));
             if(mSounds.size > 0){
-                list.add("@tu-sound-menu.modded").growX().left().color(Pal.accent);
-                list.row();
-                list.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(Pal.accent);
-                list.row();
+                divider(list, "@tu-sound-menu.modded", Pal.accent);
 
                 list.table(m -> {
                     soundList(m, mSounds);
@@ -86,14 +135,18 @@ public class SoundDialog extends TUBaseDialog{
         }).growX().left().padBottom(10);
     }
 
+    void divider(Table t, String label, Color color){
+        t.add(label).growX().left().color(color);
+        t.row();
+        t.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(color);
+        t.row();
+    }
+
     void soundList(Table t, Seq<Sound> sounds){
         int cols = 4;
         int count = 0;
         for(Sound s : sounds){
-            t.button(getName(s), () -> {
-                sound.stop();
-                sound = s;
-            }).uniform().grow().wrapLabel(false);
+            t.button(getName(s), () -> changeSound(s)).uniform().grow().wrapLabel(false);
 
             if((++count) % cols == 0){
                 t.row();
@@ -107,5 +160,15 @@ public class SoundDialog extends TUBaseDialog{
             full = full.substring(full.indexOf("/") + 1);
         }
         return full;
+    }
+
+    void changeSound(Sound s){
+        sound.stop();
+        sound = s;
+
+        if(loopSoundID >= 0){
+            Core.audio.stop(loopSoundID);
+            loopSoundID = -1;
+        }
     }
 }
