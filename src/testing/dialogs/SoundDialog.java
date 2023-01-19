@@ -64,16 +64,32 @@ public class SoundDialog extends TUBaseDialog{
                 s.table(f -> {
                     f.defaults().left().growX();
                     f.add("@tu-sound-menu.min-vol");
-                    f.field("" + minVol, TextFieldFilter.floatsOnly, v -> minVol = Strings.parseFloat(v)).padLeft(6f);
+                    TextField[] maxVolF = {null};
+                    f.field("" + minVol, TextFieldFilter.floatsOnly, v -> {
+                        minVol = Strings.parseFloat(v);
+                        if(minVol > maxVol){
+                            maxVol = minVol;
+                            maxVolF[0].setText("" + maxVol);
+                        }
+                    }).padLeft(6f);
                     f.add("-").padLeft(6f).padRight(6f);
                     f.add("@tu-sound-menu.max-vol").padLeft(6f);
-                    f.field("" + maxVol, TextFieldFilter.floatsOnly, v -> maxVol = Strings.parseFloat(v)).get().setValidator(v -> Strings.parseFloat(v) >= minVol);
+                    maxVolF[0] = f.field("" + maxVol, TextFieldFilter.floatsOnly, v -> maxVol = Strings.parseFloat(v)).get();
+                    maxVolF[0].setValidator(v -> Strings.parseFloat(v) >= minVol);
                     f.row();
                     f.add("@tu-sound-menu.min-pitch");
-                    f.field("" + minPitch, TextFieldFilter.floatsOnly, v -> minPitch = Strings.parseFloat(v));
+                    TextField[] maxPitchF = {null};
+                    f.field("" + minPitch, TextFieldFilter.floatsOnly, v -> {
+                        minPitch = Strings.parseFloat(v);
+                        if(minPitch > maxPitch){
+                            maxPitch = minPitch;
+                            maxPitchF[0].setText("" + maxPitch);
+                        }
+                    });
                     f.add("-").padLeft(6f).padRight(6f);
                     f.add("@tu-sound-menu.max-pitch").padLeft(6f);
-                    f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get().setValidator(v -> Strings.parseFloat(v) >= minPitch);
+                    maxPitchF[0] = f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get();
+                    maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
                 }).padLeft(6f);
             }).grow().row();
             divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
