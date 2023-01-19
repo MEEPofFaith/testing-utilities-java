@@ -49,10 +49,6 @@ public class UnitDialog extends TUBaseDialog{
     public UnitDialog(){
         super("@tu-unit-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
         despawns = settings.getBool("tu-despawns", true);
 
         cont.table(s -> {
@@ -204,7 +200,8 @@ public class UnitDialog extends TUBaseDialog{
         Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         expectingPos = false;
         selection.clear();
         String text = search.getText();

@@ -24,11 +24,6 @@ public class WaveChangeDialog extends TUBaseDialog{
     public WaveChangeDialog(){
         super("@tu-unit-menu.waves");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
-
         all.margin(20).marginTop(0f);
 
         cont.add("@tu-unit-menu.wave-range").right();
@@ -71,7 +66,8 @@ public class WaveChangeDialog extends TUBaseDialog{
         );
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         title.setText(bundle.format("tu-unit-menu.waves-menu", state.map.name()));
 
         all.clear();

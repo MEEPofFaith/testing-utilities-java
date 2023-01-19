@@ -28,11 +28,6 @@ public class WeatherDialog extends TUBaseDialog{
     public WeatherDialog(){
         super("@tu-weather-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
-
         cont.table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
@@ -86,7 +81,8 @@ public class WeatherDialog extends TUBaseDialog{
         });
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         selection.clear();
         String text = search.getText();
 

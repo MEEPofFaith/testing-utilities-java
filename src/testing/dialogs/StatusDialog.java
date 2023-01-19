@@ -32,10 +32,6 @@ public class StatusDialog extends TUBaseDialog{
     public StatusDialog(){
         super("@tu-status-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
         perma = settings.getBool("tu-permanent", false);
 
         cont.table(s -> {
@@ -82,7 +78,8 @@ public class StatusDialog extends TUBaseDialog{
         );
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         selection.clear();
         String text = search.getText();
 

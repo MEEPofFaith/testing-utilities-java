@@ -26,11 +26,6 @@ public class TeamDialog extends TUBaseDialog{
     public TeamDialog(){
         super("@tu-unit-menu.team");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
-
         all.margin(20).marginTop(0f);
 
         cont.pane(all);
@@ -42,7 +37,8 @@ public class TeamDialog extends TUBaseDialog{
         show();
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         all.clear();
 
         all.table(t -> {

@@ -47,11 +47,6 @@ public class BlockDialog extends TUBaseDialog{
     public BlockDialog(){
         super("@tu-block-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
-
         cont.table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
@@ -166,7 +161,8 @@ public class BlockDialog extends TUBaseDialog{
         Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         expectingPos = false;
         selection.clear();
         String text = search.getText();
