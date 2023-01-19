@@ -106,6 +106,8 @@ public class SoundDialog extends TUBaseDialog{
                 }).padLeft(6f).growX();
             });
         }).padTop(6);
+
+        hidden(this::stopSounds);
     }
 
     @Override
@@ -146,7 +148,10 @@ public class SoundDialog extends TUBaseDialog{
         int cols = 4;
         int count = 0;
         for(Sound s : sounds){
-            t.button(getName(s), () -> changeSound(s)).uniform().grow().wrapLabel(false);
+            t.button(getName(s), () -> {
+                stopSounds();
+                sound = s;
+            }).uniform().grow().wrapLabel(false);
 
             if((++count) % cols == 0){
                 t.row();
@@ -162,9 +167,8 @@ public class SoundDialog extends TUBaseDialog{
         return full;
     }
 
-    void changeSound(Sound s){
+    void stopSounds(){
         sound.stop();
-        sound = s;
 
         if(loopSoundID >= 0){
             Core.audio.stop(loopSoundID);
