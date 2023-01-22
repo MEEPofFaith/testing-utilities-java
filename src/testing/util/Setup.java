@@ -5,7 +5,9 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.gen.*;
 import mindustry.input.*;
+import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
 import testing.ui.fragments.*;
@@ -46,10 +48,12 @@ public class Setup{
         buttons.setOrigin(Align.bottomLeft);
 
         //First row
-        row();
 
         if(Vars.mobile && Core.settings.getBool("console")){
+            row();
             add(new Console(), newTable());
+        }else{
+            rows--;
         }
 
         //Second row
@@ -67,13 +71,27 @@ public class Setup{
         add(new Death(), newTable());
 
         buttons.visible(() -> {
-            if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
+            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || TestUtils.disableCampaign()) return false;
             if(!mobile) return true;
 
             return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
         });
         ui.hudGroup.addChild(buttons);
         buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
+
+        Table campaignKill = newTable();
+        campaignKill.setOrigin(Align.bottomLeft);
+        campaignKill.table(Tex.buttonEdge3, t -> {
+            Death.seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
+        });
+        campaignKill.visible(() -> {
+            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || (!TestUtils.disableCampaign() && state.isCampaign())) return false;
+            if(!mobile) return true;
+
+            return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+        });
+        ui.hudGroup.addChild(campaignKill);
+        campaignKill.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
 
         terrainFrag = new TerrainPainterFragment();
         terrainFrag.build(ui.hudGroup);
