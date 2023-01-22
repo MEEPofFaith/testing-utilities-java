@@ -1,7 +1,9 @@
 package testing.util;
 
 import arc.*;
+import arc.scene.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
@@ -17,8 +19,7 @@ import static mindustry.Vars.*;
 public class Setup{
     static boolean selfInit;
 
-    static Table buttons = newTable(), temp;
-    static int rows = 3;
+    static Table temp;
 
     public static TerrainPainterFragment terrainFrag;
 
@@ -26,13 +27,18 @@ public class Setup{
         return new Table().bottom().left();
     }
 
-    public static void row(){
-        buttons.row();
-        buttons.table(t -> {
-            if(rows > 1) t.defaults().padBottom(-4);
+    public static void row(Table table){
+        table.row();
+        table.table(t -> {
             temp = t;
         }).left();
-        rows--;
+
+        Seq<Cell> cells = table.getCells();
+        int[] row = {cells.size};
+        cells.each(c -> {
+            if(row[0] > 1) c.padBottom(-4f);
+            row[0]--;
+        });
     }
 
     public static void add(TUButton button, Table table){
@@ -45,31 +51,33 @@ public class Setup{
     public static void init(){
         TUVars.setDefaults();
         TUDialogs.load();
+
+        //Build normal UI.
+        Table buttons = newTable();
         buttons.setOrigin(Align.bottomLeft);
 
-        //First row
+        ///First row
 
         if(Vars.mobile && Core.settings.getBool("console")){
-            row();
+            row(buttons);
             add(new Console(), newTable());
-        }else{
-            rows--;
         }
 
-        //Second row
-        row();
+        ///Second row
+        row(buttons);
 
         add(new Spawn(), newTable());
         add(new Sandbox(), newTable());
 
-        //Third row
-        row();
+        ///Third row
+        row(buttons);
 
         add(new TeamChanger(), newTable());
         add(new Effect(), newTable());
         Death.init();
         add(new Death(), newTable());
 
+        //Normal UI
         buttons.visible(() -> {
             if(!ui.hudfrag.shown || ui.minimapfrag.shown() || TestUtils.disableCampaign()) return false;
             if(!mobile) return true;
@@ -79,6 +87,7 @@ public class Setup{
         ui.hudGroup.addChild(buttons);
         buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
 
+        //Campaign UI. Only has the kill button.
         Table campaignKill = newTable();
         campaignKill.setOrigin(Align.bottomLeft);
         campaignKill.table(Tex.buttonEdge3, t -> {
