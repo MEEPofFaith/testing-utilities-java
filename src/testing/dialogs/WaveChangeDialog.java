@@ -9,7 +9,6 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 

@@ -10,7 +10,6 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 

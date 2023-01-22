@@ -9,11 +9,10 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
-import static arc.Core.bundle;
+import static arc.Core.*;
 
 public class SoundDialog extends TUBaseDialog{
     static Seq<Sound> vanillaSounds;
