@@ -10,7 +10,7 @@ import testing.util.*;
 
 import static testing.ui.TUDialogs.*;
 
-public class Spawn{
+public class Spawn extends TUButton{
     public static boolean spawnHover, blockHover;
 
     public static Cell<ImageButton> unitMenu(Table t){
@@ -43,7 +43,7 @@ public class Spawn{
         return t.add(b).growX();
     }
 
-    public static void add(Table table){
+    public void add(Table table){
         table.table(Tex.pane, t -> {
             unitMenu(t).size(TUVars.iconSize, TUVars.iconSize);
             blockMenu(t).size(TUVars.iconSize, TUVars.iconSize);

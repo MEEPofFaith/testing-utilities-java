@@ -18,14 +18,6 @@ public class Setup{
     static Table buttons = newTable(), temp;
     static int rows = 3;
 
-    public static Table
-    team = newTable(),
-    death = newTable(),
-    sandbox = newTable(),
-    status = newTable(),
-    units = newTable(),
-    console = newTable();
-
     public static TerrainPainterFragment terrainFrag;
 
     public static Table newTable(){
@@ -41,8 +33,9 @@ public class Setup{
         rows--;
     }
 
-    public static void add(Table table){
+    public static void add(TUButton button, Table table){
         float shift = 0;
+        button.add(table);
         if(temp.getChildren().size > 0) shift = -4;
         temp.add(table).padLeft(shift);
     }
@@ -56,31 +49,22 @@ public class Setup{
         row();
 
         if(Vars.mobile && Core.settings.getBool("console")){
-            Console.add(console);
-            add(console);
+            add(new Console(), newTable());
         }
 
         //Second row
         row();
 
-        Spawn.add(units);
-        add(units);
-
-        Sandbox.add(sandbox);
-        add(sandbox);
+        add(new Spawn(), newTable());
+        add(new Sandbox(), newTable());
 
         //Third row
         row();
 
-        TeamChanger.add(team);
-        add(team);
-
-        Effect.add(status);
-        add(status);
-
+        add(new TeamChanger(), newTable());
+        add(new Effect(), newTable());
         Death.init();
-        Death.add(death);
-        add(death);
+        add(new Death(), newTable());
 
         buttons.visible(() -> {
             if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;

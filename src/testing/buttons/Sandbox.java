@@ -11,7 +11,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class Sandbox{
+public class Sandbox extends TUButton{
     static boolean fill = true;
     static float timer;
     static boolean swap;
@@ -115,7 +115,7 @@ public class Sandbox{
         return i;
     }
 
-    public static void add(Table table){
+    public void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
             toggling(t).size(TUVars.iconSize, TUVars.iconSize);
             filling(t).size(TUVars.iconSize, TUVars.iconSize);

@@ -15,7 +15,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class Death{
+public class Death extends TUButton{
     static float sTimer, cTimer;
 
     static Stack kill = new Stack(), dupe = new Stack();
@@ -142,7 +142,7 @@ public class Death{
         return i;
     }
 
-    public static void add(Table table){
+    public void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
             clone(t).size(TUVars.iconSize, TUVars.iconSize);
             seppuku(t).size(TUVars.iconSize, TUVars.iconSize);

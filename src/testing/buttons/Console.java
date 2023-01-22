@@ -9,7 +9,7 @@ import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
-public class Console{
+public class Console extends TUButton{
     static boolean shown;
 
     public static Cell<ImageButton> addToggleButton(Table t){
@@ -42,7 +42,7 @@ public class Console{
         return i;
     }
 
-    public static void add(Table table){
+    public void add(Table table){
         table.table(Tex.buttonEdge3, t -> {
             addToggleButton(t).size(TUVars.iconSize, TUVars.iconSize);
             addRefreshButton(t).size(TUVars.iconSize, TUVars.iconSize);

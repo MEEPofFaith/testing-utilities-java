@@ -13,7 +13,7 @@ import testing.util.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class TeamChanger{
+public class TeamChanger extends TUButton{
     static float tTimer;
 
     public static void changeTeam(Team team){
@@ -63,7 +63,7 @@ public class TeamChanger{
         }
     }
 
-    public static void add(Table table){
+    public void add(Table table){
         table.table(Tex.pane, t -> addMini(t).size(100, TUVars.iconSize));
     }
 
