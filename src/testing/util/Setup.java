@@ -85,7 +85,7 @@ public class Setup{
             Death.seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
         });
         campaignKill.visible(() -> {
-            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || (!TestUtils.disableCampaign() && state.isCampaign())) return false;
+            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || !state.isCampaign() || buttons.visible) return false;
             if(!mobile) return true;
 
             return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
