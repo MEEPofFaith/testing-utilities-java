@@ -46,7 +46,7 @@ public class Death extends TUButton{
             }
         }
         if(net.client()){
-            //TODO
+            Utils.runCommand("die");
         }else{
             if(u != null){
                 if(settings.getBool("tu-instakill")){

@@ -122,7 +122,7 @@ public class WaveChangeDialog extends TUBaseDialog{
 
     void sendWave(){
         if(net.client()){
-            //TODO
+            Utils.runCommand("runwave");
         }else{
             logic.runWave();
         }

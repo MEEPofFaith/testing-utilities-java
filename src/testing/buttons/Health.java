@@ -2,6 +2,7 @@ package testing.buttons;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import testing.*;
 import testing.ui.*;
@@ -16,7 +17,11 @@ public class Health{
 
         Unit u = player.unit();
         if(net.client()){
-            //TODO
+            if(invincibility){
+                Utils.runCommand("statuseff @ @", StatusEffects.invincible.name, "MAX_VALUE");
+            }else{
+                Utils.runCommand("heal");
+            }
         }else{
             if(u instanceof BlockUnitc bu){
                 Building b = bu.tile();

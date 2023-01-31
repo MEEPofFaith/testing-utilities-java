@@ -31,7 +31,6 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    static boolean hasJS;
     boolean teleport, hasProc;
 
     public TestUtils(){
@@ -108,9 +107,6 @@ public class TestUtils extends Mod{
                     }
                 }
             });
-            /*Events.on(ClientPreConnectEvent.class, e -> {
-                hasJS = netServer.clientCommands.getCommandList().contains(c -> c.text.equals("js"));
-            });*/
 
             //position drawing + sk7725/whynotteleport
             if(mobile) return;
@@ -200,7 +196,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableServer(){
-        //return net.client() && !hasJS;
+        //return net.client() && <uhhhh>; TODO how do I check if you're specifically on 2r2t
         return false;
     }
 

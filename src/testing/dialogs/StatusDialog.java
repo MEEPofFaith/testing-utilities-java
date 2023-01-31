@@ -129,7 +129,7 @@ public class StatusDialog extends TUBaseDialog{
 
     void apply(){
         if(net.client()){
-            //TODO
+            Utils.runCommand("statuseff @ @", status.name, perma ? "MAX_VALUE" : duration * 60);
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }

@@ -3,11 +3,13 @@ package testing.buttons;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
+import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class Spawn extends TUButton{
@@ -31,11 +33,17 @@ public class Spawn extends TUButton{
     public static Cell<ImageButton> blockMenu(Table t){
         ImageButton b = new ImageButton(blockDialog.getBlock().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-block");
-        b.clicked(blockDialog::show);
+        b.clicked(() -> {
+            if(net.client()){
+                Utils.runCommand("core pos");
+            }else{
+                blockDialog.show();
+            }
+        });
         b.setDisabled(TestUtils::disableButton);
         b.resizeImage(40f);
         b.update(() -> {
-            ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(blockDialog.getBlock().uiIcon);
+            ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion((net.client() ? Blocks.coreShard : blockDialog.getBlock()).uiIcon);
         });
         b.hovered(() -> blockHover = true);
         b.exited(() -> blockHover = false);

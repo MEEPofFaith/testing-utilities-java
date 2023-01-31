@@ -263,7 +263,7 @@ public class UnitDialog extends TUBaseDialog{
 
     void transform(){
         if(net.client()){
-            //TODO
+            Utils.runCommand("transform @", spawnUnit.name);
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
@@ -272,6 +272,7 @@ public class UnitDialog extends TUBaseDialog{
             u.spawnedByCore(despawns);
             Fx.unitControl.at(u, true);
         }
+        hide();
 
     }
     String teamName(){

@@ -2,6 +2,7 @@ package testing.util;
 
 import arc.util.*;
 import mindustry.core.*;
+import mindustry.gen.*;
 import testing.content.*;
 
 import static mindustry.Vars.*;
@@ -9,6 +10,14 @@ import static mindustry.Vars.*;
 public class Utils{
     public static void spawnIconEffect(String sprite){
         TUFx.iconEffect.at(player.x, player.y, 0, "test-utils-" + sprite);
+    }
+
+    public static void runCommand(String command){
+        Call.sendChatMessage("/" + command);
+    }
+
+    public static void runCommand(String command, Object... args){
+        runCommand(Log.format(command, args));
     }
 
     public static String round(float f){
