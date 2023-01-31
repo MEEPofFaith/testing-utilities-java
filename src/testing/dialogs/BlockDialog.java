@@ -225,9 +225,7 @@ public class BlockDialog extends TUBaseDialog{
 
     void placeBlock(){
         if(net.client()){
-            Utils.runCommand(Utils.constructCommand("Vars.world.tile(@).setNet(Vars.content.block(@),Team.get(@),@)",
-                placePos, block.id, placeTeam.id, rotation
-            ));
+            //TODO
         }else{
             world.tile(placePos).setNet(block, placeTeam, rotation);
         }
@@ -235,9 +233,7 @@ public class BlockDialog extends TUBaseDialog{
 
     void deleteBlock(){
         if(net.client()){
-            Utils.runCommand(Utils.constructCommand("Vars.world.tile(@).setNet(Blocks.air)",
-                placePos
-            ));
+            //TODO
         }else{
             world.tile(placePos).setAir();
         }

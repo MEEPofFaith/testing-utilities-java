@@ -19,7 +19,7 @@ public class Sandbox extends TUButton{
     public static void toggle(){
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
         if(net.client()){
-            Utils.runCommand("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;Call.setRules(Vars.state.rules);");
+            //TODO
         }else{
             state.rules.infiniteResources = !state.rules.infiniteResources;
         }
@@ -35,23 +35,7 @@ public class Sandbox extends TUButton{
 
     public static void fillCore(){
         if(net.client()){
-            CoreBuild core = player.core();
-            if(core == null) return;
-            int capacity = core.storageCapacity;
-            char p = Utils.rand1();
-            if(settings.getBool("tu-fill-all")){
-                Utils.runCommandPlayer(Utils.constructCommand(
-                    "Vars.content.items().each(" +
-                        "i=>!Vars.state.rules.hiddenBuildItems.contains(i)," +
-                        "i=>@.core().items.set(i,@)" +
-                    ");",
-                    p, capacity
-                ), p);
-            }else{ //Separate to prevent unnecessary command length.
-                Utils.runCommandPlayer(Utils.constructCommand("Vars.content.items().each(i=>@.core().items.set(i,@));",
-                    p, capacity
-                ), p);
-            }
+            //TODO
         }else{
             CoreBuild core = player.core();
             if(core != null){
@@ -66,7 +50,7 @@ public class Sandbox extends TUButton{
 
     public static void dumpCore(){
         if(net.client()){
-            Utils.runCommandPlayerShort(".core().items.clear()");
+            //TODO
         }else{
             if(player.core() != null) player.core().items.clear();
         }

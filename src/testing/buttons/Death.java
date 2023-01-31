@@ -46,15 +46,7 @@ public class Death extends TUButton{
             }
         }
         if(net.client()){
-            if(settings.getBool("tu-instakill")){
-                char p = Utils.rand1();
-
-                Utils.runCommandPlayer(Utils.constructCommand("@.unit().elevation = 0;@.unit().health = -1;@.unit().dead = true;@.unit().kill();",
-                    p, p, p, p
-                ), p);
-            }else{
-                Utils.runCommandPlayerShort(".unit().kill();");
-            }
+            //TODO
         }else{
             if(u != null){
                 if(settings.getBool("tu-instakill")){
@@ -69,11 +61,7 @@ public class Death extends TUButton{
 
     public static void mitosis(){
         if(net.client()){
-            char p = Utils.rand1();
-
-            Utils.runCommandPlayer(Utils.constructCommand("@.unit().type.spawn(@.team(), @.x, @.y);",
-                p, p, p, p
-            ), p);
+            //TODO
         }else{
             Unit u = player.unit();
             if(u != null){

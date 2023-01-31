@@ -115,9 +115,7 @@ public class WeatherDialog extends TUBaseDialog{
 
     void createWeather(){
         if(net.client()){
-            Utils.runCommand(Utils.constructCommand("Vars.content.getByID(ContentType.weather,@).create(@,@)",
-                weather.id, intensity / 100f, Mathf.floor(duration * 60f)
-            ));
+            //TODO
         }else{
             weather.create(intensity / 100f, duration * 60f);
         }
@@ -125,7 +123,7 @@ public class WeatherDialog extends TUBaseDialog{
 
     void removeWeather(){
         if(net.client()){
-            Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
+            //TODO
         }else{
             Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
         }
@@ -133,7 +131,7 @@ public class WeatherDialog extends TUBaseDialog{
 
     void clearWeather(){
         if(net.client()){
-            Utils.runCommand("Groups.weather.each(w=>w.remove())");
+            //TODO
         }else{
             Groups.weather.each(WeatherState::remove);
         }

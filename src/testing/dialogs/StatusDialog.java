@@ -129,9 +129,7 @@ public class StatusDialog extends TUBaseDialog{
 
     void apply(){
         if(net.client()){
-            Utils.runCommandPlayerShort(Utils.constructCommand(".unit().apply(Vars.content.getByID(ContentType.status,@),@);",
-                status.id, (perma ? "Number.MAX_VALUE" : duration * 60)
-            ));
+            //TODO
         }else if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
@@ -139,7 +137,7 @@ public class StatusDialog extends TUBaseDialog{
 
     void clearStatus(){
         if(net.client()){
-            Utils.runCommandPlayerShort(".unit().clearStatuses();");
+            //TODO
         }else if(player.unit() != null){
             player.unit().clearStatuses();
         }

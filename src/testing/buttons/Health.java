@@ -16,20 +16,7 @@ public class Health{
 
         Unit u = player.unit();
         if(net.client()){
-            char p = Utils.rand1();
-            if(u instanceof BlockUnitc b){
-                String health = invincibility ? "Number.MAX_VALUE" : (b.tile().block.health + "");
-
-                Utils.runCommandPlayer(Utils.constructCommand("@.unit().tile().maxHealth=@;@.unit().tile().health=@",
-                    p, health, p, health
-                ), p);
-            }else{
-                String health = invincibility ? "Number.MAX_VALUE" : (u.type.health + "");
-
-                Utils.runCommandPlayer(Utils.constructCommand("@.unit().maxHealth=@;@.unit().health=@",
-                    p, health, p, health
-                ), p);
-            }
+            //TODO
         }else{
             if(u instanceof BlockUnitc bu){
                 Building b = bu.tile();

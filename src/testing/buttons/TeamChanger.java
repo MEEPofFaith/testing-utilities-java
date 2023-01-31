@@ -18,7 +18,7 @@ public class TeamChanger extends TUButton{
 
     public static void changeTeam(Team team){
         if(Vars.net.client()){
-            Utils.runCommandPlayerShort(".team(Team.get(" + team.id + "));");
+            //TODO
         }else{
             player.team(team);
         }

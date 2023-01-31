@@ -251,13 +251,7 @@ public class UnitDialog extends TUBaseDialog{
 
     void spawn(){
         if(net.client()){
-            String setPos = Utils.constructCommand("Tmp.v1.setToRandomDirection().setLength(@).add(@,@)",
-                radius * tilesize, Mathf.floor(spawnPos.x), Mathf.floor(spawnPos.y)
-            );
-
-            Utils.runCommand(Utils.constructCommand("for(let i=0;i<@;i++){Vars.content.unit(@).spawn(Team.get(@),@);}",
-                amount, spawnUnit.id, spawnTeam.id, setPos
-            ));
+            //TODO
         }else{
             for(int i = 0; i < amount; i++){
                 float r = radius * tilesize * Mathf.sqrt(Mathf.random());
@@ -269,12 +263,7 @@ public class UnitDialog extends TUBaseDialog{
 
     void transform(){
         if(net.client()){
-            char c = Utils.rand1();
-            char s = Utils.rand2(c);
-
-            Utils.runCommandPlayer(Utils.constructCommand("let @=Vars.content.unit(@).spawn(@.team(), @);Call.unitControl(@,@);@",
-                s, spawnUnit.id, c, c, c, s, (despawns ? (c + ".unit().spawnedByCore=true;") : "")
-            ), c);
+            //TODO
         }else if(player.unit() != null){
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
