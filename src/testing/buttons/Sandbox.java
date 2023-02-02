@@ -18,11 +18,7 @@ public class Sandbox extends TUButton{
 
     public static void toggle(){
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
-        if(net.client()){
-            //TODO
-        }else{
-            state.rules.infiniteResources = !state.rules.infiniteResources;
-        }
+        state.rules.infiniteResources = !state.rules.infiniteResources;
     }
 
     public static void coreItems(){
@@ -34,26 +30,18 @@ public class Sandbox extends TUButton{
     }
 
     public static void fillCore(){
-        if(net.client()){
-            //TODO
-        }else{
-            CoreBuild core = player.core();
-            if(core != null){
-                content.items().each(
-                    i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
-                    i -> core.items.set(i, core.storageCapacity)
-                );
-            }
+        CoreBuild core = player.core();
+        if(core != null){
+            content.items().each(
+                i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
+                i -> core.items.set(i, core.storageCapacity)
+            );
         }
         Utils.spawnIconEffect("core");
     }
 
     public static void dumpCore(){
-        if(net.client()){
-            //TODO
-        }else{
-            if(player.core() != null) player.core().items.clear();
-        }
+        if(player.core() != null) player.core().items.clear();
         Utils.spawnIconEffect("dump");
     }
 

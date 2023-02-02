@@ -188,6 +188,10 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableButton(){
+        return disableCampaign() || net.client();
+    }
+
+    public static boolean disableCommandButton(){
         return disableCampaign() || disableServer();
     }
 

@@ -15,7 +15,7 @@ public class Effect extends TUButton{
         ImageButton b = new ImageButton(statusDialog.getStatus().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-status");
         b.clicked(statusDialog::show);
-        b.setDisabled(TestUtils::disableButton);
+        b.setDisabled(TestUtils::disableCommandButton);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(statusDialog.getStatus().uiIcon);
         });

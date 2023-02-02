@@ -18,7 +18,7 @@ public class TeamChanger extends TUButton{
 
     public static void changeTeam(Team team){
         if(Vars.net.client()){
-            //TODO
+            Utils.runCommand("team @", team.id);
         }else{
             player.team(team);
         }
@@ -27,7 +27,7 @@ public class TeamChanger extends TUButton{
     public static Cell<Button> addMini(Table t){
         Cell<Button> i = t.button(b -> {
             TUElements.boxTooltip(b, "@tu-tooltip.button-team");
-            b.setDisabled(() -> TestUtils.disableButton() || player.unit().type.internal);
+            b.setDisabled(() -> TestUtils.disableCommandButton() || player.unit().type.internal);
             b.label(TeamChanger::teamName);
         }, TUStyles.redButtonStyle, () -> {
             if(tTimer > TUVars.longPress) return;

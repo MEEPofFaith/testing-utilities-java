@@ -42,7 +42,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
-        b.setDisabled(TestUtils::disableButton);
+        b.setDisabled(TestUtils::disableCommandButton);
         b.visible(() -> !b.isDisabled());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.update(() -> {
@@ -59,7 +59,7 @@ public class Health{
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
-        b.setDisabled(TestUtils::disableButton);
+        b.setDisabled(TestUtils::disableCommandButton);
         b.visible(() -> !b.isDisabled());
         b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.update(() -> {

@@ -102,8 +102,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> teamDialog.show(spawnTeam, team -> spawnTeam = team),
                 () -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]"),
                 "@tu-tooltip.unit-set-team"
-            );
-
+            ).setDisabled(() -> net.client());
 
             TUElements.imageButton(
                 t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
@@ -113,7 +112,7 @@ public class UnitDialog extends TUBaseDialog{
                 },
                 () -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f),
                 "@tu-tooltip.unit-pos"
-            );
+            ).setDisabled(() -> net.client());
         }).padTop(6).row();
 
         cont.table(b -> {
@@ -131,6 +130,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> "@tu-unit-menu.despawns",
                 "@tu-tooltip.unit-despawns"
             );
+            db.setDisabled(() -> net.client());
             db.update(() -> db.setChecked(despawns));
         }).padTop(6).row();
 
@@ -140,7 +140,7 @@ public class UnitDialog extends TUBaseDialog{
                 this::spawn,
                 () -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn"),
                 "@tu-tooltip.unit-spawn"
-            );
+            ).setDisabled(() -> net.client());
 
             TUElements.imageButton(
                 b, TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize,
@@ -188,7 +188,7 @@ public class UnitDialog extends TUBaseDialog{
                 x = Mathf.floor(x);
                 y = Mathf.floor(y);
             }
-        }else if(Spawn.spawnHover && !TestUtils.disableButton()){
+        }else if(Spawn.spawnHover && !TestUtils.disableCommandButton()){
             x = spawnPos.x;
             y = spawnPos.y;
         }else{
@@ -250,14 +250,10 @@ public class UnitDialog extends TUBaseDialog{
     }
 
     void spawn(){
-        if(net.client()){
-            //TODO
-        }else{
-            for(int i = 0; i < amount; i++){
-                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                spawnUnit.spawn(spawnTeam, Tmp.v1);
-            }
+        for(int i = 0; i < amount; i++){
+            float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+            Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
+            spawnUnit.spawn(spawnTeam, Tmp.v1);
         }
     }
 

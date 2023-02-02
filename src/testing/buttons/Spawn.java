@@ -19,7 +19,7 @@ public class Spawn extends TUButton{
         ImageButton b = new ImageButton(unitDialog.getUnit().uiIcon, TUStyles.tuRedImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-units");
         b.clicked(unitDialog::show);
-        b.setDisabled(TestUtils::disableButton);
+        b.setDisabled(TestUtils::disableCommandButton);
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion(unitDialog.getUnit().uiIcon);
@@ -40,7 +40,7 @@ public class Spawn extends TUButton{
                 blockDialog.show();
             }
         });
-        b.setDisabled(TestUtils::disableButton);
+        b.setDisabled(TestUtils::disableCommandButton);
         b.resizeImage(40f);
         b.update(() -> {
             ((TextureRegionDrawable)(b.getStyle().imageUp)).setRegion((net.client() ? Blocks.coreShard : blockDialog.getBlock()).uiIcon);

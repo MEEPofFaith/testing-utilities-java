@@ -147,7 +147,7 @@ public class BlockDialog extends TUBaseDialog{
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = World.toTile(input.mouseWorldX()) * tilesize;
             y = World.toTile(input.mouseWorldY()) * tilesize;
-        }else if(Spawn.blockHover && !TestUtils.disableButton()){
+        }else if(Spawn.blockHover && !TestUtils.disableCommandButton()){
             x = Point2.x(placePos) * tilesize;
             y = Point2.y(placePos) * tilesize;
         }else{
@@ -224,19 +224,11 @@ public class BlockDialog extends TUBaseDialog{
     }
 
     void placeBlock(){
-        if(net.client()){
-            //TODO
-        }else{
-            world.tile(placePos).setNet(block, placeTeam, rotation);
-        }
+        world.tile(placePos).setNet(block, placeTeam, rotation);
     }
 
     void deleteBlock(){
-        if(net.client()){
-            //TODO
-        }else{
-            world.tile(placePos).setAir();
-        }
+        world.tile(placePos).setAir();
     }
 
     String teamName(){

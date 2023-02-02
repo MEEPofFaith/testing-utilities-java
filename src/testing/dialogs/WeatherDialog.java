@@ -114,26 +114,14 @@ public class WeatherDialog extends TUBaseDialog{
     }
 
     void createWeather(){
-        if(net.client()){
-            //TODO
-        }else{
-            weather.create(intensity / 100f, duration * 60f);
-        }
+        weather.create(intensity / 100f, duration * 60f);
     }
 
     void removeWeather(){
-        if(net.client()){
-            //TODO
-        }else{
-            Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
-        }
+        Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
     }
 
     void clearWeather(){
-        if(net.client()){
-            //TODO
-        }else{
-            Groups.weather.each(WeatherState::remove);
-        }
+        Groups.weather.each(WeatherState::remove);
     }
 }

@@ -136,11 +136,7 @@ public class StatusDialog extends TUBaseDialog{
     }
 
     void clearStatus(){
-        if(net.client()){
-            //TODO
-        }else if(player.unit() != null){
-            player.unit().clearStatuses();
-        }
+        player.unit().clearStatuses();
     }
 
     public StatusEffect getStatus(){

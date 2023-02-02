@@ -60,14 +60,10 @@ public class Death extends TUButton{
     }
 
     public static void mitosis(){
-        if(net.client()){
-            //TODO
-        }else{
-            Unit u = player.unit();
-            if(u != null){
-                u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
-                Fx.spawn.at(u);
-            }
+        Unit u = player.unit();
+        if(u != null){
+            u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+            Fx.spawn.at(u);
         }
     }
 

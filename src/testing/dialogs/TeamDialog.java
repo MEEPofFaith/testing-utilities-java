@@ -106,6 +106,7 @@ public class TeamDialog extends TUBaseDialog{
         image.clicked(() -> {
             changed.get(team);
             curTeam = team;
+            hide();
         });
         TUElements.boxTooltip(image, () -> teamName(team));
     }

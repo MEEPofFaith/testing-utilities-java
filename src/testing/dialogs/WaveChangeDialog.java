@@ -78,6 +78,7 @@ public class WaveChangeDialog extends TUBaseDialog{
                 TextButton b = t.button(String.valueOf(i), () -> setWave(ii)).right().grow().padRight(6f).padTop(4f).get();
                 b.getLabel().setWrap(false);
                 b.getLabelCell().center();
+                b.setDisabled(() -> net.client());
 
                 int[] amount = {0};
                 t.table(w -> {
@@ -129,10 +130,6 @@ public class WaveChangeDialog extends TUBaseDialog{
     }
 
     void setWave(int wave){
-        if(net.client()){
-            //TODO
-        }else{
-            state.wave = wave;
-        }
+        state.wave = wave;
     }
 }
