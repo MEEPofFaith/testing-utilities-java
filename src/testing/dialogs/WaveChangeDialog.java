@@ -125,11 +125,21 @@ public class WaveChangeDialog extends TUBaseDialog{
         if(net.client()){
             Utils.runCommand("runwave");
         }else{
+            if(input.shift()){
+                Utils.copyJS("Vars.logic.runWave();");
+                return;
+            }
+
             logic.runWave();
         }
     }
 
     void setWave(int wave){
+        if(input.shift()){
+            Utils.copyJS("Vars.state.wave = @;", wave);
+            return;
+        }
+
         state.wave = wave;
     }
 }

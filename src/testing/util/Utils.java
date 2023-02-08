@@ -5,6 +5,7 @@ import mindustry.core.*;
 import mindustry.gen.*;
 import testing.content.*;
 
+import static arc.Core.app;
 import static mindustry.Vars.*;
 
 public class Utils{
@@ -18,6 +19,12 @@ public class Utils{
 
     public static void runCommand(String command, Object... args){
         runCommand(Log.format(command, args));
+    }
+
+    public static void copyJS(String js, Object... args){
+        if(net.client()) return;
+        ui.showInfoFade("@copied");
+        app.setClipboardText(Log.format(js, args));
     }
 
     public static String round(float f){

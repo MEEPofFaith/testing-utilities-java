@@ -40,29 +40,58 @@ public class Death extends TUButton{
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public static void spontaniumCombustum(){
         Unit u = player.unit();
-        if(u != null){
-            for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
-                TUFx.deathLightning.at(u, true);
-            }
-        }
-        if(net.client()){
+        if(net.client()){ //For 2r2t
             Utils.runCommand("die");
+            killLightning();
         }else{
+            boolean insta = settings.getBool("tu-instakill");
+            if(input.shift()){
+                if(insta){
+                    Utils.copyJS("""
+                        let u = Vars.player.unit();
+                        u.elevation = 0;
+                        u.health = -1;
+                        u.dead = true;
+                        u.kill();"""
+                    );
+                }else{
+                    Utils.copyJS("Vars.player.unit().kill();");
+                }
+                return;
+            }
             if(u != null){
-                if(settings.getBool("tu-instakill")){
+                if(insta){
                     u.elevation(0);
                     u.health(-1);
                     u.dead(true);
                 }
                 u.kill();
+                killLightning();
+            }
+        }
+    }
+
+    public static void killLightning(){
+        Unit u = player.unit();
+        if(u != null){
+            for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
+                TUFx.deathLightning.at(u, true);
             }
         }
     }
 
     public static void mitosis(){
+        if(input.shift()){
+            Utils.copyJS("""
+                let u = Vars.player.unit();
+                u.type.spawn(u.team, u).rotation = u.rotation;"""
+            );
+            return;
+        }
+
         Unit u = player.unit();
         if(u != null){
-            u.type.spawn(u.team, u.x, u.y).rotation(u.rotation);
+            u.type.spawn(u.team, u).rotation(u.rotation);
             Fx.spawn.at(u);
         }
     }

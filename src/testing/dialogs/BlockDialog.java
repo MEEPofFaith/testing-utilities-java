@@ -224,10 +224,22 @@ public class BlockDialog extends TUBaseDialog{
     }
 
     void placeBlock(){
-        world.tile(placePos).setNet(block, placeTeam, rotation);
+        if(input.shift()){
+            Utils.copyJS("Vars.world.tile(@).setBlock(Vars.content.block(@), Team.get(@), @);",
+                placePos, block.id, placeTeam.id, rotation
+            );
+            return;
+        }
+
+        world.tile(placePos).setBlock(block, placeTeam, rotation);
     }
 
     void deleteBlock(){
+        if(input.shift()){
+            Utils.copyJS("Vars.world.tile(@).setAir();", placePos);
+            return;
+        }
+
         world.tile(placePos).setAir();
     }
 

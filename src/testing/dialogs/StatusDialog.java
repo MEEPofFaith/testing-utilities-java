@@ -128,14 +128,26 @@ public class StatusDialog extends TUBaseDialog{
     }
 
     void apply(){
-        if(net.client()){
+        if(net.client()){ //For 2r2t
             Utils.runCommand("statuseff @ @", status.name, perma ? "MAX_VALUE" : duration * 60);
         }else if(player.unit() != null){
+            if(input.shift()){
+                Utils.copyJS("Vars.player.unit().apply(Vars.content.getByID(ContentType.status, @), @);",
+                    status.id, perma ? "Number.MAX_VALUE" : duration * 60
+                );
+                return;
+            }
+
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
     }
 
     void clearStatus(){
+        if(input.shift()){
+            Utils.copyJS("Vars.player.unit().clearStatuses();");
+            return;
+        }
+
         player.unit().clearStatuses();
     }
 

@@ -2,6 +2,7 @@ package testing.buttons;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import testing.*;
@@ -17,6 +18,11 @@ public class Sandbox extends TUButton{
     static boolean swap;
 
     public static void toggle(){
+        if(input.shift()){
+            Utils.copyJS("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;");
+            return;
+        }
+
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
         state.rules.infiniteResources = !state.rules.infiniteResources;
     }
@@ -30,6 +36,24 @@ public class Sandbox extends TUButton{
     }
 
     public static void fillCore(){
+        if(input.shift()){
+            if(settings.getBool("tu-fill-all")){
+                Utils.copyJS("""
+                    CoreBuild core = player.core();
+                    Vars.content.items().each(i => core.items.set(i, core.storageCapacity));"""
+                );
+            }else{
+                Utils.copyJS("""
+                    CoreBuild core = player.core();
+                    Vars.content.items().each(
+                        i => !state.rules.hiddenBuildItems.contains(i),
+                        i => core.items.set(i, core.storageCapacity)
+                    );"""
+                );
+            }
+            return;
+        }
+
         CoreBuild core = player.core();
         if(core != null){
             content.items().each(
@@ -41,6 +65,11 @@ public class Sandbox extends TUButton{
     }
 
     public static void dumpCore(){
+        if(input.shift()){
+            Utils.copyJS("Vars.player.core().items.clear();");
+            return;
+        }
+
         if(player.core() != null) player.core().items.clear();
         Utils.spawnIconEffect("dump");
     }
@@ -70,7 +99,7 @@ public class Sandbox extends TUButton{
         b.setDisabled(TestUtils::disableButton);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
-                timer += graphics.getDeltaTime() * 60;
+                timer += Time.delta;
                 if(timer >= TUVars.longPress && !swap){
                     fill = !fill;
                     swap = true;

@@ -1,9 +1,9 @@
 package testing.buttons;
 
+import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import testing.*;
@@ -17,20 +17,24 @@ public class TeamChanger extends TUButton{
     static float tTimer;
 
     public static void changeTeam(Team team){
-        if(Vars.net.client()){
+        if(net.client()){ //For 2r2t
             Utils.runCommand("team @", team.id);
         }else{
+            if(Core.input.shift()){
+                Utils.copyJS("Vars.player.team(Team.get(@));", team.id);
+                return;
+            }
+
             player.team(team);
         }
     }
 
-    public static Cell<Button> addMini(Table t){
+    public static Cell<Button> teamChanger(Table t){
         Cell<Button> i = t.button(b -> {
             TUElements.boxTooltip(b, "@tu-tooltip.button-team");
             b.setDisabled(() -> TestUtils.disableCommandButton() || player.unit().type.internal);
             b.label(TeamChanger::teamName);
         }, TUStyles.redButtonStyle, () -> {
-            if(tTimer > TUVars.longPress) return;
             changeTeam(getNextTeam());
         }).size(TUVars.iconSize).color(curTeam().color);
 
@@ -38,7 +42,7 @@ public class TeamChanger extends TUButton{
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 tTimer += Time.delta;
-                if(tTimer > TUVars.longPress){
+                if(tTimer >= TUVars.longPress && !teamDialog.isShown()){
                     teamDialog.show(curTeam(), TeamChanger::changeTeam);
                 }
             }else{
@@ -64,7 +68,7 @@ public class TeamChanger extends TUButton{
     }
 
     public void add(Table table){
-        table.table(Tex.pane, t -> addMini(t).size(100, TUVars.iconSize));
+        table.table(Tex.pane, t -> teamChanger(t).size(100, TUVars.iconSize));
     }
 
     static String teamName(){

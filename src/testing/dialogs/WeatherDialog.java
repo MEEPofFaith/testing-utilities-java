@@ -114,10 +114,22 @@ public class WeatherDialog extends TUBaseDialog{
     }
 
     void createWeather(){
+        if(input.shift()){
+            Utils.copyJS("Vars.content.getByID(ContentType.weather, @).create(@, @);",
+                weather.id, intensity / 100f, duration * 60f
+            );
+            return;
+        }
+
         weather.create(intensity / 100f, duration * 60f);
     }
 
     void removeWeather(){
+        if(input.shift()){
+            Utils.copyJS("Groups.weather.each(w => w.weather == weather, w => w.remove());");
+            return;
+        }
+
         Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
     }
 
