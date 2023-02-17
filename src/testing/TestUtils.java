@@ -31,7 +31,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    boolean teleport, hasProc;
+    static boolean teleport, hasProc, on2r2t;
 
     public TestUtils(){
         if(!headless){
@@ -106,6 +106,9 @@ public class TestUtils extends Mod{
                         renderer.maxZoom = 24f;
                     }
                 }
+            });
+            Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t from the server list.
+                on2r2t = e.host.name.contains("2r2t");
             });
 
             //position drawing + sk7725/whynotteleport
@@ -200,8 +203,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableServer(){
-        //return net.client() && <uhhhh>; TODO how do I check if you're specifically on 2r2t
-        return false;
+        return net.client() && !on2r2t;
     }
 
     public static boolean click(){
