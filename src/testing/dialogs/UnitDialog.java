@@ -147,7 +147,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> waveChangeDialog.show(),
                 () -> "@tu-unit-menu.waves",
                 "@tu-tooltip.unit-set-wave"
-            );
+            ).setDisabled(() -> net.client());
         }).padTop(6);
 
         if(!initialized){

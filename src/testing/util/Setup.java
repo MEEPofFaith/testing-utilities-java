@@ -106,9 +106,9 @@ public class Setup{
 
         //2r2t UI.
         Table commandButtons = newTable();
-        //TeamChanger.addButton(temp); //Since when was that removed
+        //TeamChanger.addButton(temp);
         Spawn.unitMenu(temp);
-        Spawn.placeCore(temp);
+        //Spawn.placeCore(temp);
         Effect.statusButton(temp);
         Health.addButtons(temp);
         Death.seppuku(temp);
