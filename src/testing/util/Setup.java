@@ -8,6 +8,7 @@ import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
+import mindustry.mod.Mods.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
@@ -16,19 +17,24 @@ import testing.ui.fragments.*;
 import static mindustry.Vars.*;
 
 public class Setup{
-    static boolean selfInit;
-
+    static boolean on2r2t;
     static Table temp;
 
     public static TerrainPainterFragment terrainFrag;
 
     public static Table newTable(){
-        return new Table().bottom().left();
+        Table table = new Table().bottom().left();
+        table.table(Tex.buttonEdge3, t -> {
+            t.defaults().size(TUVars.iconSize, TUVars.iconSize);
+            temp = t;
+        }).left();
+        return table;
     }
 
     public static void row(Table table){
         table.row();
-        table.table(t -> {
+        table.table(Tex.buttonEdge3, t -> {
+            t.defaults().size(TUVars.iconSize, TUVars.iconSize);
             temp = t;
         }).left();
 
@@ -40,89 +46,87 @@ public class Setup{
         });
     }
 
-    public static void add(TUButton button, Table table){
-        float shift = 0;
-        button.add(table);
-        if(temp.getChildren().size > 0) shift = -4;
-        temp.add(table).padLeft(shift);
+    public static void offset(Table table){
+        LoadedMod timeControl = Vars.mods.getMod("time-control");
+        table.moveBy(0f, Scl.scl(
+            (mobile ? 46f : 0f) + //Account for command mode button on mobile.
+            (timeControl != null && timeControl.isSupported() && timeControl.enabled() ? 68 : 0) //Account for sk7725/timecontrol being enabled.
+        ));
     }
 
     public static void init(){
         TUVars.setDefaults();
         TUDialogs.load();
+        Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t directly from the server list.
+            Log.info("Checking if you're joining 2r2t...");
+            on2r2t = e.host.name.contains("2r2t");
+        });
 
         //Build normal UI.
-        Table buttons = newTable();
-        buttons.setOrigin(Align.bottomLeft);
+        Table mainButtons = newTable();
+        mainButtons.setOrigin(Align.bottomLeft);
 
         ///First row
-
         if(Vars.mobile && Core.settings.getBool("console")){
-            row(buttons);
-            add(new Console(), newTable());
+            Console.addButtons(temp);
+
+            row(mainButtons);
         }
 
         ///Second row
-        row(buttons);
-
-        add(new Spawn(), newTable());
-        add(new Sandbox(), newTable());
+        Spawn.addButtons(temp);
+        Effect.addButtons(temp);
+        Sandbox.addButtons(temp);
 
         ///Third row
-        row(buttons);
+        row(mainButtons);
 
-        add(new TeamChanger(), newTable());
-        add(new Effect(), newTable());
+        TeamChanger.addButton(temp);
+        Health.addButtons(temp);
         Death.init();
-        add(new Death(), newTable());
+        Death.addButtons(temp);
 
         //Normal UI
-        buttons.visible(() -> {
-            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || TestUtils.disableCampaign()) return false;
-            if(!mobile) return true;
-
-            return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+        mainButtons.visible(() -> {
+            if(net.client() || TestUtils.disableCampaign()) return false;
+            return buttonVisibility();
         });
-        ui.hudGroup.addChild(buttons);
-        buttons.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
+        ui.hudGroup.addChild(mainButtons);
+        offset(mainButtons);
 
         //Campaign UI. Only has the kill button.
         Table campaignKill = newTable();
-        campaignKill.setOrigin(Align.bottomLeft);
-        campaignKill.table(Tex.buttonEdge3, t -> {
-            Death.seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
-        });
+        Death.seppuku(temp);
         campaignKill.visible(() -> {
-            if(!ui.hudfrag.shown || ui.minimapfrag.shown() || !state.isCampaign() || buttons.visible) return false;
-            if(!mobile) return true;
-
-            return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+            if(net.client() || !state.isCampaign() || mainButtons.visible) return false;
+            return buttonVisibility();
         });
         ui.hudGroup.addChild(campaignKill);
-        campaignKill.moveBy(0f, Scl.scl((mobile ? 46f : 0f) + TUVars.TCOffset));
+        offset(campaignKill);
+
+        //2r2t UI.
+        Table commandButtons = newTable();
+        //TeamChanger.addButton(temp); //Since when was that removed
+        Spawn.unitMenu(temp);
+        Spawn.placeCore(temp);
+        Effect.statusButton(temp);
+        Health.addButtons(temp);
+        Death.seppuku(temp);
+        commandButtons.visible(() -> {
+            if(!net.client() || !on2r2t) return false;
+            return buttonVisibility();
+        });
+        ui.hudGroup.addChild(commandButtons);
+        offset(commandButtons);
 
         terrainFrag = new TerrainPainterFragment();
         terrainFrag.build(ui.hudGroup);
-
-        Events.on(WorldLoadEvent.class, e -> {
-            if(!selfInit){
-                Table healthUI = placement();
-                healthUI.row();
-                healthUI.table(h -> {
-                    h.defaults().height(TUVars.iconSize).pad(0).left().growX();
-                    Health.healing(h);
-                    Health.invincibility(h);
-                }).colspan(2).growX();
-                selfInit = true;
-            }
-        });
     }
 
-    public static Table placement(){
-        return ui.hudGroup
-            .<Table>find("overlaymarker")
-            .<Stack>find("waves/editor")
-            .<Table>find("waves")
-            .find("status");
+    public static boolean buttonVisibility(){
+        if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
+        if(!mobile) return true;
+
+        return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
     }
 }

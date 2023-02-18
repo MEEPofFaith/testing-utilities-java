@@ -5,7 +5,7 @@ import mindustry.core.*;
 import mindustry.gen.*;
 import testing.content.*;
 
-import static arc.Core.app;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Utils{

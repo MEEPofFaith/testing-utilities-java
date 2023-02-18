@@ -134,7 +134,7 @@ public class InterpDialog extends TUBaseDialog{
                 //ButtonGroup<TextButton> group = new ButtonGroup<>();
                 b.getChildren().each(c -> {
                     if(c instanceof TextButton t){
-                        //group.add(t);
+                        //group.addButtons(t);
                         setupButton(t);
                     }
                 });

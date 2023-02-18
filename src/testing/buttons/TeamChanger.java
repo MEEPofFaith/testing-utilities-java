@@ -5,15 +5,14 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
-import mindustry.gen.*;
-import testing.*;
+import mindustry.ui.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class TeamChanger extends TUButton{
+public class TeamChanger{
     static float tTimer;
 
     public static void changeTeam(Team team){
@@ -32,9 +31,9 @@ public class TeamChanger extends TUButton{
     public static Cell<Button> teamChanger(Table t){
         Cell<Button> i = t.button(b -> {
             TUElements.boxTooltip(b, "@tu-tooltip.button-team");
-            b.setDisabled(() -> TestUtils.disableCommandButton() || player.unit().type.internal);
+            b.setDisabled(() -> player.unit().type.internal);
             b.label(TeamChanger::teamName);
-        }, TUStyles.redButtonStyle, () -> {
+        }, Styles.logict, () -> {
             changeTeam(getNextTeam());
         }).size(TUVars.iconSize).color(curTeam().color);
 
@@ -67,8 +66,8 @@ public class TeamChanger extends TUButton{
         }
     }
 
-    public void add(Table table){
-        table.table(Tex.pane, t -> teamChanger(t).size(100, TUVars.iconSize));
+    public static void addButton(Table t){
+        teamChanger(t).width(100);
     }
 
     static String teamName(){

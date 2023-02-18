@@ -4,7 +4,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.content.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -51,37 +50,34 @@ public class Health{
         Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
     }
 
-    public static Cell<ImageButton> healing(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void healing(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             heal(false);
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
-        b.setDisabled(TestUtils::disableCommandButton);
-        b.visible(() -> !b.isDisabled());
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
     }
 
-    public static Cell<ImageButton> invincibility(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void invincibility(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             heal(true);
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
-        b.setDisabled(TestUtils::disableCommandButton);
-        b.visible(() -> !b.isDisabled());
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
+    }
+
+    public static void addButtons(Table t){
+        healing(t);
+        invincibility(t);
     }
 }

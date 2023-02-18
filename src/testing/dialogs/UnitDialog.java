@@ -180,6 +180,7 @@ public class UnitDialog extends TUBaseDialog{
     }
 
     public void drawPos(){
+        if(net.client()) return;
         float x, y;
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = input.mouseWorldX();
@@ -188,7 +189,7 @@ public class UnitDialog extends TUBaseDialog{
                 x = Mathf.floor(x);
                 y = Mathf.floor(y);
             }
-        }else if(Spawn.spawnHover && !TestUtils.disableCommandButton()){
+        }else if(Spawn.spawnHover){
             x = spawnPos.x;
             y = spawnPos.y;
         }else{

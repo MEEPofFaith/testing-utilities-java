@@ -3,16 +3,14 @@ package testing.buttons;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.gen.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
-import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class Sandbox extends TUButton{
+public class Sandbox{
     static boolean fill = true;
     static float timer;
     static boolean swap;
@@ -74,29 +72,24 @@ public class Sandbox extends TUButton{
         Utils.spawnIconEffect("dump");
     }
 
-    public static Cell<ImageButton> toggling(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuRedImageStyle, Sandbox::toggle)
-            .color(TUVars.curTeam.color).growX();
+    public static void toggling(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.survival, TUStyles.tuImageStyle, Sandbox::toggle);
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-sandbox");
-        b.setDisabled(TestUtils::disableButton);
         b.update(() -> {
             b.getStyle().imageUp = state.rules.infiniteResources ? TUIcons.survival : TUIcons.sandbox;
-            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
     }
 
-    public static Cell<ImageButton> filling(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void filling(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.core, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             if(!swap) coreItems();
-        }).color(TUVars.curTeam.color).growX();
+        });
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
-        b.setDisabled(TestUtils::disableButton);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
                 timer += Time.delta;
@@ -110,16 +103,12 @@ public class Sandbox extends TUButton{
             }
 
             b.getStyle().imageUp = fill ? TUIcons.core : TUIcons.dump;
-            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
     }
 
-    public void add(Table table){
-        table.table(Tex.buttonEdge3, t -> {
-            toggling(t).size(TUVars.iconSize, TUVars.iconSize);
-            filling(t).size(TUVars.iconSize, TUVars.iconSize);
-        });
+    public static void addButtons(Table t){
+        toggling(t);
+        filling(t);
     }
 }

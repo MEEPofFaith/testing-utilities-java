@@ -7,7 +7,6 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.content.*;
 import testing.ui.*;
 import testing.util.*;
@@ -15,7 +14,7 @@ import testing.util.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class Death extends TUButton{
+public class Death{
     static float sTimer, cTimer;
 
     static Stack kill = new Stack(), dupe = new Stack();
@@ -96,15 +95,15 @@ public class Death extends TUButton{
         }
     }
 
-    public static Cell<ImageButton> seppuku(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void seppuku(Table t){
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             if(sTimer > TUVars.longPress) return;
             spontaniumCombustum();
-        }).growX();
+        });
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-seppuku");
-        b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableServer());
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
                 sTimer += Time.delta;
@@ -120,20 +119,18 @@ public class Death extends TUButton{
             kill.add(knife);
             b.replaceImage(kill);
         });
-        b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
 
-        return i;
     }
 
-    public static Cell<ImageButton> clone(Table t){
-        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void clone(Table t){
+        Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             if(cTimer > TUVars.longPress) return;
             mitosis();
-        }).growX();
+        });
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-clone");
-        b.setDisabled(() -> player.unit() == null || player.unit().type.internal || TestUtils.disableButton());
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
                 cTimer += Time.delta;
@@ -144,21 +141,16 @@ public class Death extends TUButton{
                 cTimer = 0f;
             }
 
-            b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
-
             dupe.clearChildren();
             dupe.add(unit2);
             dupe.add(plus);
             b.replaceImage(dupe);
         });
 
-        return i;
     }
 
-    public void add(Table table){
-        table.table(Tex.buttonEdge3, t -> {
-            clone(t).size(TUVars.iconSize, TUVars.iconSize);
-            seppuku(t).size(TUVars.iconSize, TUVars.iconSize);
-        });
+    public static void addButtons(Table t){
+        clone(t);
+        seppuku(t);
     }
 }

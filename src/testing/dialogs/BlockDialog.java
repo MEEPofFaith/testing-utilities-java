@@ -141,13 +141,14 @@ public class BlockDialog extends TUBaseDialog{
     }
 
     public void drawPos(){
+        if(net.client()) return;
         float size = block.size * tilesize,
             offset = (1 - block.size % 2) * tilesize / 2f,
             x, y;
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = World.toTile(input.mouseWorldX()) * tilesize;
             y = World.toTile(input.mouseWorldY()) * tilesize;
-        }else if(Spawn.blockHover && !TestUtils.disableCommandButton()){
+        }else if(Spawn.blockHover){
             x = Point2.x(placePos) * tilesize;
             y = Point2.y(placePos) * tilesize;
         }else{

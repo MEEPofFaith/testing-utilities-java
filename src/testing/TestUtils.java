@@ -31,7 +31,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    static boolean teleport, hasProc, on2r2t;
+    static boolean teleport, hasProc;
 
     public TestUtils(){
         if(!headless){
@@ -106,9 +106,6 @@ public class TestUtils extends Mod{
                         renderer.maxZoom = 24f;
                     }
                 }
-            });
-            Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t directly from the server list.
-                on2r2t = e.host.name.contains("2r2t");
             });
 
             //position drawing + sk7725/whynotteleport
@@ -190,20 +187,8 @@ public class TestUtils extends Mod{
         if(mobile) ui.settings.game.checkPref("console", true);
     }
 
-    public static boolean disableButton(){
-        return disableCampaign() || net.client();
-    }
-
-    public static boolean disableCommandButton(){
-        return disableCampaign() || disableServer();
-    }
-
     public static boolean disableCampaign(){
         return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
-    }
-
-    public static boolean disableServer(){
-        return net.client() && !on2r2t;
     }
 
     public static boolean click(){
