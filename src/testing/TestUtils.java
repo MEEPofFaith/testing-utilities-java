@@ -107,7 +107,7 @@ public class TestUtils extends Mod{
                     }
                 }
             });
-            Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t from the server list.
+            Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t directly from the server list.
                 on2r2t = e.host.name.contains("2r2t");
             });
 
