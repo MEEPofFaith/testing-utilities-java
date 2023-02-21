@@ -13,7 +13,7 @@ repositories{
 }
 
 ext{
-    mindustryVersion = 'v140.4'
+    mindustryVersion = 'v142'
     mindustryHash = '385af57d1b'
     arcHash = 'd3b6ab563b'
     jabelVersion = "0.7.0"
