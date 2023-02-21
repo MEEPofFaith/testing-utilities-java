@@ -57,9 +57,9 @@ public class Setup{
     public static void init(){
         TUVars.setDefaults();
         TUDialogs.load();
-        Events.on(ClientPreConnectEvent.class, e -> { //TODO this doesn't run if you go to 2r2t from Omega Hub, you need to join 2r2t directly from the server list.
+        Events.on(ClientServerConnectEvent.class, e -> {
             Log.info("Checking if you're joining 2r2t...");
-            on2r2t = e.host.name.contains("2r2t");
+            on2r2t = e.ip.equals("130.61.214.19") && e.port == 6568;
         });
 
         //Build normal UI.
