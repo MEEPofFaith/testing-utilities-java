@@ -12,7 +12,6 @@ import static mindustry.Vars.*;
 
 public class Sandbox{
     static boolean fill = true;
-    static float timer;
     static boolean swap;
 
     public static void toggle(){
@@ -92,19 +91,19 @@ public class Sandbox{
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
-                timer += Time.delta;
-                if(timer >= TUVars.longPress && !swap){
+                TUVars.pressTimer += Time.delta;
+                if(TUVars.pressTimer >= TUVars.longPress && !swap){
                     fill = !fill;
                     swap = true;
                 }
-            }else{
-                timer = 0;
-                swap = false;
             }
 
             b.getStyle().imageUp = fill ? TUIcons.core : TUIcons.dump;
         });
-
+        b.released(() -> {
+            TUVars.pressTimer = 0;
+            swap = false;
+        });
     }
 
     public static void addButtons(Table t){

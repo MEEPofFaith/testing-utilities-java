@@ -6,7 +6,7 @@ import testing.dialogs.*;
 import static arc.Core.*;
 
 public class TUVars{
-    public static float longPress;
+    public static float longPress, pressTimer;
 
     public static Team curTeam = Team.sharded;
     public static TUBaseDialog activeDialog;

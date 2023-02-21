@@ -15,8 +15,6 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Death{
-    static float sTimer, cTimer;
-
     static Stack kill = new Stack(), dupe = new Stack();
     static Image unit1 = new Image(), unit2 = new Image(), knife = new Image(), plus = new Image();
 
@@ -97,7 +95,7 @@ public class Death{
 
     public static void seppuku(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
-            if(sTimer > TUVars.longPress) return;
+            if(TUVars.pressTimer > TUVars.longPress) return;
             spontaniumCombustum();
         });
 
@@ -106,12 +104,10 @@ public class Death{
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
-                sTimer += Time.delta;
-                if(sTimer > TUVars.longPress){
+                TUVars.pressTimer += Time.delta;
+                if(TUVars.pressTimer > TUVars.longPress){
                     spontaniumCombustum();
                 }
-            }else{
-                sTimer = 0f;
             }
 
             kill.clearChildren();
@@ -119,12 +115,12 @@ public class Death{
             kill.add(knife);
             b.replaceImage(kill);
         });
-
+        b.released(() -> TUVars.pressTimer = 0);
     }
 
     public static void clone(Table t){
         Cell<ImageButton> i = t.button(Icon.units, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
-            if(cTimer > TUVars.longPress) return;
+            if(TUVars.pressTimer > TUVars.longPress) return;
             mitosis();
         });
 
@@ -133,12 +129,10 @@ public class Death{
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
-                cTimer += Time.delta;
-                if(cTimer > TUVars.longPress){
+                TUVars.pressTimer += Time.delta;
+                if(TUVars.pressTimer > TUVars.longPress){
                     mitosis();
                 }
-            }else{
-                cTimer = 0f;
             }
 
             dupe.clearChildren();
@@ -146,7 +140,7 @@ public class Death{
             dupe.add(plus);
             b.replaceImage(dupe);
         });
-
+        b.released(() -> TUVars.pressTimer = 0);
     }
 
     public static void addButtons(Table t){
