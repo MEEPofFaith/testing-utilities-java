@@ -28,7 +28,7 @@ public class TeamChanger{
     }
 
     public static Cell<Table> teamChanger(Table t){
-        Cell<Table> table = t.table(teams -> {
+        return t.table(teams -> {
             int i = 0;
             for(Team team : Team.baseTeams){
                 ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
@@ -37,9 +37,7 @@ public class TeamChanger{
                     if(TUVars.pressTimer > TUVars.longPress) return;
                     changeTeam(team);
                 });
-                button.released(() -> TUVars.pressTimer = 0);
-                teams.add(button).grow().margin(6f).center();
-                button.getImageCell().grow().scaling(Scaling.stretch).center();
+                button.getImageCell().grow().scaling(Scaling.stretch).center().pad(0).margin(0);
                 button.getStyle().imageUpColor = team.color;
                 button.update(() -> {
                     if(button.isPressed()){
@@ -51,14 +49,14 @@ public class TeamChanger{
 
                     button.setChecked(player.team() == team);
                 });
+                button.released(() -> TUVars.pressTimer = 0);
 
+                teams.add(button).grow().margin(6f).center();
                 if(++i % 3 == 0){
                     teams.row();
                 }
             }
         });
-
-        return table;
     }
 
     public static Team curTeam(){
