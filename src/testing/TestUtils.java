@@ -140,6 +140,7 @@ public class TestUtils extends Mod{
                 if(state.isGame()){
                     //sk7725/whynotteleport
                     if(!disableCampaign() && !player.unit().type.internal && input.alt() && click()){
+                        player.shooting(false);
                         if(teleport) return;
                         teleport = true;
 
