@@ -58,8 +58,10 @@ public class Setup{
         TUVars.setDefaults();
         TUDialogs.load();
         Events.on(ClientServerConnectEvent.class, e -> {
-            Log.info("Checking if you're joining 2r2t...");
-            on2r2t = e.ip.equals("130.61.214.19") && e.port == 6568;
+            //Log.info("Checking if you're joining 2r2t...");
+            //Log.info("ip: @ | port: @", e.ip, e.port);
+
+            on2r2t = e.ip.equals("n1.yeet.ml") && e.port == 6568;
         });
 
         //Build normal UI.
