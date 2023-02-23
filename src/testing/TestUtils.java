@@ -118,7 +118,7 @@ public class TestUtils extends Mod{
                 unitDialog.drawPos();
                 blockDialog.drawPos();
                 Setup.terrainFrag.drawPos();
-                if(!teleport && !disableCampaign() && !player.unit().type.internal && input.alt()){
+                if(!teleport && !disableTeleport() && !player.unit().type.internal && input.alt()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);
                     float x1 = player.x, y1 = player.y,
@@ -139,7 +139,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableCampaign() && !player.unit().type.internal && input.alt() && click()){
+                    if(!disableTeleport() && !player.unit().type.internal && input.alt() && click()){
                         player.shooting(false);
                         if(teleport) return;
                         teleport = true;
@@ -189,6 +189,10 @@ public class TestUtils extends Mod{
         });
 
         if(mobile) ui.settings.game.checkPref("console", true);
+    }
+
+    public static boolean disableTeleport(){
+        return net.client() ? !Setup.on2r2t : disableCampaign();
     }
 
     public static boolean disableCampaign(){

@@ -17,8 +17,8 @@ import testing.ui.fragments.*;
 import static mindustry.Vars.*;
 
 public class Setup{
-    static boolean on2r2t;
-    static Table temp;
+    public static boolean on2r2t;
+    private static Table temp;
 
     public static TerrainPainterFragment terrainFrag;
 
