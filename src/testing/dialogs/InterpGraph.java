@@ -45,6 +45,18 @@ public class InterpGraph extends Table{
             points = Mathf.round(graphW / 4, 2) + 1; //Ensure a center (0.5) point
             float spacing = graphW / (points - 1);
 
+            float tickMin = graphY;
+            while(tickMin - (graphH / 4) > baseY){
+                tickMin -= graphH / 4;
+            }
+
+            Draw.color(Color.darkGray);
+            float gTick = tickMin;
+            while(gTick < baseY + baseH){
+                if(gTick != graphY && gTick != graphY + graphH) Lines.line(graphX, gTick, graphX + graphW, gTick);
+                gTick += graphH / 4;
+            }
+
             Draw.color(Color.lightGray);
             Lines.line(graphX, graphY, graphX + graphW, graphY);
             Lines.line(graphX, graphY + graphH, graphX + graphW, graphY + graphH);
@@ -55,6 +67,14 @@ public class InterpGraph extends Table{
             }
 
             if(interpColumn){
+                Draw.color(Color.darkGray);
+                float colTick = tickMin;
+                while(colTick < baseY + baseH){
+                    if(colTick != graphY && colTick != graphY + graphH) Lines.lineAngleCenter(colCenter, colTick, 0, dotColumnWidth / 3f, false);
+                    colTick += graphH / 4;
+                }
+
+                Draw.color(Color.lightGray);
                 Lines.lineAngleCenter(colCenter, graphY, 0, dotColumnWidth / 3f, false);
                 Lines.lineAngleCenter(colCenter, graphY + graphH, 0, dotColumnWidth / 3f, false);
 
