@@ -1,5 +1,7 @@
 package testing.ui;
 
+import arc.scene.event.*;
+import mindustry.gen.*;
 import testing.dialogs.*;
 
 public class TUDialogs{
@@ -21,5 +23,10 @@ public class TUDialogs{
         weatherDialog = new WeatherDialog();
         interpDialog = new InterpDialog();
         soundDialog = new SoundDialog();
+
+        //Prevent the press sound from playing when clicking buttons in the sounds dialog
+        ClickListener.clicked = () -> {
+            if(!soundDialog.isShown()) Sounds.press.play();
+        };
     }
 }
