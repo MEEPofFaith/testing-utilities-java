@@ -17,10 +17,9 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class TeamDialog extends TUBaseDialog{
-    Team curTeam;
-    Cons<Team> changed;
-
-    Table all = new Table();
+    private final Table all = new Table();
+    private Team curTeam;
+    private Cons<Team> changed;
 
     public TeamDialog(){
         super("@tu-unit-menu.team");

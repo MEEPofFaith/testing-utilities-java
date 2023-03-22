@@ -17,12 +17,11 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WeatherDialog extends TUBaseDialog{
-    TextField search;
-    Table selection = new Table();
-    Weather weather = Weathers.rain;
-    float intensity = 100f, duration = 60f;
-
-    float minDur = 0.125f, maxDur = 600f;
+    private final Table selection = new Table();
+    private final float minDur = 0.125f, maxDur = 600f;
+    private TextField search;
+    private Weather weather = Weathers.rain;
+    private float intensity = 100f, duration = 60f;
 
     public WeatherDialog(){
         super("@tu-weather-menu.name");

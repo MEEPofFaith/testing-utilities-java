@@ -16,10 +16,9 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WaveChangeDialog extends TUBaseDialog{
-    static int amountCounter;
-    Table all = new Table();
-
-    int startWave = 1, waves = 50;
+    private final Table all = new Table();
+    private static int amountCounter;
+    private int startWave = 1, waves = 50;
 
     public WaveChangeDialog(){
         super("@tu-unit-menu.waves");
@@ -84,7 +83,7 @@ public class WaveChangeDialog extends TUBaseDialog{
                 amountCounter = 0;
                 t.table(w -> {
                     int wave = ii - 1;
-                    for(SpawnGroup group: state.rules.spawns){
+                    for(SpawnGroup group : state.rules.spawns){
                         if(group.getSpawned(wave) <= 0) continue;
                         w.table(u -> {
                             int a = group.getSpawned(wave) * Utils.countSpawns(group);

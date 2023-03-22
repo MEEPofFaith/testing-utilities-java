@@ -20,13 +20,13 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class StatusDialog extends TUBaseDialog{
-    TextField search;
-    Table selection = new Table();
-    StatusEffect status = StatusEffects.burning;
-    float duration = 10f;
-    static boolean perma;
+    private static final float minDur = 0.125f, maxDur = 60f;
+    private final Table selection = new Table();
+    private TextField search;
+    private StatusEffect status = StatusEffects.burning;
+    private float duration = 10f;
+    private boolean perma;
 
-    float minDur = 0.125f, maxDur = 60f;
 
     public StatusDialog(){
         super("@tu-status-menu.name");
@@ -84,8 +84,8 @@ public class StatusDialog extends TUBaseDialog{
 
         selection.label(
             () -> bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
-            status.localizedName +
-            (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
+                status.localizedName +
+                (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
         ).padBottom(6);
         selection.row();
 

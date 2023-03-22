@@ -16,17 +16,17 @@ import java.util.*;
 import static arc.math.Interp.*;
 
 public class InterpDialog extends TUBaseDialog{
-    InterpGraph graph;
-    Table configTable;
+    private final InterpGraph graph;
+    private Table configTable;
     //Configs
-    int configType = 0;
-    int powP = 2;
-    float expV = 2, expP = 5;
-    float elasticV = 2, elasticP = 10, elasticS = 1;
-    int elasticB = 6;
-    float swingS = 1.5f;
-    int bounceB = 4;
-    String lastPressed = "linear";
+    private int configType = 0;
+    private int powP = 2;
+    private float expV = 2, expP = 5;
+    private float elasticV = 2, elasticP = 10, elasticS = 1;
+    private int elasticB = 6;
+    private float swingS = 1.5f;
+    private int bounceB = 4;
+    private String lastPressed = "linear";
 
     public InterpDialog(){
         super("@tu-interp-menu.name");

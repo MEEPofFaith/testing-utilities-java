@@ -33,14 +33,12 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class BlockDialog extends TUBaseDialog{
-    TextField search;
-    Table selection = new Table();
-    Block block = Blocks.coreShard;
-    Team placeTeam = Team.get(settings.getInt("tu-default-team", 1));
-    int placePos = -1, rotation = 1;
-    static boolean initialized;
-
-    boolean expectingPos;
+    private final Table selection = new Table();
+    private TextField search;
+    private Block block = Blocks.coreShard;
+    private Team placeTeam = Team.get(settings.getInt("tu-default-team", 1));
+    private int placePos = -1, rotation = 1;
+    private boolean expectingPos, initialized;
 
     public BlockDialog(){
         super("@tu-block-menu.name");
@@ -156,7 +154,7 @@ public class BlockDialog extends TUBaseDialog{
         }
         Draw.z(Layer.overlayUI);
         Lines.stroke(1f, placeTeam.color);
-        Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
+        Lines.rect(x - size / 2 + offset, y - size / 2 + offset, size, size);
         Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 

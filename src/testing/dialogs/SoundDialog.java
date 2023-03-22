@@ -15,16 +15,16 @@ import mindustry.graphics.*;
 import static arc.Core.*;
 
 public class SoundDialog extends TUBaseDialog{
-    static Seq<Sound> vanillaSounds;
-    static Seq<Sound> modSounds;
+    private static Seq<Sound> vanillaSounds;
+    private static Seq<Sound> modSounds;
 
-    TextField search;
-    Table selection = new Table();
-    Sound sound = Sounds.pew;
-    int loopSoundID = -1;
+    private final Table selection = new Table();
+    private TextField search;
+    private Sound sound = Sounds.pew;
+    private int loopSoundID = -1;
 
-    float minVol = 1, maxVol = 1, minPitch = 0.8f, maxPitch = 1.2f;
-    float loopVol = 1, loopPitch = 1;
+    private float minVol = 1, maxVol = 1, minPitch = 0.8f, maxPitch = 1.2f;
+    private float loopVol = 1, loopPitch = 1;
 
     public SoundDialog(){
         super("@tu-sound-menu.name");

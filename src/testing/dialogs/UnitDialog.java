@@ -30,21 +30,17 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class UnitDialog extends TUBaseDialog{
-    static final int multiplayerLimit = 10;
-
-    TextField search;
-    Table selection = new Table();
-    UnitType spawnUnit = UnitTypes.dagger;
-    Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
-    Vec2 spawnPos = new Vec2(Float.MIN_VALUE, Float.MIN_VALUE);
-    int amount = 1;
-    float radius = 2;
-    static boolean despawns = true, initialized;
-
-    boolean expectingPos;
-
-    final int maxAmount = 100;
-    final float minRadius = 0f, maxRadius = 10f;
+    private static final int multiplayerLimit = 10;
+    private static final int maxAmount = 100;
+    private static final float minRadius = 0f, maxRadius = 10f;
+    private final Table selection = new Table();
+    private final Vec2 spawnPos = new Vec2(Float.MIN_VALUE, Float.MIN_VALUE);
+    private TextField search;
+    private UnitType spawnUnit = UnitTypes.dagger;
+    private Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
+    private int amount = 1;
+    private float radius = 2;
+    private boolean despawns, expectingPos, initialized;
 
     public UnitDialog(){
         super("@tu-unit-menu.name");
@@ -300,6 +296,7 @@ public class UnitDialog extends TUBaseDialog{
         hide();
 
     }
+
     String teamName(){
         return teamDialog.teamName(spawnTeam);
     }

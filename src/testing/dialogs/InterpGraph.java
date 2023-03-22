@@ -11,13 +11,12 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 
 public class InterpGraph extends Table{
-    static final float lerpTime = 120f;
-    int points;
-    Interp oldInterp = Interp.linear;
-    Interp interp = Interp.linear;
-    float oldMinVal = 0f, oldMaxVal = 1f,
+    private int points;
+    private Interp oldInterp = Interp.linear;
+    private Interp interp = Interp.linear;
+    private float oldMinVal = 0f, oldMaxVal = 1f,
         minVal = 0f, maxVal = 1f;
-    float lerp = 1;
+    private float lerp = 1;
 
     public InterpGraph(){
         background(Tex.pane);
