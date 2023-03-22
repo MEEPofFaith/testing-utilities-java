@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import static arc.Core.*;
 
 public class SoundDialog extends TUBaseDialog{
+    private static AudioBus uiBus;
     private static Seq<Sound> vanillaSounds;
     private static Seq<Sound> modSounds;
 
@@ -43,6 +44,8 @@ public class SoundDialog extends TUBaseDialog{
             modSounds = new Seq<>();
             Core.assets.getAll(Sound.class, modSounds);
             modSounds.removeAll(vanillaSounds);
+
+            uiBus = Sounds.press.bus; //Grab the ui bus from one of the ui sounds.
         }
 
         cont.table(s -> {
@@ -59,7 +62,12 @@ public class SoundDialog extends TUBaseDialog{
             t.defaults().left();
             divider(t, "@tu-sound-menu.sound", Color.lightGray);
             t.table(s -> {
-                s.button("@tu-sound-menu.play", () -> sound.play(Mathf.range(minVol, maxVol), Mathf.range(minPitch, maxPitch), 0f)).wrapLabel(false).grow();
+                s.button("@tu-sound-menu.play", () -> {
+                    AudioBus prev = sound.bus;
+                    sound.setBus(uiBus);
+                    sound.play(Mathf.range(minVol, maxVol), Mathf.range(minPitch, maxPitch), 0f, false, false);
+                    sound.setBus(prev);
+                }).wrapLabel(false).grow();
                 s.table(f -> {
                     f.defaults().left().growX();
                     f.add("@tu-sound-menu.min-vol");
@@ -95,7 +103,12 @@ public class SoundDialog extends TUBaseDialog{
             t.table(l -> {
                 l.defaults().left();
 
-                l.button("@tu-sound-menu.start", () -> loopSoundID = sound.loop(loopVol, loopPitch, 0)).wrapLabel(false).disabled(b -> loopSoundID >= 0).uniform().grow();
+                l.button("@tu-sound-menu.start", () -> {
+                    AudioBus prev = sound.bus;
+                    sound.setBus(uiBus);
+                    loopSoundID = sound.loop(loopVol, loopPitch, 0);
+                    sound.setBus(prev);
+                }).wrapLabel(false).disabled(b -> loopSoundID >= 0).uniform().grow();
 
                 l.add("@tu-sound-menu.vol").padLeft(6f).growX();
                 l.field("" + loopVol, TextFieldFilter.floatsOnly, v -> {
