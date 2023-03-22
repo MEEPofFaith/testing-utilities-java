@@ -2,6 +2,7 @@ package testing.util;
 
 import arc.util.*;
 import mindustry.core.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import testing.content.*;
 
@@ -37,5 +38,15 @@ public class Utils{
         }else{
             return (int)f + "";
         }
+    }
+
+    public static int countSpawns(SpawnGroup group){
+        if(group.spawn != -1) return 1; //If the group has a set spawn pos, assume it's a valid position and count it as 1 spawn.
+
+        //Otherwise count all.
+        if(group.type.flying){
+            return spawner.countFlyerSpawns();
+        }
+        return spawner.countGroundSpawns();
     }
 }

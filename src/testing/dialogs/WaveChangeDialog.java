@@ -16,6 +16,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class WaveChangeDialog extends TUBaseDialog{
+    static int amountCounter;
     Table all = new Table();
 
     int startWave = 1, waves = 50;
@@ -80,18 +81,18 @@ public class WaveChangeDialog extends TUBaseDialog{
                 b.getLabelCell().center();
                 b.setDisabled(() -> net.client());
 
-                int[] amount = {0};
+                amountCounter = 0;
                 t.table(w -> {
                     int wave = ii - 1;
                     for(SpawnGroup group: state.rules.spawns){
                         if(group.getSpawned(wave) <= 0) continue;
                         w.table(u -> {
-                            int a = group.getSpawned(wave) * spawner.countSpawns();
+                            int a = group.getSpawned(wave) * Utils.countSpawns(group);
                             u.add(TUElements.itemImage(
                                 new TextureRegionDrawable(group.type.uiIcon),
                                 () -> String.valueOf(a)
                             )).size(8 * 4 * iconMul).top().grow();
-                            amount[0] += a;
+                            amountCounter += a;
                             boolean hasEffect = group.effect != null && group.effect != StatusEffects.none,
                                 hasShield = group.getShield(wave) > 0;
                             if(hasEffect || hasShield){
@@ -115,7 +116,7 @@ public class WaveChangeDialog extends TUBaseDialog{
                         }).grow();
                     }
                 }).growY().left().padTop(4f);
-                t.label(() -> bundle.format("tu-unit-menu.wave-total", amount[0])).grow().left().padLeft(6f).padTop(4f);
+                t.label(() -> bundle.format("tu-unit-menu.wave-total", amountCounter)).grow().left().padLeft(6f).padTop(4f);
                 t.row();
             }
         });
