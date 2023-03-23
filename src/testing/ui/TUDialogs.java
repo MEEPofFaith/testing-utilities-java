@@ -23,10 +23,5 @@ public class TUDialogs{
         weatherDialog = new WeatherDialog();
         interpDialog = new InterpDialog();
         soundDialog = new SoundDialog();
-
-        //Prevent the press sound from playing when clicking buttons in the sounds dialog
-        ClickListener.clicked = () -> {
-            if(!soundDialog.isShown()) Sounds.press.play();
-        };
     }
 }

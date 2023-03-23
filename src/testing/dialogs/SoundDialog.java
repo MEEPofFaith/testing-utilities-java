@@ -15,7 +15,8 @@ import mindustry.graphics.*;
 import static arc.Core.*;
 
 public class SoundDialog extends TUBaseDialog{
-    private static AudioBus uiBus;
+    /** Audio bus for sounds played by the dialog. Will remain unpaused unlike other audio busses. */
+    private static final AudioBus soundRoomBus = new AudioBus();
     private static Seq<Sound> vanillaSounds;
     private static Seq<Sound> modSounds;
 
@@ -44,8 +45,6 @@ public class SoundDialog extends TUBaseDialog{
             modSounds = new Seq<>();
             Core.assets.getAll(Sound.class, modSounds);
             modSounds.removeAll(vanillaSounds);
-
-            uiBus = Sounds.press.bus; //Grab the ui bus from one of the ui sounds.
         }
 
         cont.table(s -> {
@@ -64,7 +63,7 @@ public class SoundDialog extends TUBaseDialog{
             t.table(s -> {
                 s.button("@tu-sound-menu.play", () -> {
                     AudioBus prev = sound.bus;
-                    sound.setBus(uiBus);
+                    sound.setBus(soundRoomBus);
                     sound.play(Mathf.range(minVol, maxVol), Mathf.range(minPitch, maxPitch), 0f, false, false);
                     sound.setBus(prev);
                 }).wrapLabel(false).grow();
@@ -105,7 +104,7 @@ public class SoundDialog extends TUBaseDialog{
 
                 l.button("@tu-sound-menu.start", () -> {
                     AudioBus prev = sound.bus;
-                    sound.setBus(uiBus);
+                    sound.setBus(soundRoomBus);
                     loopSoundID = sound.loop(loopVol, loopPitch, 0);
                     sound.setBus(prev);
                 }).wrapLabel(false).disabled(b -> loopSoundID >= 0).uniform().grow();
@@ -135,7 +134,12 @@ public class SoundDialog extends TUBaseDialog{
             });
         }).padTop(6);
 
-        hidden(this::stopSounds);
+        //Pause the ui audio bus while open so that button press sounds doesn't play.
+        shown(() -> audio.setPaused(Sounds.press.bus.id, true));
+        hidden(() -> {
+            stopSounds();
+            audio.setPaused(Sounds.press.bus.id, false);
+        });
     }
 
     @Override
