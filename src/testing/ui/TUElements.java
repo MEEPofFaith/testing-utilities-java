@@ -80,6 +80,13 @@ public class TUElements{
         return stack;
     }
 
+    public static void divider(Table t, String label, Color color){
+        t.add(label).growX().left().color(color);
+        t.row();
+        t.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(color);
+        t.row();
+    }
+
     public static void boxTooltip(Element e, Prov<CharSequence> text){
         e.addListener(new Tooltip(t -> t.background(Tex.button).label(text)));
     }

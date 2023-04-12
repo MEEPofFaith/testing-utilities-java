@@ -1,7 +1,5 @@
-package testing.dialogs;
+package testing.dialogs.world;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -10,35 +8,30 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import testing.ui.*;
+import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class PlanetDialog extends TUBaseDialog{
+public class PlanetTable extends Table{
     private final Table selection = new Table();
     private TextField search;
     private Planet planet = Planets.serpulo;
 
-    public PlanetDialog(){
-        super("@tu-planet-menu.name");
-
-        cont.table(s -> {
+    public PlanetTable(){
+        table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-        });
+        pane(all -> all.add(selection)).row();
 
-        TUElements.boxTooltip(
-            buttons.button("$tu-planet-menu.set", Icon.editor, this::setPlanet).get(),
-            "@tu-tooltip.planet-set"
-        );
+        ImageButton pb = button(TUIcons.get(Icon.editor), TUVars.buttonSize, this::setPlanet).padTop(6f).get();
+        TUElements.boxTooltip(pb, "@tu-tooltip.planet-set");
+        pb.label(() -> "@tu-planet-menu.set").padLeft(6).growX();
     }
 
-    @Override
     protected void rebuild(){
         selection.clear();
         String text = search.getText();
@@ -84,16 +77,5 @@ public class PlanetDialog extends TUBaseDialog{
             state.rules.hiddenBuildItems.clear();
             state.rules.hiddenBuildItems.addAll(planet.hiddenItems);
         }
-        hide();
-    }
-
-    public TextureRegion getIcon(){
-        if(planet == null) return Icon.none.getRegion();
-        return Icon.icons.get(planet.icon, Icon.commandRally).getRegion();
-    }
-
-    public Color getIconColor(){
-        if(planet == null) return Color.white;
-        return planet.iconColor;
     }
 }

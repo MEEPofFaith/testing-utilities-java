@@ -11,6 +11,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import testing.ui.*;
 
 import static arc.Core.*;
 
@@ -59,7 +60,7 @@ public class SoundDialog extends TUBaseDialog{
 
         cont.table(t -> {
             t.defaults().left();
-            divider(t, "@tu-sound-menu.sound", Color.lightGray);
+            TUElements.divider(t, "@tu-sound-menu.sound", Color.lightGray);
             t.table(s -> {
                 s.button("@tu-sound-menu.play", () -> {
                     AudioBus prev = sound.bus;
@@ -98,7 +99,7 @@ public class SoundDialog extends TUBaseDialog{
                     maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
                 }).padLeft(6f);
             }).grow().row();
-            divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
+            TUElements.divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
             t.table(l -> {
                 l.defaults().left();
 
@@ -150,7 +151,7 @@ public class SoundDialog extends TUBaseDialog{
         selection.table(list -> {
             Seq<Sound> vSounds = vanillaSounds.select(s -> getName(s).toLowerCase().contains(text.toLowerCase()));
             if(vSounds.size > 0){
-                divider(list, "@tu-sound-menu.vanilla", Pal.accent);
+                TUElements.divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
                 list.table(v -> {
                     soundList(v, vSounds);
@@ -160,20 +161,13 @@ public class SoundDialog extends TUBaseDialog{
 
             Seq<Sound> mSounds = modSounds.select(s -> getName(s).toLowerCase().contains(text.toLowerCase()));
             if(mSounds.size > 0){
-                divider(list, "@tu-sound-menu.modded", Pal.accent);
+                TUElements.divider(list, "@tu-sound-menu.modded", Pal.accent);
 
                 list.table(m -> {
                     soundList(m, mSounds);
                 });
             }
         }).growX().left().padBottom(10);
-    }
-
-    void divider(Table t, String label, Color color){
-        t.add(label).growX().left().color(color);
-        t.row();
-        t.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(color);
-        t.row();
     }
 
     void soundList(Table t, Seq<Sound> sounds){
