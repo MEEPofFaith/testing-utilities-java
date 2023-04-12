@@ -77,7 +77,7 @@ public class Setup{
 
         ///Second row
         Spawn.addButtons(temp);
-        Effect.addButtons(temp);
+        Environment.addButtons(temp);
         Sandbox.addButtons(temp);
 
         ///Third row
@@ -85,6 +85,7 @@ public class Setup{
 
         TeamChanger.addButton(temp);
         Health.addButtons(temp);
+        Effect.statusButton(temp);
         Death.init();
         Death.addButtons(temp);
 
