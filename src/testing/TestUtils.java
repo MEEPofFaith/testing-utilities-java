@@ -43,13 +43,6 @@ public class TestUtils extends Mod{
 
             experimental = true; //Also dev mode
 
-            Events.on(ClientLoadEvent.class, e -> {
-                TUIcons.init();
-                TUStyles.init();
-                loadSettings();
-                Setup.init();
-            });
-
             //Add campaign maps to custom maps list
             Seq<String> mapNames = new Seq<>();
             mapNames.addAll( //Sectors aren't loaded yet, need to hardcode
@@ -70,6 +63,11 @@ public class TestUtils extends Mod{
     @Override
     public void init(){
         if(!headless){
+            TUIcons.init();
+            TUStyles.init();
+            loadSettings();
+            Setup.init();
+
             LoadedMod tu = mods.locateMod("test-utils");
 
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);

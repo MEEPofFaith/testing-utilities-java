@@ -21,13 +21,13 @@ public class Environment{
     }
 
     public static void planetButton(Table t){
-        ImageButton b = new ImageButton(planetDialog.getIcon(), TUStyles.tuImageStyle);
+        ImageButton b = new ImageButton(environmentDialog.getIcon(), TUStyles.tuImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-planet");
-        b.clicked(planetDialog::show);
+        b.clicked(environmentDialog::show);
         b.update(() -> {
             ImageButtonStyle style = b.getStyle();
-            ((TextureRegionDrawable)(style.imageUp)).setRegion(planetDialog.getIcon());
-            Color iColor = planetDialog.getIconColor();
+            ((TextureRegionDrawable)(style.imageUp)).setRegion(environmentDialog.getIcon());
+            Color iColor = environmentDialog.getIconColor();
             style.imageDownColor = style.imageUpColor = style.imageOverColor = iColor;
         });
 

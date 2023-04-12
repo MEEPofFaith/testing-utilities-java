@@ -9,7 +9,7 @@ public class TUDialogs{
     public static WaveChangeDialog waveChangeDialog;
     public static StatusDialog statusDialog;
     public static WeatherDialog weatherDialog;
-    public static PlanetDialog planetDialog;
+    public static EnvironmentDialog environmentDialog;
     public static InterpDialog interpDialog;
     public static SoundDialog soundDialog;
 
@@ -20,7 +20,7 @@ public class TUDialogs{
         waveChangeDialog = new WaveChangeDialog();
         statusDialog = new StatusDialog();
         weatherDialog = new WeatherDialog();
-        planetDialog = new PlanetDialog();
+        environmentDialog = new EnvironmentDialog();
         interpDialog = new InterpDialog();
         soundDialog = new SoundDialog();
     }
