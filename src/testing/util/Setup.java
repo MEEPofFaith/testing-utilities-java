@@ -1,10 +1,12 @@
 package testing.util;
 
 import arc.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
@@ -17,7 +19,7 @@ import testing.ui.fragments.*;
 import static mindustry.Vars.*;
 
 public class Setup{
-    public static boolean on2r2t;
+    public static boolean on2r2t, posLabelAligned = false;
     private static Table temp;
 
     public static TerrainPainterFragment terrainFrag;
@@ -124,6 +126,29 @@ public class Setup{
 
         terrainFrag = new TerrainPainterFragment();
         terrainFrag.build(ui.hudGroup);
+
+        Table miniPos = ui.hudGroup.find("minimap/position");
+        Label pos = miniPos.find("position");
+        pos.setText(() ->
+            (Core.settings.getBool("position") ?
+                player.tileX() + ", " + player.tileY() + "\n" +
+                    "[accent]" + fix(player.x) + ", " + fix(player.y) + "\n" :
+                ""
+            ) +
+            (Core.settings.getBool("mouseposition") ?
+                "[lightgray]" + World.toTile(Core.input.mouseWorldX()) + ", " + World.toTile(Core.input.mouseWorldY()) + "\n" +
+                    "[#d4816b]" + fix(Core.input.mouseWorldX()) + ", " + fix(Core.input.mouseWorldY()) : //accentBack is not an indexed color for [] format
+                ""
+            )
+        );
+        miniPos.getCell(miniPos.find("minimap")).top().right();
+        miniPos.getCell(pos).top().right();
+
+        Events.on(WorldLoadEvent.class, e -> {
+            if(posLabelAligned) return;
+            pos.setAlignment(Align.right, Align.right);
+            posLabelAligned = true;
+        });
     }
 
     public static boolean buttonVisibility(){
@@ -131,5 +156,9 @@ public class Setup{
         if(!mobile) return true;
 
         return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+    }
+
+    private static String fix(float f){
+        return Strings.autoFixed(f, 1);
     }
 }
