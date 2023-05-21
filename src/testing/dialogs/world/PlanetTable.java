@@ -27,9 +27,16 @@ public class PlanetTable extends Table{
 
         pane(all -> all.add(selection)).row();
 
-        ImageButton pb = button(TUIcons.get(Icon.editor), TUVars.buttonSize, this::setPlanet).padTop(6f).get();
-        TUElements.boxTooltip(pb, "@tu-tooltip.planet-set");
-        pb.label(() -> "@tu-planet-menu.set").padLeft(6).growX();
+        table(b -> {
+            ImageButton pb = b.button(TUIcons.get(Icon.editor), TUStyles.lefti, TUVars.buttonSize, this::setPlanet).get();
+            TUElements.boxTooltip(pb, "@tu-tooltip.planet-set");
+            pb.label(() -> "@tu-planet-menu.set").padLeft(6).growX();
+
+            ImageButton tb = b.button(TUIcons.get(Icon.book), TUStyles.righti, TUVars.buttonSize, this::setPlanetRules).get();
+            TUElements.boxTooltip(tb, "@tu-tooltip.planet-rules");
+            tb.setDisabled(() -> planet == null);
+            tb.label(() -> "@tu-planet-menu.rules").padLeft(6).growX();
+        }).padTop(6f);
     }
 
     protected void rebuild(){
@@ -77,5 +84,13 @@ public class PlanetTable extends Table{
             state.rules.hiddenBuildItems.clear();
             state.rules.hiddenBuildItems.addAll(planet.hiddenItems);
         }
+    }
+
+    private void setPlanetRules(){
+        if(planet == null) return;
+
+        Vars.ui.showConfirm("@tu-planet-menu.rules-confirm", () -> {
+            planet.ruleSetter.get(state.rules);
+        });
     }
 }
