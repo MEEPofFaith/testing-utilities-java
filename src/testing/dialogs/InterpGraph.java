@@ -125,7 +125,7 @@ public class InterpGraph extends Table{
                 if(t <= 0){
                     lerp = 1;
                 }else{
-                    lerp = Mathf.clamp(lerp + Time.delta / t);
+                    lerp = Mathf.clamp(lerp + (Core.graphics.getDeltaTime() * 60) / t);
                 }
             }
         });

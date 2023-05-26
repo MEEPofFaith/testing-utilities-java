@@ -104,7 +104,7 @@ public class Death{
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
-                TUVars.pressTimer += Time.delta;
+                TUVars.pressTimer += Core.graphics.getDeltaTime() * 60;
                 if(TUVars.pressTimer > TUVars.longPress){
                     spontaniumCombustum();
                 }
@@ -129,7 +129,7 @@ public class Death{
         b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled() && !net.client()){
-                TUVars.pressTimer += Time.delta;
+                TUVars.pressTimer += Core.graphics.getDeltaTime() * 60;
                 if(TUVars.pressTimer > TUVars.longPress){
                     mitosis();
                 }

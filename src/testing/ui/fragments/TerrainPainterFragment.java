@@ -141,7 +141,7 @@ public class TerrainPainterFragment{
                     player.shooting(false);
 
                     if(mobile){
-                        hold += Time.delta;
+                        hold += Core.graphics.getDeltaTime() * 60;
                         if(hold < 2f * 60f) return;
                     }
 
