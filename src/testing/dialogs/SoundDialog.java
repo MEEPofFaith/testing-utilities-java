@@ -187,10 +187,7 @@ public class SoundDialog extends TUBaseDialog{
 
     String getName(Sound s){
         String full = s.toString();
-        while(full.contains("/")){
-            full = full.substring(full.indexOf("/") + 1);
-        }
-        return full;
+        return full.substring(full.lastIndexOf("/") + 1);
     }
 
     void stopSounds(){
