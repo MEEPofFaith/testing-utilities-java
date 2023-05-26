@@ -1,7 +1,6 @@
 package testing.ui;
 
 import arc.scene.style.*;
-import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -10,16 +9,14 @@ import static arc.Core.*;
 import static arc.graphics.Color.*;
 
 public class TUStyles{
-    public static Drawable redBack,
+    public static Drawable
         buttonLeft, buttonLeftDown, buttonLeftOver,
         buttonCenter, buttonCenterDown, buttonCenterOver,
         buttonRight, buttonRightOver, buttonRightDown,
         paneBottom;
-    public static ButtonStyle redButtonStyle;
-    public static ImageButtonStyle tuImageStyle, tuRedImageStyle, lefti, toggleLefti, righti, toggleRighti, centeri;
+    public static ImageButtonStyle tuImageStyle, togglei, lefti, toggleLefti, righti, toggleRighti, centeri;
 
     public static void init(){
-        redBack = ((TextureRegionDrawable)(Tex.whiteui)).tint(0.625f, 0, 0, 0.8f);
         buttonLeft = atlas.getDrawable("test-utils-button-left");
         buttonLeftDown = atlas.getDrawable("test-utils-button-left-down");
         buttonLeftOver = atlas.getDrawable("test-utils-button-left-over");
@@ -31,10 +28,6 @@ public class TUStyles{
         buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
         paneBottom = atlas.getDrawable("test-utils-pane-bottom");
 
-        redButtonStyle = new ButtonStyle(Styles.logict){{
-            disabled = redBack;
-        }};
-
         tuImageStyle = new ImageButtonStyle(Styles.logici){{
             down = Styles.flatDown;
             over = Styles.flatOver;
@@ -42,8 +35,8 @@ public class TUStyles{
             imageUpColor = white;
         }};
 
-        tuRedImageStyle = new ImageButtonStyle(tuImageStyle){{
-            disabled = redBack;
+        togglei = new ImageButtonStyle(Styles.defaulti){{
+            checked = Tex.buttonOver;
         }};
 
         lefti = new ImageButtonStyle(Styles.defaulti){{

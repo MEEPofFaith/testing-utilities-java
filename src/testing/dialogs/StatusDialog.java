@@ -13,29 +13,24 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class StatusDialog extends BaseDialog{
-    TextField search;
-    Table selection = new Table();
-    StatusEffect status = StatusEffects.burning;
-    float duration = 10f;
-    static boolean perma;
+public class StatusDialog extends TUBaseDialog{
+    private static final float minDur = 0.125f, maxDur = 60f;
+    private final Table selection = new Table();
+    private TextField search;
+    private StatusEffect status = StatusEffects.burning;
+    private float duration = 10f;
+    private boolean perma;
 
-    float minDur = 0.125f, maxDur = 60f;
 
     public StatusDialog(){
         super("@tu-status-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
         perma = settings.getBool("tu-permanent", false);
 
         cont.table(s -> {
@@ -82,14 +77,15 @@ public class StatusDialog extends BaseDialog{
         );
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         selection.clear();
         String text = search.getText();
 
         selection.label(
             () -> bundle.get("tu-menu.selection") + "[#" + status.color + "]" +
-            status.localizedName +
-            (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
+                status.localizedName +
+                (status.permanent ? bundle.get("tu-status-menu.permaeff") : "")
         ).padBottom(6);
         selection.row();
 
@@ -109,9 +105,9 @@ public class StatusDialog extends BaseDialog{
                 image.addListener(listener);
                 if(!mobile){
                     image.addListener(new HandCursorListener());
-                    image.update(() -> image.color.lerp(listener.isOver() || status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(listener.isOver() || status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }else{
-                    image.update(() -> image.color.lerp(status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(status == s ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }
 
                 image.clicked(() -> {
@@ -132,19 +128,27 @@ public class StatusDialog extends BaseDialog{
     }
 
     void apply(){
-        if(net.client()){
-            Utils.runCommandPlayerFast(".unit().apply(Vars.content.getByID(ContentType.status," + status.id + "), " + (perma ? "Number.MAX_VALUE" : duration * 60) + ");");
+        if(net.client()){ //For 2r2t
+            Utils.runCommand("statuseff @ @", status.name, perma ? "MAX_VALUE" : duration * 60);
         }else if(player.unit() != null){
+            if(input.shift()){
+                Utils.copyJS("Vars.player.unit().apply(Vars.content.getByID(ContentType.status, @), @);",
+                    status.id, perma ? "Number.MAX_VALUE" : duration * 60
+                );
+                return;
+            }
+
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
     }
 
     void clearStatus(){
-        if(net.client()){
-            Utils.runCommandPlayerFast(".unit().clearStatuses();");
-        }else if(player.unit() != null){
-            player.unit().clearStatuses();
+        if(input.shift()){
+            Utils.copyJS("Vars.player.unit().clearStatuses();");
+            return;
         }
+
+        player.unit().clearStatuses();
     }
 
     public StatusEffect getStatus(){

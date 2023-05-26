@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
@@ -19,7 +20,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
@@ -29,28 +29,22 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class UnitDialog extends BaseDialog{
-    TextField search;
-    Table selection = new Table();
-    UnitType spawnUnit = UnitTypes.dagger;
-    Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
-    Vec2 spawnPos = new Vec2();
-    int amount = 1;
-    float radius = 2;
-    static boolean despawns = true, initialized;
-
-    boolean expectingPos;
-
-    final int maxAmount = 100;
-    final float minRadius = 0f, maxRadius = 10f;
+public class UnitDialog extends TUBaseDialog{
+    private static final int multiplayerLimit = 10;
+    private static final int maxAmount = 100;
+    private static final float minRadius = 0f, maxRadius = 10f;
+    private final Table selection = new Table();
+    private final Vec2 spawnPos = new Vec2(Float.MIN_VALUE, Float.MIN_VALUE);
+    private TextField search;
+    private UnitType spawnUnit = UnitTypes.dagger;
+    private Team spawnTeam = Team.get(settings.getInt("tu-default-team", 1));
+    private int amount = 1;
+    private float radius = 2;
+    private boolean despawns, expectingPos, initialized;
 
     public UnitDialog(){
         super("@tu-unit-menu.name");
 
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
         despawns = settings.getBool("tu-despawns", true);
 
         cont.table(s -> {
@@ -59,83 +53,115 @@ public class UnitDialog extends BaseDialog{
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        cont.label(() -> bundle.get("tu-menu.selection") + spawnUnit.localizedName).padBottom(6).row();
 
-            all.table(s -> {
-                TUElements.sliderSet(
-                    s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
-                    TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
-                    1, maxAmount, 1, amount, (n, f) -> {
-                        amount = n.intValue();
-                        f.setText(String.valueOf(n));
-                    },
-                    "@tu-unit-menu.amount",
-                    "@tu-tooltip.unit-amount"
-                );
-                s.row();
+        cont.pane(all -> all.add(selection)).row();
 
-                TUElements.sliderSet(
-                    s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
-                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
-                    minRadius, maxRadius, 1, radius, (n, f) -> {
-                        radius = n;
-                        f.setText(String.valueOf(n));
-                    },
-                    "@tu-unit-menu.radius",
-                    "@tu-tooltip.unit-radius"
-                );
+        cont.table(s -> {
+            Element[] elements = TUElements.sliderSet(
+                s, text -> amount = Strings.parseInt(text), () -> String.valueOf(amount),
+                TextFieldFilter.digitsOnly, Strings::canParsePositiveInt,
+                1, maxAmount, 1, amount, (n, f) -> {
+                    amount = n.intValue();
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.amount",
+                "@tu-tooltip.unit-amount"
+            );
+            Slider sl = (Slider)elements[0];
+            TextField tf = (TextField)elements[1];
+            sl.update(() -> {
+                if(net.client() && !sl.isDragging() && amount > multiplayerLimit){
+                    amount = multiplayerLimit;
+                    sl.setValue(amount);
+                    tf.setText(amount + "");
+                    ui.showInfoToast("@tu-unit-menu.limit", 4f);
+                }
             });
-            all.row();
+            s.row();
 
-            all.table(t -> {
-                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(spawnTeam, team -> spawnTeam = team)).get();
-                tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
-                TUElements.boxTooltip(tb, "@tu-tooltip.unit-set-team");
+            TUElements.sliderSet(
+                s, text -> radius = Strings.parseFloat(text), () -> String.valueOf(radius),
+                TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
+                minRadius, maxRadius, 0.1f, radius, (n, f) -> {
+                    radius = n;
+                    f.setText(String.valueOf(n));
+                },
+                "@tu-unit-menu.radius",
+                "@tu-tooltip.unit-radius"
+            );
+        }).padTop(6).row();
 
-                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
+        cont.table(t -> {
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize,
+                () -> teamDialog.show(spawnTeam, team -> spawnTeam = team),
+                () -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]"),
+                "@tu-tooltip.unit-set-team"
+            ).setDisabled(() -> net.client());
+
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> {
                     hide();
                     expectingPos = true;
-                }).get();
-                pb.label(() -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f)).padLeft(6).expandX();
-                TUElements.boxTooltip(pb, "@tu-tooltip.unit-pos");
-            }).padTop(6);
-            all.row();
+                },
+                () -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f),
+                "@tu-tooltip.unit-pos"
+            ).setDisabled(() -> net.client());
+        }).padTop(6).row();
 
-            all.table(b -> {
-                ImageButton ib = b.button(TUIcons.get(Icon.units), TUStyles.lefti, TUVars.buttonSize, this::transform).expandX().get();
-                TUElements.boxTooltip(ib, "@tu-tooltip.unit-transform");
-                ib.setDisabled(() -> player.unit().type == UnitTypes.block);
-                ib.label(() -> "@tu-unit-menu.transform").padLeft(6).expandX();
+        cont.table(b -> {
+            ImageButton ib = TUElements.imageButton(
+                b, TUIcons.get(Icon.units), TUStyles.lefti, TUVars.buttonSize,
+                this::transform,
+                () -> "@tu-unit-menu.transform",
+                "@tu-tooltip.unit-transform"
+            );
+            ib.setDisabled(() -> player.unit().type.internal);
 
-                ImageButton db = b.button(TUIcons.alpha, TUStyles.toggleRighti, TUVars.buttonSize, () -> despawns = !despawns).expandX().get();
-                TUElements.boxTooltip(db, "@tu-tooltip.unit-despawns");
-                db.update(() -> db.setChecked(despawns));
-                db.label(() -> "@tu-unit-menu.despawns").padLeft(6).expandX();
-            }).padTop(6);
+            ImageButton db = TUElements.imageButton(
+                b, TUIcons.alpha, TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> despawns = !despawns,
+                () -> "@tu-unit-menu.despawns",
+                "@tu-tooltip.unit-despawns"
+            );
+            db.setDisabled(() -> net.client());
+            db.update(() -> db.setChecked(despawns));
+        }).padTop(6).row();
 
-            all.row();
-            all.table(b -> {
-                ImageButton sb = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::spawn).expandX().get();
-                TUElements.boxTooltip(sb, "@tu-tooltip.unit-spawn");
-                sb.label(() -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn")).padLeft(6).expandX();
+        cont.table(b -> {
+            TUElements.imageButton(
+                b, TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize,
+                this::spawn,
+                () -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn"),
+                "@tu-tooltip.unit-spawn"
+            ).setDisabled(() -> net.client());
 
-                ImageButton wb = b.button(TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize, () -> waveChangeDialog.show()).expandX().get();
-                TUElements.boxTooltip(wb, "@tu-tooltip.unit-set-wave");
-                wb.label(() -> "@tu-unit-menu.waves").padLeft(6).expandX();
-
-            }).padTop(6);
-        });
+            TUElements.imageButton(
+                b, TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> waveChangeDialog.show(),
+                () -> "@tu-unit-menu.waves",
+                "@tu-tooltip.unit-set-wave"
+            ).setDisabled(() -> net.client());
+        }).padTop(6);
 
         if(!initialized){
+            Events.on(WorldLoadEndEvent.class, e -> {
+                spawnPos.set(world.unitWidth() / 2f, world.unitHeight() / 2f);
+            });
+
             Events.run(Trigger.update, () -> {
                 if(expectingPos){
                     if(!state.isGame()){
                         expectingPos = false;
-                    }else if(input.justTouched()){
+                    }else if(TestUtils.click()){
                         if(!scene.hasMouse()){
                             spawnPos.set(input.mouseWorld());
+                            if(net.client()){
+                                spawnPos.x = Mathf.floor(spawnPos.x);
+                                spawnPos.y = Mathf.floor(spawnPos.y);
+                            }
                             ui.showInfoToast(bundle.format("tu-unit-menu.set-pos", spawnPos.x / 8f, spawnPos.y / 8f), 4f);
                             show();
                         }else{
@@ -150,11 +176,16 @@ public class UnitDialog extends BaseDialog{
     }
 
     public void drawPos(){
+        if(net.client()) return;
         float x, y;
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = input.mouseWorldX();
             y = input.mouseWorldY();
-        }else if(Spawn.spawnHover && !TestUtils.disableCampaign()){
+            if(net.client()){
+                x = Mathf.floor(x);
+                y = Mathf.floor(y);
+            }
+        }else if(Spawn.spawnHover){
             x = spawnPos.x;
             y = spawnPos.y;
         }else{
@@ -163,20 +194,21 @@ public class UnitDialog extends BaseDialog{
         Draw.z(Layer.overlayUI);
         Lines.stroke(1f, spawnTeam.color);
         if(radius > 0.01f) Lines.circle(x, y, radius * tilesize);
-        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         expectingPos = false;
         selection.clear();
         String text = search.getText();
 
-        selection.label(
-            () -> bundle.get("tu-menu.selection") + spawnUnit.localizedName
-        ).padBottom(6);
-        selection.row();
+        Seq<UnitType> array = content.units()
+            .select(e -> !e.internal &&
+                (!e.isHidden() || settings.getBool("tu-show-hidden")) &&
+                (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
+        if(array.size == 0) return;
 
-        Seq<UnitType> array = content.units().select(e -> !e.internal && (!e.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || e.localizedName.toLowerCase().contains(text.toLowerCase())));
         selection.table(list -> {
             list.left();
 
@@ -192,9 +224,9 @@ public class UnitDialog extends BaseDialog{
                 image.addListener(listener);
                 if(!mobile){
                     image.addListener(new HandCursorListener());
-                    image.update(() -> image.color.lerp(listener.isOver() || spawnUnit == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(listener.isOver() || spawnUnit == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }else{
-                    image.update(() -> image.color.lerp(spawnUnit == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(spawnUnit == u ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }
 
                 image.clicked(() -> {
@@ -215,26 +247,45 @@ public class UnitDialog extends BaseDialog{
     }
 
     void spawn(){
-        if(net.client()){
-            Utils.runCommand("let setPos = () => Tmp.v1.setToRandomDirection().setLength(" + radius * tilesize + "*Mathf.sqrt(Mathf.random())).add(" + spawnPos.x + "," + spawnPos.y + ")");
-            Utils.runCommand("for(let i=0;i<" + amount + ";i++){setPos();Vars.content.unit(" + spawnUnit.id + ").spawn(Team.get(" + spawnTeam.id + "),Tmp.v1.x,Tmp.v1.y);}");
-        }else{
-            for(int i = 0; i < amount; i++){
-                float r = radius * tilesize * Mathf.sqrt(Mathf.random());
-                Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
-                spawnUnit.spawn(spawnTeam, Tmp.v1);
-            }
+        if(input.shift()){
+            Utils.copyJS("""
+                for(int i = 0; i < @; i++){
+                    float r = @ * tilesize * Mathf.sqrt(Mathf.random());
+                    Tmp.v1.setToRandomDirection().setLength(r).add(@, @);
+                    Vars.content.unit(@).spawn(Team.get(@), Tmp.v1);
+                }
+                """,
+                amount, radius, spawnPos.x, spawnPos.y, spawnUnit.id, spawnTeam.id
+            );
+
+            return;
+        }
+
+        for(int i = 0; i < amount; i++){
+            float r = radius * tilesize * Mathf.sqrt(Mathf.random());
+            Tmp.v1.setToRandomDirection().setLength(r).add(spawnPos);
+            spawnUnit.spawn(spawnTeam, Tmp.v1);
         }
     }
 
     void transform(){
-        if(net.client()){
-            Utils.runCommandPlayer(
-                "let spawned = Vars.content.unit(" + spawnUnit.id + ").spawn(p.team(), p.x, p.y);" +
-                "Call.unitControl(p, spawned);"
-            );
-            if(despawns) Utils.runCommand("spawned.spawnedByCore = true");
+        if(net.client()){ //For 2r2t
+            Utils.runCommand("transform @", spawnUnit.name);
         }else if(player.unit() != null){
+            if(input.shift()){
+                Utils.copyJS("""
+                    let u = Vars.content.unit(@).spawn(Vars.player.team(), Vars.player);
+                    let rot = Vars.player.unit().rotation;
+                    u.controller(Vars.player);
+                    u.rotation = rot;
+                    @Fx.unitControl.at(u, true);
+                    """,
+                    spawnUnit.id, despawns ? "u.spawnedByCore = true;\n" : ""
+                );
+
+                return;
+            }
+
             Unit u = spawnUnit.spawn(player.team(), player);
             float rot = player.unit().rotation;
             u.controller(player);
@@ -243,7 +294,9 @@ public class UnitDialog extends BaseDialog{
             Fx.unitControl.at(u, true);
         }
         hide();
+
     }
+
     String teamName(){
         return teamDialog.teamName(spawnTeam);
     }

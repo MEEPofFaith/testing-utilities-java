@@ -12,7 +12,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
@@ -20,9 +19,9 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.legacy.*;
 import testing.*;
 import testing.buttons.*;
@@ -33,23 +32,16 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
-public class BlockDialog extends BaseDialog{
-    TextField search;
-    Table selection = new Table();
-    Block block = Blocks.coreShard;
-    Team placeTeam = Team.get(settings.getInt("tu-default-team", 1));
-    int placePos, rotation = 1;
-    static boolean initialized;
-
-    boolean expectingPos;
+public class BlockDialog extends TUBaseDialog{
+    private final Table selection = new Table();
+    private TextField search;
+    private Block block = Blocks.coreShard;
+    private Team placeTeam = Team.get(settings.getInt("tu-default-team", 1));
+    private int placePos = -1, rotation = 1;
+    private boolean expectingPos, initialized;
 
     public BlockDialog(){
         super("@tu-block-menu.name");
-
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
 
         cont.table(s -> {
             s.image(Icon.zoom).padRight(8);
@@ -57,58 +49,78 @@ public class BlockDialog extends BaseDialog{
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        cont.label(() -> bundle.get("tu-menu.selection") + block.localizedName).padBottom(6).row();
 
-            all.table(t -> {
-                ImageButton tb = t.button(TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize, () -> teamDialog.show(placeTeam, team -> placeTeam = team)).get();
-                tb.label(() -> bundle.format("tu-unit-menu.set-team", "[#" + placeTeam.color + "]" + teamName() + "[]")).padLeft(6).expandX();
-                TUElements.boxTooltip(tb, "@tu-tooltip.block-set-team");
+        cont.pane(all -> all.add(selection)).fillX().row();
 
-                ImageButton pb = t.button(TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize, () -> {
+        cont.table(t -> {
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.defense), TUStyles.lefti, TUVars.buttonSize,
+                () -> teamDialog.show(placeTeam, team -> placeTeam = team),
+                () -> bundle.format("tu-unit-menu.set-team", "[#" + placeTeam.color + "]" + teamName() + "[]"),
+                "@tu-tooltip.block-set-team"
+            );
+
+            TUElements.imageButton(
+                t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
+                () -> {
                     hide();
                     expectingPos = true;
-                }).get();
-                pb.label(() -> bundle.format("tu-unit-menu.pos", Point2.x(placePos), Point2.y(placePos))).padLeft(6).expandX();
-                TUElements.boxTooltip(pb, "@tu-tooltip.block-pos");
-            }).padTop(6);
-            all.row();
+                },
+                () -> bundle.format("tu-unit-menu.pos", Point2.x(placePos), Point2.y(placePos)),
+                "@tu-tooltip.block-pos"
+            );
+        }).padTop(6).row();
 
-            all.table(p -> {
-                ImageButton rb = p.button(TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize, () -> {
-                    rotation = Mathf.mod(rotation - 1, 4);
-                    Log.info(rotation);
-                }).get();
-                TUElements.boxTooltip(rb, "@tu-tooltip.block-rotate");
-                rb.setDisabled(() -> !block.rotate);
-                rb.update(() -> {
-                    ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection());
-                });
+        cont.table(p -> {
+            ImageButton rb = TUElements.imageButton(
+                p, TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize,
+                () -> rotation = Mathf.mod(rotation - 1, 4),
+                null, "@tu-tooltip.block-rotate"
+            );
+            rb.setDisabled(() -> !block.rotate);
+            rb.update(() -> ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection()));
 
-                ImageButton pb = p.button(new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize, this::placeBlock).expandX().get();
-                TUElements.boxTooltip(pb, "@tu-tooltip.block-place");
-                pb.setDisabled(() -> Vars.world.tile(placePos) == null);
-                pb.label(() -> "@tu-block-menu.place")
-                    .update(l -> l.setColor(pb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
-                pb.update(() -> {
-                    ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
-                });
+            ImageButton pb = TUElements.imageButton(
+                p, new TextureRegionDrawable(block.uiIcon), TUStyles.centeri, TUVars.buttonSize,
+                this::placeBlock,
+                () -> "@tu-block-menu.place",
+                "@tu-tooltip.block-place"
+            );
+            pb.setDisabled(() -> world.tile(placePos) == null);
+            pb.update(() -> {
+                ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
+            });
 
-                ImageButton cb = p.button(TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize, this::deleteBlock).expandX().get();
-                TUElements.boxTooltip(cb, "@tu-tooltip.block-delete");
-                cb.setDisabled(() -> Vars.world.tile(placePos) == null);
-                cb.label(() -> "@tu-block-menu.delete")
-                    .update(l -> l.setColor(pb.isDisabled() ? Color.lightGray : Color.white)).padLeft(6).expandX();
-            }).padTop(6f);
-        });
+            ImageButton cb = TUElements.imageButton(
+                p, TUIcons.get(Icon.cancel), TUStyles.righti, TUVars.buttonSize,
+                this::deleteBlock,
+                () -> "@tu-block-menu.delete",
+                "@tu-tooltip.block-delete"
+            );
+        }).padTop(6f).row();
+
+        ImageButton pb = TUElements.imageButton(
+            cont, TUIcons.get(Icon.terrain), Styles.defaulti, TUVars.buttonSize,
+            () -> {
+                Setup.terrainFrag.show = true;
+                hide();
+            },
+            () -> "@tu-block-menu.open-painter",
+            "@tu-tooltip.block-terrain-painter-open"
+        );
+        pb.setDisabled(() -> net.client() || Setup.terrainFrag.show);
 
         if(!initialized){
+            Events.on(WorldLoadEndEvent.class, e -> {
+                placePos = Point2.pack(world.width() / 2, world.height() / 2);
+            });
+
             Events.run(Trigger.update, () -> {
                 if(expectingPos){
                     if(!state.isGame()){
                         expectingPos = false;
-                    }else if(input.justTouched()){
+                    }else if(TestUtils.click()){
                         if(!scene.hasMouse()){
                             int x = World.toTile(input.mouseWorldX()),
                                 y = World.toTile(input.mouseWorldY());
@@ -127,13 +139,14 @@ public class BlockDialog extends BaseDialog{
     }
 
     public void drawPos(){
+        if(net.client()) return;
         float size = block.size * tilesize,
             offset = (1 - block.size % 2) * tilesize / 2f,
             x, y;
         if(expectingPos && state.isGame() && !scene.hasMouse()){
             x = World.toTile(input.mouseWorldX()) * tilesize;
             y = World.toTile(input.mouseWorldY()) * tilesize;
-        }else if(Spawn.blockHover && !TestUtils.disableCampaign()){
+        }else if(Spawn.blockHover){
             x = Point2.x(placePos) * tilesize;
             y = Point2.y(placePos) * tilesize;
         }else{
@@ -141,21 +154,27 @@ public class BlockDialog extends BaseDialog{
         }
         Draw.z(Layer.overlayUI);
         Lines.stroke(1f, placeTeam.color);
-        Lines.rect(x - size/2 + offset, y - size/2 + offset, size, size);
-        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize, tilesize);
+        Lines.rect(x - size / 2 + offset, y - size / 2 + offset, size, size);
+        Draw.rect(Icon.cancel.getRegion(), x, y, tilesize / 2f, tilesize / 2f);
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         expectingPos = false;
         selection.clear();
         String text = search.getText();
 
-        selection.label(
-            () -> bundle.get("tu-menu.selection") + block.localizedName
-        ).padBottom(6);
-        selection.row();
+        Seq<Block> array = content.blocks()
+            .select(b -> !b.isFloor() && !b.isStatic() &&
+                !(b instanceof Prop) &&
+                !(b instanceof TallBlock) &&
+                !(b instanceof TreeBlock) &&
+                !(b instanceof ConstructBlock) &&
+                !(b instanceof LegacyBlock) &&
+                (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
+                (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
+        if(array.size == 0) return;
 
-        Seq<Block> array = content.blocks().select(b -> !b.isStatic() && !(b instanceof ConstructBlock) && !(b instanceof LegacyBlock) && (!b.isHidden() || settings.getBool("tu-show-hidden")) && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         selection.table(list -> {
             list.left();
 
@@ -171,9 +190,9 @@ public class BlockDialog extends BaseDialog{
                 image.addListener(listener);
                 if(!mobile){
                     image.addListener(new HandCursorListener());
-                    image.update(() -> image.color.lerp(listener.isOver() || block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(listener.isOver() || block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }else{
-                    image.update(() -> image.color.lerp(block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }
 
                 image.clicked(() -> {
@@ -204,31 +223,23 @@ public class BlockDialog extends BaseDialog{
     }
 
     void placeBlock(){
-        if(net.client()){
-            if(block.isOverlay()){
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setOverlayNet(Vars.content.block(" + block.id + "))");
-            }else if(block.isFloor()){
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setFloorNet(Vars.content.block(" + block.id + "))");
-            }else{
-                Utils.runCommand("Vars.world.tile(" + placePos + ").setNet(Vars.content.block(" + block.id + "),Team.get(" + placeTeam.id + ")," + rotation + ")");
-            }
-        }else{
-            if(block.isOverlay()){
-                world.tile(placePos).setOverlayNet(block);
-            }else if(block.isFloor()){
-                world.tile(placePos).setFloorNet(block);
-            }else{
-                world.tile(placePos).setNet(block, placeTeam, rotation);
-            }
+        if(input.shift()){
+            Utils.copyJS("Vars.world.tile(@).setBlock(Vars.content.block(@), Team.get(@), @);",
+                placePos, block.id, placeTeam.id, rotation
+            );
+            return;
         }
+
+        world.tile(placePos).setBlock(block, placeTeam, rotation);
     }
 
     void deleteBlock(){
-        if(net.client()){
-            Utils.runCommand("Vars.world.tile(" + placePos + ").setAir()");
-        }else{
-            world.tile(placePos).setAir();
+        if(input.shift()){
+            Utils.copyJS("Vars.world.tile(@).setAir();", placePos);
+            return;
         }
+
+        world.tile(placePos).setAir();
     }
 
     String teamName(){

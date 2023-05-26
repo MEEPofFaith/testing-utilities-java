@@ -3,12 +3,13 @@ package testing;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.input.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.scene.utils.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -30,7 +31,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    boolean teleport, hasProc;
+    static boolean teleport, hasProc;
 
     public TestUtils(){
         if(!headless){
@@ -42,18 +43,31 @@ public class TestUtils extends Mod{
 
             experimental = true; //Also dev mode
 
-            Events.on(ClientLoadEvent.class, e -> {
-                TUIcons.init();
-                TUStyles.init();
-                loadSettings();
-                Setup.init();
-            });
+            //Add campaign maps to custom maps list
+            Seq<String> mapNames = new Seq<>();
+            mapNames.addAll( //Sectors aren't loaded yet, need to hardcode
+                "groundZero",
+                "craters", "biomassFacility", "frozenForest", "ruinousShores", "windsweptIslands", "stainedMountains", "tarFields",
+                "fungalPass", "extractionOutpost", "saltFlats", "overgrowth",
+                "impact0078", "desolateRift", "nuclearComplex", "planetaryTerminal",
+                "coastline", "navalFortress",
+
+                "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine",
+                "stronghold", "crevice", "siege", "crossroads", "karst", "origin"
+            );
+            mapNames.addAll((String[])Reflect.get(maps.getClass(), "defaultMapNames"));
+            Reflect.set(maps.getClass(), "defaultMapNames", mapNames.toArray(String.class));
         }
     }
 
     @Override
     public void init(){
         if(!headless){
+            TUIcons.init();
+            TUStyles.init();
+            loadSettings();
+            Setup.init();
+
             LoadedMod tu = mods.locateMod("test-utils");
 
             Func<String, String> getModBundle = value -> bundle.get("mod." + value);
@@ -101,7 +115,8 @@ public class TestUtils extends Mod{
                 Draw.z(Layer.endPixeled);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
-                if(!teleport && !disableCampaign() && !player.unit().type.internal && input.alt()){
+                Setup.terrainFrag.drawPos();
+                if(!teleport && !disableTeleport() && !player.unit().type.internal && input.alt()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);
                     float x1 = player.x, y1 = player.y,
@@ -122,7 +137,8 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableCampaign() && !player.unit().type.internal && input.alt() && input.isTouched()){
+                    if(!disableTeleport() && !player.unit().type.internal && input.alt() && click()){
+                        player.shooting(false);
                         if(teleport) return;
                         teleport = true;
 
@@ -147,7 +163,10 @@ public class TestUtils extends Mod{
     void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.tu-title"), "test-utils-settings-icon", t -> {
             t.pref(new Banner("test-utils-settings-banner", -1));
-            t.sliderPref("tu-long-press", 2, 1, 12, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.sliderPref("tu-long-press", 2, 1, 12, s -> {
+                TUVars.longPress = s * 60f / 4f;
+                return Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized();
+            });
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-despawns", true);
             t.checkPref("tu-permanent", false);
@@ -158,6 +177,8 @@ public class TestUtils extends Mod{
             t.pref(new Separator(8));
             t.pref(new ButtonSetting("tu-interp", TUIcons.get(Icon.line), () -> interpDialog.show()));
             t.sliderPref("tu-lerp-time", 8, 0, 40, s -> Strings.autoFixed(s / 4f, 2) + " " + StatUnit.seconds.localized());
+            t.pref(new Separator(8));
+            t.pref(new ButtonSetting("tu-sounds", TUIcons.get(Icon.effect), () -> soundDialog.show()));
 
             if(OS.username.equals("MEEP")){
                 t.pref(new Separator(8));
@@ -166,11 +187,19 @@ public class TestUtils extends Mod{
             }
         });
 
-        ui.settings.game.checkPref("console", true); //Dev Mode
+        if(mobile) ui.settings.game.checkPref("console", true);
+    }
+
+    public static boolean disableTeleport(){
+        return net.client() ? !Setup.on2r2t : disableCampaign();
     }
 
     public static boolean disableCampaign(){
         return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
+    }
+
+    public static boolean click(){
+        return mobile ? input.isTouched() : input.keyDown(KeyCode.mouseLeft);
     }
 
     /** Not a setting, but rather adds an image to the settings menu. */

@@ -2,9 +2,11 @@ package testing.util;
 
 import arc.util.*;
 import mindustry.core.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import testing.content.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Utils{
@@ -13,19 +15,17 @@ public class Utils{
     }
 
     public static void runCommand(String command){
-        Call.sendChatMessage("/js " + command);
+        Call.sendChatMessage("/" + command);
     }
 
-    public static void runCommandPlayer(String command){
-        runCommand("let p = Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")");
-        runCommand(command);
-    }
-    public static void runCommandPlayerFast(String command){
-        runCommand("Groups.player.find(p=>p.name==\"" + fixQuotes(player.name) + "\")" + command);
+    public static void runCommand(String command, Object... args){
+        runCommand(Log.format(command, args));
     }
 
-    public static String fixQuotes(String s){
-        return s.replaceAll("\"", "\\\\\"");
+    public static void copyJS(String js, Object... args){
+        if(net.client()) return;
+        ui.showInfoFade("@copied");
+        app.setClipboardText(Log.format(js, args));
     }
 
     public static String round(float f){
@@ -38,5 +38,15 @@ public class Utils{
         }else{
             return (int)f + "";
         }
+    }
+
+    public static int countSpawns(SpawnGroup group){
+        if(group.spawn != -1) return 1; //If the group has a set spawn pos, assume it's a valid position and count it as 1 spawn.
+
+        //Otherwise count all.
+        if(group.type.flying){
+            return spawner.countFlyerSpawns();
+        }
+        return spawner.countGroundSpawns();
     }
 }

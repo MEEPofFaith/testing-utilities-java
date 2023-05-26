@@ -9,26 +9,24 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
-import testing.util.*;
 
 import java.util.*;
 
 import static arc.math.Interp.*;
 
-public class InterpDialog extends BaseDialog{
-    InterpGraph graph;
-    Table configTable;
+public class InterpDialog extends TUBaseDialog{
+    private final InterpGraph graph;
+    private Table configTable;
     //Configs
-    int configType = 0;
-    int powP = 2;
-    float expV = 2, expP = 5;
-    float elasticV = 2, elasticP = 10, elasticS = 1;
-    int elasticB = 6;
-    float swingS = 1.5f;
-    int bounceB = 4;
-    String lastPressed = "linear";
+    private int configType = 0;
+    private int powP = 2;
+    private float expV = 2, expP = 5;
+    private float elasticV = 2, elasticP = 10, elasticS = 1;
+    private int elasticB = 6;
+    private float swingS = 1.5f;
+    private int bounceB = 4;
+    private String lastPressed = "linear";
 
     public InterpDialog(){
         super("@tu-interp-menu.name");
@@ -54,22 +52,22 @@ public class InterpDialog extends BaseDialog{
                 b.button("linear", () -> {
                     graph.setInterp(linear);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("smooth", () -> {
                     graph.setInterp(smooth);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("sine", () -> {
                     graph.setInterp(sine);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("circle", () -> {
                     graph.setInterp(circle);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("pow", () -> setConfigType(1));
                 b.button("exp", () -> setConfigType(4));
@@ -82,22 +80,22 @@ public class InterpDialog extends BaseDialog{
                 b.button("reverse", () -> {
                     graph.setInterp(reverse);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("smooth2", () -> {
                     graph.setInterp(smooth2);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("sineIn", () -> {
                     graph.setInterp(sineIn);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("circleIn", () -> {
                     graph.setInterp(circleIn);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("powIn", () -> setConfigType(2));
                 b.button("expIn", () -> setConfigType(5));
@@ -110,22 +108,22 @@ public class InterpDialog extends BaseDialog{
                 b.button("slope", () -> {
                     graph.setInterp(slope);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("smoother", () -> {
                     graph.setInterp(smoother);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("sineOut", () -> {
                     graph.setInterp(sineOut);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("circleOut", () -> {
                     graph.setInterp(circleOut);
                     configType = 0;
-                    rebuildConfig();
+                    rebuild();
                 });
                 b.button("powOut", () -> setConfigType(3));
                 b.button("expOut", () -> setConfigType(6));
@@ -136,7 +134,7 @@ public class InterpDialog extends BaseDialog{
                 //ButtonGroup<TextButton> group = new ButtonGroup<>();
                 b.getChildren().each(c -> {
                     if(c instanceof TextButton t){
-                        //group.add(t);
+                        //group.addButtons(t);
                         setupButton(t);
                     }
                 });
@@ -144,13 +142,12 @@ public class InterpDialog extends BaseDialog{
                 Core.scene.addStyle(TextButtonStyle.class, oldStyle);
             });
             p.row();
-            p.add(configTable = new Table()).height(TUVars.buttonSize).padTop(8f).padBottom(8f);
+            p.add(configTable = new Table()).padTop(8f).padBottom(8f);
         }).fill().padTop(8f).get();
         pane.setScrollingDisabled(false, true);
+        pane.setScrollbarsOnTop(true);
 
-        rebuildConfig();
-        
-        addCloseButton();
+        rebuild();
     }
 
     void setupButton(TextButton t){
@@ -161,12 +158,12 @@ public class InterpDialog extends BaseDialog{
     void setConfigType(int type){
         configType = type;
         inputInterp();
-        rebuildConfig();
+        rebuild();
     }
 
-    void rebuildConfig(){
+    @Override
+    protected void rebuild(){
         configTable.clear();
-        configTable.defaults().height(TUVars.buttonSize);
 
         switch(configType){
             case 1, 2, 3 -> { //Pow
@@ -287,7 +284,7 @@ public class InterpDialog extends BaseDialog{
                         bounceB = Strings.parseInt(text);
                         inputInterp();
                     }, () -> String.valueOf(bounceB),
-                    TextFieldFilter.digitsOnly, s -> Strings.canParseInt(s) && Strings.parseInt(s) >= 2 && Strings.parseInt(s) <= 5,
+                    TextFieldFilter.digitsOnly, s -> Strings.parseInt(s) >= 2 && Strings.parseInt(s) <= 5,
                     2, 5, 1, bounceB, (n, f) -> {
                         bounceB = Mathf.round(n);
                         f.setText(String.valueOf(bounceB));

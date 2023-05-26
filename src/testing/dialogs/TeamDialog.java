@@ -10,26 +10,19 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class TeamDialog extends BaseDialog{
-    Team curTeam;
-    Cons<Team> changed;
-
-    Table all = new Table();
+public class TeamDialog extends TUBaseDialog{
+    private final Table all = new Table();
+    private Team curTeam;
+    private Cons<Team> changed;
 
     public TeamDialog(){
         super("@tu-unit-menu.team");
-
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
 
         all.margin(20).marginTop(0f);
 
@@ -42,7 +35,8 @@ public class TeamDialog extends BaseDialog{
         show();
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         all.clear();
 
         all.table(t -> {
@@ -50,7 +44,11 @@ public class TeamDialog extends BaseDialog{
 
             TextField tField = TUElements.textField(
                 String.valueOf(curTeam.id),
-                text -> changed.get(Team.get(Strings.parseInt(text))),
+                text -> {
+                    Team team = Team.get(Strings.parseInt(text));
+                    changed.get(team);
+                    curTeam = team;
+                },
                 () -> String.valueOf(curTeam.id),
                 TextFieldFilter.digitsOnly,
                 Strings::canParsePositiveInt
@@ -101,11 +99,12 @@ public class TeamDialog extends BaseDialog{
         if(!mobile){
             image.addListener(new HandCursorListener());
             Color lerpColor = team.color.cpy().lerp(Color.white, 0.5f);
-            image.update(() -> image.color.lerp(!listener.isOver() ? team.color : lerpColor, Mathf.clamp(0.4f * Time.delta)));
+            image.update(() -> image.color.lerp(!listener.isOver() ? team.color : lerpColor, Mathf.clamp(0.4f * TUVars.delta())));
         }
 
         image.clicked(() -> {
             changed.get(team);
+            curTeam = team;
             hide();
         });
         TUElements.boxTooltip(image, () -> teamName(team));

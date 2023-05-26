@@ -2,8 +2,8 @@ package testing.buttons;
 
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import mindustry.content.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -12,22 +12,32 @@ import static mindustry.Vars.*;
 
 public class Health{
     public static void heal(boolean invincibility){
-        if(player.unit() == null) return;
-
-        Unit u = player.unit();
-        if(net.client()){
-            if(u instanceof BlockUnitc){
-                Utils.runCommandPlayer(
-                    "p.unit().tile().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().tile().block.health") + ";" +
-                    "p.unit().tile().health=p.unit().tile().maxHealth;"
-                );
+        if(net.client()){ //For 2r2t
+            if(invincibility){
+                Utils.runCommand("statuseff @ @", StatusEffects.invincible.name, "MAX_VALUE");
             }else{
-                Utils.runCommandPlayer(
-                    "p.unit().maxHealth=" + (invincibility ? "Number.MAX_VALUE" : "p.unit().type.health") + ";" +
-                    "p.unit().health=p.unit().maxHealth;"
-                );
+                Utils.runCommand("heal");
             }
         }else{
+            if(input.shift()){
+                Utils.copyJS("""
+                    let u = Vars.player.unit();
+                    if(u instanceof BlockUnitc){
+                        u.tile().maxHealth = @;
+                        u.tile().health = u.tile().maxHealth;
+                    }else{
+                        u.maxHealth = @;
+                        u.health = u.maxHealth;
+                    }
+                    """,
+                    invincibility ? "Number.MAX_VALUE" : "u.tile().block.health",
+                    invincibility ? "Number.MAX_VALUE" : "u.type.health"
+                );
+                return;
+            }
+
+            Unit u = player.unit();
+            if(u == null) return;
             if(u instanceof BlockUnitc bu){
                 Building b = bu.tile();
                 b.maxHealth(invincibility ? Float.POSITIVE_INFINITY : b.block.health);
@@ -40,35 +50,34 @@ public class Health{
         Utils.spawnIconEffect(invincibility ? "invincibility" : "heal");
     }
 
-    public static Cell<ImageButton> healing(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void healing(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.heal, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             heal(false);
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-heal");
-        b.setDisabled(TestUtils::disableCampaign);
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.heal")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
     }
 
-    public static Cell<ImageButton> invincibility(Table t){
-        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void invincibility(Table t){
+        Cell<ImageButton> i = t.button(TUIcons.invincibility, TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             heal(true);
         }).growX();
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-invincibility");
-        b.setDisabled(TestUtils::disableCampaign);
-        b.label(() -> "[" + (b.isDisabled() ? "gray" : "white") + "]" + bundle.get("tu-ui-button.invincible")).growX();
         b.update(() -> {
             b.setColor(player.team().color != null ? player.team().color : TUVars.curTeam.color);
         });
 
-        return i;
+    }
+
+    public static void addButtons(Table t){
+        healing(t);
+        invincibility(t);
     }
 }

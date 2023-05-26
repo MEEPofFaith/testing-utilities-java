@@ -9,25 +9,19 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class WaveChangeDialog extends BaseDialog{
-    Table all = new Table();
-
-    int startWave = 1, waves = 50;
+public class WaveChangeDialog extends TUBaseDialog{
+    private final Table all = new Table();
+    private static int amountCounter;
+    private int startWave = 1, waves = 50;
 
     public WaveChangeDialog(){
         super("@tu-unit-menu.waves");
-
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
 
         all.margin(20).marginTop(0f);
 
@@ -71,7 +65,8 @@ public class WaveChangeDialog extends BaseDialog{
         );
     }
 
-    void rebuild(){
+    @Override
+    protected void rebuild(){
         title.setText(bundle.format("tu-unit-menu.waves-menu", state.map.name()));
 
         all.clear();
@@ -83,19 +78,20 @@ public class WaveChangeDialog extends BaseDialog{
                 TextButton b = t.button(String.valueOf(i), () -> setWave(ii)).right().grow().padRight(6f).padTop(4f).get();
                 b.getLabel().setWrap(false);
                 b.getLabelCell().center();
+                b.setDisabled(() -> net.client());
 
-                int[] amount = {0};
+                amountCounter = 0;
                 t.table(w -> {
                     int wave = ii - 1;
-                    for(SpawnGroup group: state.rules.spawns){
+                    for(SpawnGroup group : state.rules.spawns){
                         if(group.getSpawned(wave) <= 0) continue;
                         w.table(u -> {
-                            int a = group.getSpawned(wave) * spawner.countSpawns();
+                            int a = group.getSpawned(wave) * Utils.countSpawns(group);
                             u.add(TUElements.itemImage(
                                 new TextureRegionDrawable(group.type.uiIcon),
                                 () -> String.valueOf(a)
                             )).size(8 * 4 * iconMul).top().grow();
-                            amount[0] += a;
+                            amountCounter += a;
                             boolean hasEffect = group.effect != null && group.effect != StatusEffects.none,
                                 hasShield = group.getShield(wave) > 0;
                             if(hasEffect || hasShield){
@@ -119,7 +115,7 @@ public class WaveChangeDialog extends BaseDialog{
                         }).grow();
                     }
                 }).growY().left().padTop(4f);
-                t.label(() -> bundle.format("tu-unit-menu.wave-total", amount[0])).grow().left().padLeft(6f).padTop(4f);
+                t.label(() -> bundle.format("tu-unit-menu.wave-total", amountCounter)).grow().left().padLeft(6f).padTop(4f);
                 t.row();
             }
         });
@@ -127,17 +123,23 @@ public class WaveChangeDialog extends BaseDialog{
 
     void sendWave(){
         if(net.client()){
-            Utils.runCommand("Vars.logic.runWave()");
+            Utils.runCommand("runwave");
         }else{
+            if(input.shift()){
+                Utils.copyJS("Vars.logic.runWave();");
+                return;
+            }
+
             logic.runWave();
         }
     }
 
     void setWave(int wave){
-        if(net.client()){
-            Utils.runCommand("Vars.state.wave = " + wave);
-        }else{
-            state.wave = wave;
+        if(input.shift()){
+            Utils.copyJS("Vars.state.wave = @;", wave);
+            return;
         }
+
+        state.wave = wave;
     }
 }

@@ -9,19 +9,20 @@ import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
+import testing.util.*;
 
 public class InterpGraph extends Table{
-    static final float lerpTime = 120f;
-    int points;
-    Interp oldInterp = Interp.linear;
-    Interp interp = Interp.linear;
-    float oldMinVal = 0f, oldMaxVal = 1f,
+    private int points;
+    private Interp oldInterp = Interp.linear;
+    private Interp interp = Interp.linear;
+    private float oldMinVal = 0f, oldMaxVal = 1f,
         minVal = 0f, maxVal = 1f;
-    float lerp = 1;
+    private float lerp = 1;
 
     public InterpGraph(){
         background(Tex.pane);
 
+        float dotColumnWidth = 40f;
         rect((x, y, width, height) -> {
             Lines.stroke(Scl.scl(3f));
 
@@ -30,14 +31,31 @@ public class InterpGraph extends Table{
 
             lay.setText(font, "-0.00");
 
+            boolean interpColumn = width > 300 + dotColumnWidth;
             float min = min(), max = max(), range = max - min;
             float offsetX = Scl.scl(lay.width + 6f), offsetY = Scl.scl(5f);
 
             float graphX = x + offsetX, graphW = width - offsetX;
             float baseY = y + offsetY, baseH = height - offsetY;
             float graphY = baseY + baseH * (-min / range), graphH = baseH - baseH * ((-min + (max - 1)) / range);
+
+            if(interpColumn) graphW -= dotColumnWidth;
+            float colCenter = x + width - dotColumnWidth / 2f;
+
             points = Mathf.round(graphW / 4, 2) + 1; //Ensure a center (0.5) point
             float spacing = graphW / (points - 1);
+
+            float tickMin = graphY;
+            while(tickMin - (graphH / 4) > baseY){
+                tickMin -= graphH / 4;
+            }
+
+            Draw.color(Color.darkGray);
+            float gTick = tickMin;
+            while(gTick < baseY + baseH){
+                if(gTick != graphY && gTick != graphY + graphH) Lines.line(graphX, gTick, graphX + graphW, gTick);
+                gTick += graphH / 4;
+            }
 
             Draw.color(Color.lightGray);
             Lines.line(graphX, graphY, graphX + graphW, graphY);
@@ -48,6 +66,24 @@ public class InterpGraph extends Table{
                 Lines.line(graphX, baseY + baseH, graphX + graphW, baseY + baseH);
             }
 
+            if(interpColumn){
+                Draw.color(Color.darkGray);
+                float colTick = tickMin;
+                while(colTick < baseY + baseH){
+                    if(colTick != graphY && colTick != graphY + graphH) Lines.lineAngleCenter(colCenter, colTick, 0, dotColumnWidth / 3f, false);
+                    colTick += graphH / 4;
+                }
+
+                Draw.color(Color.lightGray);
+                Lines.lineAngleCenter(colCenter, graphY, 0, dotColumnWidth / 3f, false);
+                Lines.lineAngleCenter(colCenter, graphY + graphH, 0, dotColumnWidth / 3f, false);
+
+                if(range != 1){
+                    Lines.lineAngleCenter(colCenter, baseY, 0, dotColumnWidth / 3f, false);
+                    Lines.lineAngleCenter(colCenter, baseY + baseH, 0, dotColumnWidth / 3f, false);
+                }
+            }
+
             Draw.color(Color.red);
             Lines.beginLine();
             for(int i = 0; i < points; i++){
@@ -56,6 +92,13 @@ public class InterpGraph extends Table{
                 Lines.linePoint(cx, cy);
             }
             Lines.endLine();
+
+            float a = Time.globalTime % 180f / 180f;
+            Fill.circle(graphX + graphW * a, graphY + applyInterp(a) * graphH, 4f);
+
+            if(interpColumn){
+                Fill.circle(colCenter, graphY + applyInterp(a) * graphH, 4f);
+            }
 
             lay.setText(font, "0.00");
             font.draw("0.00", graphX, graphY + lay.height / 2f, Align.right);
@@ -83,7 +126,7 @@ public class InterpGraph extends Table{
                 if(t <= 0){
                     lerp = 1;
                 }else{
-                    lerp = Mathf.clamp(lerp + Time.delta / t);
+                    lerp = Mathf.clamp(lerp + (TUVars.delta()) / t);
                 }
             }
         });

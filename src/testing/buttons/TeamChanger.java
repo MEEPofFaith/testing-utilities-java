@@ -1,13 +1,12 @@
 package testing.buttons;
 
+import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import testing.*;
+import mindustry.ui.*;
 import testing.ui.*;
 import testing.util.*;
 
@@ -15,41 +14,49 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TeamChanger{
-    static float tTimer;
-
     public static void changeTeam(Team team){
-        if(Vars.net.client()){
-            Utils.runCommandPlayerFast(".team(Team.get(" + team.id + "));");
+        if(net.client()){ //For 2r2t
+            Utils.runCommand("team @", team.id);
         }else{
+            if(Core.input.shift()){
+                Utils.copyJS("Vars.player.team(Team.get(@));", team.id);
+                return;
+            }
+
             player.team(team);
         }
     }
 
-    public static Cell<Button> addMini(Table t){
-        Cell<Button> i = t.button(b -> {
-            TUElements.boxTooltip(b, "@tu-tooltip.button-team");
-            b.setDisabled(() -> TestUtils.disableCampaign() || player.unit().type == UnitTypes.block);
-            b.label(TeamChanger::teamName);
-        }, TUStyles.redButtonStyle, () -> {
-            if(tTimer > TUVars.longPress) return;
-            changeTeam(getNextTeam());
-        }).size(TUVars.iconSize).color(curTeam().color);
+    public static Cell<Table> teamChanger(Table t){
+        return t.table(teams -> {
+            int i = 0;
+            for(Team team : Team.baseTeams){
+                ImageButton button = new ImageButton(Tex.whiteui, Styles.clearNoneTogglei);
+                TUElements.boxTooltip(button, "@tu-tooltip.button-team");
+                button.clicked(() -> {
+                    if(TUVars.pressTimer > TUVars.longPress) return;
+                    changeTeam(team);
+                });
+                button.getImageCell().grow().scaling(Scaling.stretch).center().pad(0).margin(0);
+                button.getStyle().imageUpColor = team.color;
+                button.update(() -> {
+                    if(button.isPressed()){
+                        TUVars.pressTimer += TUVars.delta();
+                        if(TUVars.pressTimer >= TUVars.longPress && !teamDialog.isShown()){
+                            teamDialog.show(curTeam(), TeamChanger::changeTeam);
+                        }
+                    }
 
-        Button b = i.get();
-        b.update(() -> {
-            if(b.isPressed() && !b.isDisabled()){
-                tTimer += Time.delta;
-                if(tTimer > TUVars.longPress){
-                    teamDialog.show(curTeam(), TeamChanger::changeTeam);
+                    button.setChecked(player.team() == team);
+                });
+                button.released(() -> TUVars.pressTimer = 0);
+
+                teams.add(button).grow().margin(6f).center();
+                if(++i % 3 == 0){
+                    teams.row();
                 }
-            }else{
-                tTimer = 0f;
             }
-
-            b.setColor(curTeam().color);
         });
-
-        return i;
     }
 
     public static Team curTeam(){
@@ -64,8 +71,8 @@ public class TeamChanger{
         }
     }
 
-    public static void add(Table table){
-        table.table(Tex.pane, t -> addMini(t).size(100, TUVars.iconSize));
+    public static void addButton(Table t){
+        teamChanger(t).width(100);
     }
 
     static String teamName(){

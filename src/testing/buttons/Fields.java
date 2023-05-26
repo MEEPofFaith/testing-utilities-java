@@ -10,18 +10,11 @@ import testing.util.*;
 import static testing.ui.TUDialogs.*;
 
 public class Fields{
-    public static Cell<ImageButton> addButton(Table t){
-        Cell<ImageButton> i = t.button(Tex.alphaaaa, TUStyles.tuRedImageStyle, fieldEditor::show);
-
-        ImageButton b = i.get();
+    public static void addButton(Table t){
+        ImageButton b = new ImageButton(Tex.alphaaaa, TUStyles.tuImageStyle);
         TUElements.boxTooltip(b, "@tu-tooltip.button-fields");
-        b.setDisabled(TestUtils::disableCampaign);
-        b.resizeImage(40f);
+        b.clicked(fieldEditor::show);
 
-        return i;
-    }
-
-    public static void add(Table table){
-        table.table(Tex.pane, t -> addButton(t).size(TUVars.iconSize, 40f));
+        t.add(b);
     }
 }

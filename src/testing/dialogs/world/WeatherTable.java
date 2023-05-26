@@ -1,4 +1,4 @@
-package testing.dialogs;
+package testing.dialogs.world;
 
 import arc.math.*;
 import arc.scene.ui.*;
@@ -10,40 +10,30 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.dialogs.*;
 import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class WeatherDialog extends BaseDialog{
-    TextField search;
-    Table selection = new Table();
-    Weather weather = Weathers.rain;
-    float intensity = 100f, duration = 60f;
+public class WeatherTable extends Table{
+    private final Table selection = new Table();
+    private final float minDur = 0.125f, maxDur = 600f;
+    private TextField search;
+    private Weather weather = Weathers.rain;
+    private float intensity = 100f, duration = 60f;
 
-    float minDur = 0.125f, maxDur = 600f;
-
-    public WeatherDialog(){
-        super("@tu-weather-menu.name");
-
-        shouldPause = false;
-        addCloseButton();
-        shown(this::rebuild);
-        onResize(this::rebuild);
-
-        cont.table(s -> {
+    public WeatherTable(){
+        table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        pane(all -> all.add(selection)).row();
 
-            all.table(s -> {
+        table(set -> {
+            set.table(s -> {
                 TUElements.sliderSet(
                     s, text -> intensity = Mathf.clamp(Strings.parseFloat(text), 0f, 100f), () -> String.valueOf(intensity),
                     TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
@@ -67,15 +57,15 @@ public class WeatherDialog extends BaseDialog{
                     "@tu-tooltip.weather-duration"
                 );
             });
-            all.row();
+            set.row();
 
-            ImageButton wb = all.button(TUIcons.get(Icon.add), TUVars.buttonSize, this::createWeather).get();
+            ImageButton wb = set.button(TUIcons.get(Icon.add), TUVars.buttonSize, this::createWeather).get();
             TUElements.boxTooltip(wb, "@tu-tooltip.weather-create");
             wb.label(() -> "@tu-weather-menu.create").padLeft(6).growX();
             wb.setDisabled(() -> intensity <= 0 || duration <= 0);
-            all.row();
+            set.row();
 
-            all.table(b -> {
+            set.table(b -> {
                 ImageButton rb = b.button(TUIcons.get(Icon.cancel), TUStyles.lefti, TUVars.buttonSize, this::removeWeather).get();
                 TUElements.boxTooltip(rb, "@tu-tooltip.weather-remove");
                 rb.label(() -> "@tu-weather-menu.remove").padLeft(6).growX();
@@ -83,10 +73,10 @@ public class WeatherDialog extends BaseDialog{
                 ImageButton cb = b.button(TUIcons.get(Icon.trash), TUStyles.righti, TUVars.buttonSize, this::clearWeather).get();
                 cb.label(() -> "@tu-weather-menu.clear").padLeft(6).growX();
             });
-        });
+        }).padTop(6f);
     }
 
-    void rebuild(){
+    protected void rebuild(){
         selection.clear();
         String text = search.getText();
 
@@ -118,27 +108,27 @@ public class WeatherDialog extends BaseDialog{
         selection.row();
     }
 
-    void createWeather(){
-        if(net.client()){
-            Utils.runCommand("Vars.content.getByID(ContentType.weather,"+ weather.id + ").create(" + intensity / 100f + "," + duration + ")");
-        }else{
-            weather.create(intensity / 100f, duration * 60f);
+    private void createWeather(){
+        if(input.shift()){
+            Utils.copyJS("Vars.content.getByID(ContentType.weather, @).create(@, @);",
+                weather.id, intensity / 100f, duration * 60f
+            );
+            return;
         }
+
+        weather.create(intensity / 100f, duration * 60f);
     }
 
-    void removeWeather(){
-        if(net.client()){
-            Utils.runCommand("Groups.weather.each(w=>w.weather==Vars.content.getByID(ContentType.weather,"+ weather.id + "),w=>w.remove())");
-        }else{
-            Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
+    private void removeWeather(){
+        if(input.shift()){
+            Utils.copyJS("Groups.weather.each(w => w.weather == weather, w => w.remove());");
+            return;
         }
+
+        Groups.weather.each(w -> w.weather == weather, WeatherState::remove);
     }
 
-    void clearWeather(){
-        if(net.client()){
-            Utils.runCommand("Groups.weather.each(w=>w.remove())");
-        }else{
-            Groups.weather.each(WeatherState::remove);
-        }
+    private void clearWeather(){
+        Groups.weather.each(WeatherState::remove);
     }
 }

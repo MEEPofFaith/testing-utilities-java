@@ -5,51 +5,42 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.*;
 import mindustry.gen.*;
-import testing.*;
 import testing.ui.*;
 import testing.util.*;
 
 public class Console{
     static boolean shown;
 
-    public static Cell<ImageButton> addToggleButton(Table t){
-        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.eye), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> {
+    public static void addToggleButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.eye), TUStyles.tuImageStyle, TUVars.iconSize, () -> {
             shown = !shown;
             Vars.ui.consolefrag.visible(() -> shown);
         });
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-show");
-        b.setDisabled(TestUtils::disableCampaign);
 
-        return i;
     }
     
-    public static Cell<ImageButton> addRefreshButton(Table t){
-        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.trash), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.clearMessages());
+    public static void addRefreshButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.trash), TUStyles.tuImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.clearMessages());
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-clear");
-        b.setDisabled(TestUtils::disableCampaign);
 
-        return i;
     }
     
-    public static Cell<ImageButton> addTerminalButton(Table t){
-        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.terminal), TUStyles.tuRedImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.toggle());
+    public static void addTerminalButton(Table t){
+        Cell<ImageButton> i = t.button(new TextureRegionDrawable(Icon.terminal), TUStyles.tuImageStyle, TUVars.iconSize, () -> Vars.ui.consolefrag.toggle());
 
         ImageButton b = i.get();
         TUElements.boxTooltip(b, "@tu-tooltip.button-console-input");
-        b.setDisabled(TestUtils::disableCampaign);
 
-        return i;
     }
 
-    public static void add(Table table){
-        table.table(Tex.buttonEdge3, t -> {
-            addToggleButton(t).size(TUVars.iconSize, TUVars.iconSize);
-            addRefreshButton(t).size(TUVars.iconSize, TUVars.iconSize);
-            addTerminalButton(t).size(TUVars.iconSize, TUVars.iconSize);
-        });
+    public static void addButtons(Table t){
+        addToggleButton(t);
+        addRefreshButton(t);
+        addTerminalButton(t);
     }
 }
