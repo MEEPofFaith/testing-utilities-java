@@ -9,6 +9,7 @@ import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
+import testing.util.*;
 
 public class InterpGraph extends Table{
     private int points;
@@ -125,7 +126,7 @@ public class InterpGraph extends Table{
                 if(t <= 0){
                     lerp = 1;
                 }else{
-                    lerp = Mathf.clamp(lerp + (Core.graphics.getDeltaTime() * 60) / t);
+                    lerp = Mathf.clamp(lerp + (TUVars.delta()) / t);
                 }
             }
         });

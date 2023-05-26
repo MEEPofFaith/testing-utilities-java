@@ -141,7 +141,7 @@ public class TerrainPainterFragment{
                     player.shooting(false);
 
                     if(mobile){
-                        hold += Core.graphics.getDeltaTime() * 60;
+                        hold += TUVars.delta();
                         if(hold < 2f * 60f) return;
                     }
 
@@ -261,9 +261,9 @@ public class TerrainPainterFragment{
                 image.addListener(listener);
                 if(!mobile){
                     image.addListener(new HandCursorListener());
-                    image.update(() -> image.color.lerp(listener.isOver() || block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(listener.isOver() || block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }else{
-                    image.update(() -> image.color.lerp(block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * Time.delta)));
+                    image.update(() -> image.color.lerp(block == b ? Color.white : Color.lightGray, Mathf.clamp(0.4f * TUVars.delta())));
                 }
 
                 image.clicked(() -> {

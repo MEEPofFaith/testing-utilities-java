@@ -1,5 +1,6 @@
 package testing.util;
 
+import arc.*;
 import mindustry.game.*;
 import testing.dialogs.*;
 
@@ -14,5 +15,9 @@ public class TUVars{
 
     public static void setDefaults(){
         longPress = settings.getInt("tu-long-press", 2) * 60f / 4f;
+    }
+
+    public static float delta(){
+        return Core.graphics.getDeltaTime() * 60;
     }
 }

@@ -99,7 +99,7 @@ public class TeamDialog extends TUBaseDialog{
         if(!mobile){
             image.addListener(new HandCursorListener());
             Color lerpColor = team.color.cpy().lerp(Color.white, 0.5f);
-            image.update(() -> image.color.lerp(!listener.isOver() ? team.color : lerpColor, Mathf.clamp(0.4f * Time.delta)));
+            image.update(() -> image.color.lerp(!listener.isOver() ? team.color : lerpColor, Mathf.clamp(0.4f * TUVars.delta())));
         }
 
         image.clicked(() -> {

@@ -41,7 +41,7 @@ public class TeamChanger{
                 button.getStyle().imageUpColor = team.color;
                 button.update(() -> {
                     if(button.isPressed()){
-                        TUVars.pressTimer += Core.graphics.getDeltaTime() * 60;
+                        TUVars.pressTimer += TUVars.delta();
                         if(TUVars.pressTimer >= TUVars.longPress && !teamDialog.isShown()){
                             teamDialog.show(curTeam(), TeamChanger::changeTeam);
                         }

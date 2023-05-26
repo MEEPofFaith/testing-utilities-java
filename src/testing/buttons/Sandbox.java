@@ -1,6 +1,5 @@
 package testing.buttons;
 
-import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -91,7 +90,7 @@ public class Sandbox{
         TUElements.boxTooltip(b, "@tu-tooltip.button-fill");
         b.update(() -> {
             if(b.isPressed() && !b.isDisabled()){
-                TUVars.pressTimer += Core.graphics.getDeltaTime() * 60;
+                TUVars.pressTimer += TUVars.delta();
                 if(TUVars.pressTimer >= TUVars.longPress && !swap){
                     fill = !fill;
                     swap = true;
