@@ -142,7 +142,7 @@ public class TerrainPainterFragment{
 
                     if(mobile){
                         hold += Time.delta;
-                        if(hold < 5f * 60f) return;
+                        if(hold < 2f * 60f) return;
                     }
 
                     int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
