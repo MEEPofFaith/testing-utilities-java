@@ -19,7 +19,7 @@ import testing.ui.fragments.*;
 import static mindustry.Vars.*;
 
 public class Setup{
-    public static boolean on2r2t, posLabelAligned = false;
+    public static boolean on2r2t;
     private static Table temp;
 
     public static TerrainPainterFragment terrainFrag;
@@ -141,14 +141,6 @@ public class Setup{
                 ""
             )
         );
-        miniPos.getCell(miniPos.find("minimap")).top().right();
-        miniPos.getCell(pos).top().right();
-
-        Events.on(WorldLoadEvent.class, e -> {
-            if(posLabelAligned) return;
-            pos.setAlignment(Align.right, Align.right);
-            posLabelAligned = true;
-        });
     }
 
     public static boolean buttonVisibility(){
