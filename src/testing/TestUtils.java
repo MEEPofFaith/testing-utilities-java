@@ -11,7 +11,6 @@ import arc.scene.ui.layout.*;
 import arc.scene.utils.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -32,7 +31,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    static boolean teleport, hasProc, foos = Structs.contains(Version.class.getDeclaredFields(), var -> var.getName().equals("foos"));
+    static boolean teleport, hasProc;
 
     public TestUtils(){
         if(!headless){
@@ -173,6 +172,7 @@ public class TestUtils extends Mod{
             t.checkPref("tu-permanent", false);
             t.checkPref("tu-show-hidden", false);
             t.checkPref("tu-fill-all", false);
+            t.checkPref("tu-wu-coords", true);
             t.pref(new TeamSetting("tu-default-team"));
             t.pref(new Separator(8));
             t.pref(new ButtonSetting("tu-interp", TUIcons.get(Icon.line), () -> interpDialog.show()));
@@ -191,7 +191,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableTeleport(){
-        return foos || (net.client() ? !Setup.on2r2t : disableCampaign());
+        return TUVars.foos || (net.client() ? !Setup.on2r2t : disableCampaign());
     }
 
     public static boolean disableCampaign(){

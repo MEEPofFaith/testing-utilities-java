@@ -132,12 +132,12 @@ public class Setup{
         pos.setText(() ->
             (Core.settings.getBool("position") ?
                 player.tileX() + ", " + player.tileY() + "\n" +
-                    "[accent]" + fix(player.x) + ", " + fix(player.y) + "\n" :
+                (Core.settings.getBool("tu-wu-coords", true) ? "[accent]" + fix(player.x) + ", " + fix(player.y) + "\n" : "") :
                 ""
             ) +
             (Core.settings.getBool("mouseposition") ?
                 "[lightgray]" + World.toTile(Core.input.mouseWorldX()) + ", " + World.toTile(Core.input.mouseWorldY()) + "\n" +
-                    "[#d4816b]" + fix(Core.input.mouseWorldX()) + ", " + fix(Core.input.mouseWorldY()) : //accentBack is not an indexed color for [] format
+                (Core.settings.getBool("tu-wu-coords", true) ? "[#d4816b]" + fix(Core.input.mouseWorldX()) + ", " + fix(Core.input.mouseWorldY()) : "") : //accentBack is not an indexed color for [] format
                 ""
             )
         );
