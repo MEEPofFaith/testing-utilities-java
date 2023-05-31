@@ -17,7 +17,7 @@ repo: MEEPofFaith/testing-utilities-java
 description: "Utilities for testing stuff in sandbox. (Load the game with this mod enabled for more info.)"
 
 #short description displayed under the title
-subtitle: "Pre-Erekir? Check releases."
+subtitle: "Easier to use than the console."
 
 #the mod version
 version: 53
