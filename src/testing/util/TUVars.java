@@ -20,6 +20,7 @@ public class TUVars{
         longPress = settings.getInt("tu-long-press", 2) * 60f / 4f;
     }
 
+    /** Delta time that is unaffected by time control. */
     public static float delta(){
         return Core.graphics.getDeltaTime() * 60;
     }
