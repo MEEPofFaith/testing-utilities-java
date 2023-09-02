@@ -40,6 +40,7 @@ public class TerrainPainterFragment{
     private boolean initialized;
     float hold;
     private final Vec2[][] brushPolygons = new Vec2[MapEditor.brushSizes.length][0];
+    private final Seq<Tile> newCliffTiles = new Seq<>();
 
     public void build(Group parent){
         parent.fill(t -> {
@@ -99,7 +100,14 @@ public class TerrainPainterFragment{
                     b.table(c -> {
                         ImageButton rb = TUElements.imageButton(
                             c, TUIcons.get(Icon.rotate), TUStyles.lefti, TUVars.buttonSize,
-                            this::reload,
+                            () -> {
+                                boolean wasDrawing = drawing;
+                                boolean wasErasing = erasing;
+                                reload();
+                                show = true;
+                                drawing = wasDrawing;
+                                erasing = wasErasing;
+                            },
                             () -> "@tu-painter.reload",
                             "@tu-tooltip.painter-reload"
                         );
@@ -240,9 +248,9 @@ public class TerrainPainterFragment{
             .select(b ->
                 (
                     b.isFloor() || b.isOverlay() || b.isStatic() ||
-                    b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock
+                    b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock || b instanceof Cliff
                 ) &&
-                !b.isAir() && b.inEditor && b != Blocks.spawn && b != Blocks.empty &&
+                !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn && b != Blocks.empty &&
                 (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
                 (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         if(array.size == 0) return;
@@ -298,10 +306,19 @@ public class TerrainPainterFragment{
     }
 
     void placeBlock(int pos){
-        if(world.tile(pos) == null || world.tile(pos).block() == block) return;
+        Tile tile = world.tile(pos);
+        if(tile == null || (block != Blocks.cliff && tile.block() == block)) return;
 
-        world.tile(pos).setBlock(block);
+        tile.setBlock(block);
         changed = true;
+
+        if(block == Blocks.cliff){
+            tile.data = 1; //At least make them visible.
+            newCliffTiles.add(tile);
+        }else{
+            tile.data = 0;
+            newCliffTiles.remove(tile, true);
+        }
     }
 
     void erase(int pos){
@@ -313,6 +330,29 @@ public class TerrainPainterFragment{
     }
 
     void reload(){
+        if(newCliffTiles.any()){
+            for(Tile tile : newCliffTiles){
+                if(!tile.block().isStatic() || tile.block() != Blocks.cliff) continue;
+
+                int rotation = 0;
+                for(int i = 0; i < 8; i++){
+                    Tile other = world.tiles.get(tile.x + Geometry.d8[i].x, tile.y + Geometry.d8[i].y);
+                    if(other != null && !other.block().isStatic()){
+                        rotation |= (1 << i);
+                    }
+                }
+
+                tile.data = (byte)rotation;
+            }
+
+            for(Tile tile : newCliffTiles){
+                if(tile.block() == Blocks.cliff && tile.data == 0){
+                    tile.setBlock(Blocks.air);
+                }
+            }
+
+            newCliffTiles.clear();
+        }
         if(changed){
             Events.fire(new WorldLoadEvent());
         }
