@@ -36,6 +36,8 @@ public class TerrainPainterFragment{
     Table selection = new Table();
     Block block = Blocks.boulder;
     boolean drawing, erasing, changed;
+    /** If false, erase blocks. If true, erase floor overlays. */
+    boolean eraseMode;
     int brushSize;
     private boolean initialized;
     float hold;
@@ -86,7 +88,7 @@ public class TerrainPainterFragment{
                         );
                         db.update(() -> db.setChecked(drawing));
                         ImageButton eb = TUElements.imageButton(
-                            d, TUIcons.get(Icon.eraser), TUStyles.toggleRighti, TUVars.buttonSize,
+                            d, TUIcons.get(Icon.eraser), TUStyles.toggleCenteri, TUVars.buttonSize,
                             () -> {
                                 erasing = !erasing;
                                 drawing = false;
@@ -95,6 +97,17 @@ public class TerrainPainterFragment{
                             "@tu-tooltip.painter-erase"
                         );
                         eb.update(() -> eb.setChecked(erasing));
+                        Button mb = new Button(TUStyles.right);
+                        ToggleStack modes = new ToggleStack(TUIcons.get(Icon.terrain), TUIcons.get(Icon.grid));
+                        if(eraseMode) modes.swap();
+                        modes.setSize(TUVars.buttonSize);
+                        mb.add(modes).size(TUVars.buttonSize);
+                        mb.clicked(() -> {
+                            modes.swap();
+                            eraseMode = !eraseMode;
+                        });
+                        TUElements.boxTooltip(mb, () -> eraseMode ? "@tu-tooltip.painter-erase-floors" : "@tu-tooltip.painter-erase-blocks");
+                        d.add(mb);
                     }).padTop(6f).row();
 
                     b.table(c -> {
@@ -336,10 +349,15 @@ public class TerrainPainterFragment{
     }
 
     void erase(int pos){
-        if(world.tile(pos) == null || (world.tile(pos).overlay() == Blocks.air && world.tile(pos).block() == Blocks.air)) return;
+        if(world.tile(pos) == null) return;
 
-        world.tile(pos).setOverlay(Blocks.air);
-        world.tile(pos).setBlock(Blocks.air);
+        if(eraseMode){
+            if(world.tile(pos).overlay() == Blocks.air) return;
+            world.tile(pos).setOverlay(Blocks.air);
+        }else{
+            if(world.tile(pos).block() == Blocks.air) return;
+            world.tile(pos).setBlock(Blocks.air);
+        }
         changed = true;
     }
 
