@@ -2,21 +2,23 @@ apply plugin: "java"
 
 version '1.0'
 
-targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_16
-
 sourceSets.main.java.srcDirs = ["src"]
 
 repositories{
     mavenCentral()
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
+java{
+    targetCompatibility = 8
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
 ext{
-    mindustryVersion = 'v144.1'
-    mindustryHash = '385af57d1b'
-    arcHash = 'd3b6ab563b'
-    jabelVersion = "0.7.0"
+    //the build number that this mod is made for
+    mindustryVersion = 'v145.1'
+    jabelVersion = "93fde537c7"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
@@ -28,15 +30,19 @@ allprojects{
 }
 
 dependencies{
-    //Release
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
-    //BE
-    //compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryHash"
-    //compileOnly "com.github.Anuken.Arc:arc-core:$arcHash"
-
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+}
+
+//force arc version
+configurations.all{
+    resolutionStrategy.eachDependency { details ->
+        if(details.requested.group == 'com.github.Anuken.Arc'){
+            details.useVersion "$mindustryVersion"
+        }
+    }
 }
 
 task jarAndroid{
@@ -59,7 +65,7 @@ task jarAndroid{
 }
 
 jar{
-    archiveFileName = "${project.archivesBaseName}Desktop.jar"
+    archiveFileName = "${base.archivesBaseName}Desktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
@@ -77,7 +83,7 @@ jar{
 task deploy(type: Jar){
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${project.archivesBaseName}.jar"
+    archiveFileName = "${base.archivesBaseName}.jar"
 
     from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 
@@ -89,16 +95,19 @@ task deploy(type: Jar){
     }
 }
 
-task moveDesktop doFirst{
-    exec{
-        workingDir "$buildDir"
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            println "Yeeting TU to the shadow realm..."
-            commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
-        }else{
-            println "This task was made only for Windows. If you are a mac user, please PR the proper command to yeet TU into the mods folder."
-        }
+task move doLast{
+    println "Yeeting the mod jar to the shadow realm..."
+
+    String os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    if(os.contains("windows")) {
+        ant.move file: "${buildDir}\\libs\\${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}\\AppData\\Roaming\\Mindustry\\mods"
+    }else if(os.contains("linux")) { //from Router
+        ant.move file: "${buildDir}/libs/${project.archivesBaseName}Desktop.jar",
+                todir: "${System.env.USERPROFILE}/.local/share/Mindustry/mods"
+    }else{
+        println "Yeah I don't know how to do this on a Mac can someone tell me?"
     }
 }
 
-task jarMove dependsOn "jar", "moveDesktop"
+task jarMove dependsOn "jar", "move"
