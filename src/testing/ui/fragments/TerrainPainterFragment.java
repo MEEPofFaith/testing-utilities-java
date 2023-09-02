@@ -141,40 +141,50 @@ public class TerrainPainterFragment{
             Events.run(Trigger.update, () -> {
                 if(!state.isGame()){
                     show = drawing = erasing = false;
-                }else if((drawing || erasing) && !scene.hasMouse()){
-                    if(!TestUtils.click()){
-                        hold = 0;
-                        return;
-                    }
-                    player.shooting(false);
-
-                    if(mobile){
-                        hold += TUVars.delta();
-                        if(hold < 2f * 60f) return;
+                }else if(!scene.hasMouse()){
+                    if(!mobile && input.keyDown(KeyCode.mouseMiddle)){
+                        int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
+                        Tile tile = world.tile(tx, ty);
+                        if(tile != null && !(tile.block() != Blocks.air && !terrainBlock(tile.block()))){
+                            block = tile.block() == Blocks.air ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block();
+                        }
                     }
 
-                    int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
+                    if(drawing || erasing){
+                        if(!TestUtils.click()){
+                            hold = 0;
+                            return;
+                        }
+                        player.shooting(false);
 
-                    if(drawing){
-                        if(block instanceof SteamVent){
-                            paintSqure(tx, ty, 3, t -> {
-                                placeFloor(t.pos());
-                            });
-                        }else{
-                            paintCircle(tx, ty, t -> {
-                                if(block.isOverlay()){
-                                    placeOverlayFloor(t.pos());
-                                }else if(block.isFloor()){
+                        if(mobile){
+                            hold += TUVars.delta();
+                            if(hold < 2f * 60f) return;
+                        }
+
+                        int tx = World.toTile(input.mouseWorldX()), ty = World.toTile(input.mouseWorldY());
+
+                        if(drawing){
+                            if(block instanceof SteamVent){
+                                paintSqure(tx, ty, 3, t -> {
                                     placeFloor(t.pos());
-                                }else{
-                                    placeBlock(t.pos());
-                                }
+                                });
+                            }else{
+                                paintCircle(tx, ty, t -> {
+                                    if(block.isOverlay()){
+                                        placeOverlayFloor(t.pos());
+                                    }else if(block.isFloor()){
+                                        placeFloor(t.pos());
+                                    }else{
+                                        placeBlock(t.pos());
+                                    }
+                                });
+                            }
+                        }else if(erasing){
+                            paintCircle(tx, ty, t -> {
+                                erase(t.pos());
                             });
                         }
-                    }else if(erasing){
-                        paintCircle(tx, ty, t -> {
-                            erase(t.pos());
-                        });
                     }
                 }
             });
@@ -185,6 +195,10 @@ public class TerrainPainterFragment{
 
             initialized = true;
         }
+    }
+
+    boolean terrainBlock(Block b){
+        return b.isStatic() || b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock || b instanceof Cliff;
     }
 
     public void drawPos(){
@@ -250,7 +264,7 @@ public class TerrainPainterFragment{
                     b.isFloor() || b.isOverlay() || b.isStatic() ||
                     b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock || b instanceof Cliff
                 ) &&
-                !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn && b != Blocks.empty &&
+                !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn &&
                 (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
                 (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
         if(array.size == 0) return;

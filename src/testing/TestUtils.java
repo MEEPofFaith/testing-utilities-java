@@ -106,7 +106,7 @@ public class TestUtils extends Mod{
                 }
             });
 
-            //position drawing + sk7725/whynotteleport
+            //Spawn position drawing and sk7725/whynotteleport. (Anything beyond here does not have mobile support.)
             if(mobile) return;
             Events.on(WorldLoadEvent.class, e -> {
                 Spawn.spawnHover = Spawn.blockHover = false;
