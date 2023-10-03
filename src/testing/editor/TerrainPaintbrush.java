@@ -101,8 +101,14 @@ public class TerrainPaintbrush{
                         }
                     }
                 }else{
-                    if((tool.edit || tool == PainterTool.line) && (!mobile || drawing)){
-                        Lines.square(x, y, painter.drawBlock.size / 2f * tilesize);
+                    float size = painter.drawBlock.size * tilesize,
+                        offset = (1 - painter.drawBlock.size % 2) * tilesize / 2f;
+
+                    if(tool == PainterTool.line && drawing){
+                        Lines.rect(startX * tilesize - size / 2 + offset, startY * tilesize - size / 2 + offset, size, size);
+                        Lines.rect(lastX * tilesize - size / 2 + offset, lastY * tilesize - size / 2 + offset, size, size);
+                    }else if((tool.edit || tool == PainterTool.line) && (!mobile || drawing)){
+                        Lines.rect(x + 4f - size / 2 + offset, y + 4f - size / 2 + offset, size, size);
                     }
                 }
             }

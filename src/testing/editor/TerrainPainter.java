@@ -1,10 +1,12 @@
 package testing.editor;
 
+import arc.*;
 import arc.func.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.editor.*;
+import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
@@ -51,6 +53,7 @@ public class TerrainPainter{
     public void endEditing(){
         data = null;
         reset();
+        Events.fire(new WorldLoadEvent());
     }
 
     public void load(Runnable r){
