@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.editor.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -21,6 +22,7 @@ import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
+import static testing.ui.TUDialogs.teamDialog;
 import static testing.util.TUVars.*;
 
 public class TerrainPainterMenu{
@@ -39,7 +41,7 @@ public class TerrainPainterMenu{
 
         t.label(() -> "[accent]" + painter.drawBlock.localizedName).padBottom(6).row();
 
-        int rows = 6;
+        int rows = 3;
         float h = rows * (4 * 8) + (rows - 1) * 6 + 2 * 3;
         t.pane(sel -> {
             sel.top();
@@ -65,7 +67,7 @@ public class TerrainPainterMenu{
 
             Cons<PainterTool> addTool = tool -> {
 
-                ImageButton button = new ImageButton(ui.getIcon(tool.name()), Styles.squareTogglei);
+                ImageButton button = new ImageButton(TUIcons.get(ui.getIcon(tool.name())), Styles.squareTogglei);
                 button.clicked(() -> {
                     paintbrush.setTool(tool);
                     if(lastTable[0] != null){
@@ -139,8 +141,7 @@ public class TerrainPainterMenu{
                 tools.stack(button, mode);
             };
 
-            float size = mobile ? 50f : 58f;
-            tools.defaults().size(size, size);
+            tools.defaults().size(iconSize);
 
             ImageButton undo = tools.button(Icon.undo, Styles.flati, painter::undo).get();
             ImageButton redo = tools.button(Icon.redo, Styles.flati, painter::redo).get();
@@ -174,11 +175,44 @@ public class TerrainPainterMenu{
         t.row();
 
         TUElements.imageButton(
+            t, TUIcons.get(Icon.defense), Styles.defaulti, buttonSize,
+            () -> teamDialog.show(painter.drawTeam, team -> painter.drawTeam = team),
+            () -> bundle.format("tu-unit-menu.set-team", "[#" + painter.drawTeam.color + "]" + teamDialog.teamName(painter.drawTeam) + "[]"),
+            "@tu-tooltip.block-set-team"
+        ).padTop(4f);
+
+        t.row();
+
+        Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
+        slider.moved(f -> editor.brushSize = MapEditor.brushSizes[(int)f]);
+        for(int j = 0; j < MapEditor.brushSizes.length; j++){
+            if(MapEditor.brushSizes[j] == editor.brushSize){
+                slider.setValue(j);
+            }
+        }
+
+        var label = new Label("@editor.brush");
+        label.setAlignment(Align.center);
+        label.touchable = Touchable.disabled;
+
+        t.stack(slider, label).width(50f * 3 - 20f).padTop(4f);
+        t.row();
+
+        TUElements.imageButton(
+            t, TUIcons.get(Icon.terrain), Styles.defaulti, buttonSize,
+            () -> painter.addCliffs(),
+            () -> "@tu-painter.cliffs",
+            "@tu-tooltip.painter-cliffs"
+        ).padTop(4f);
+
+        t.row();
+
+        TUElements.imageButton(
             t, TUIcons.get(Icon.left), Styles.defaulti, buttonSize,
             this::hide,
             () -> "@close",
             "@tu-tooltip.painter-close"
-        );
+        ).padTop(4f);
 
         rebuild();
     }

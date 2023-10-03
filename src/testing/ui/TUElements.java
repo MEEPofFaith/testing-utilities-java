@@ -48,8 +48,9 @@ public class TUElements{
         return field;
     }
 
-    public static ImageButton imageButton(Table t, Drawable icon, ImageButtonStyle style, float isize, Runnable listener, Prov<CharSequence> label, String tooltip){
-        ImageButton b = t.button(icon, style, isize, listener).get();
+    public static Cell<ImageButton> imageButton(Table t, Drawable icon, ImageButtonStyle style, float isize, Runnable listener, Prov<CharSequence> label, String tooltip){
+        Cell<ImageButton> bCell = t.button(icon, style, isize, listener);
+        ImageButton b = bCell.get();
         if(label != null){
             Cell<Label> lab = b.label(label).padLeft(6f).expandX().name("label");
             lab.update(l -> {
@@ -59,7 +60,7 @@ public class TUElements{
         }
         if(tooltip != null) boxTooltip(b, tooltip);
 
-        return b;
+        return bCell;
     }
 
     public static Stack itemImage(TextureRegionDrawable region, Prov<CharSequence> text){

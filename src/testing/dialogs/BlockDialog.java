@@ -77,7 +77,7 @@ public class BlockDialog extends TUBaseDialog{
                 p, TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize,
                 () -> rotation = Mathf.mod(rotation - 1, 4),
                 null, "@tu-tooltip.block-rotate"
-            );
+            ).get();
             rb.setDisabled(() -> !block.rotate);
             rb.update(() -> ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection()));
 
@@ -86,7 +86,7 @@ public class BlockDialog extends TUBaseDialog{
                 this::placeBlock,
                 () -> "@tu-block-menu.place",
                 "@tu-tooltip.block-place"
-            );
+            ).get();
             pb.setDisabled(() -> world.tile(placePos) == null);
             pb.update(() -> {
                 ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
@@ -97,7 +97,7 @@ public class BlockDialog extends TUBaseDialog{
                 this::deleteBlock,
                 () -> "@tu-block-menu.delete",
                 "@tu-tooltip.block-delete"
-            );
+            ).get();
         }).padTop(6f).row();
 
         ImageButton pb = TUElements.imageButton(
@@ -108,7 +108,7 @@ public class BlockDialog extends TUBaseDialog{
             },
             () -> "@tu-block-menu.open-painter",
             "@tu-tooltip.block-terrain-painter-open"
-        );
+        ).get();
         pb.setDisabled(() -> net.client() || Setup.terrainMenu.shown());
 
         if(!initialized){

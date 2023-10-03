@@ -184,6 +184,10 @@ public class TerrainPainter{
         }
     }
 
+    public void addCliffs(){
+        //TODO
+    }
+
     public void clearOp(){
         stack.clear();
     }
