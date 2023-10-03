@@ -20,6 +20,11 @@ public class PaintedTileData{
     }
 
     public void setFloor(Floor type){
+        if(skip()){
+            tile.setFloor(type);
+            return;
+        }
+
         Floor tFloor = floor();
         if(type instanceof OverlayFloor){
             //don't place on liquids
@@ -40,6 +45,11 @@ public class PaintedTileData{
     }
 
     public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
+        if(skip()){
+            tile.setBlock(type, team, rotation, entityprov);
+            return;
+        }
+
         Block tBlock = block();
         Building tBuild = tile.build;
         if(tBlock == type && (tBuild == null || tBuild.rotation == rotation)){
@@ -60,12 +70,22 @@ public class PaintedTileData{
     }
     
     public void setTeam(Team team){
+        if(skip()){
+            tile.setTeam(team);
+            return;
+        }
+
         if(getTeamID() == team.id) return;
         op(OpType.team, (byte)getTeamID());
         tile.setTeam(team);
     }
 
     public void setOverlay(Block overlay){
+        if(skip()){
+            tile.setOverlay(overlay);
+            return;
+        }
+
         Floor tFloor = tile.floor();
         Floor tOverlay = tile.overlay();
         if(!tFloor.hasSurface() && overlay.asFloor().needsSurface && (overlay instanceof OreBlock || !tFloor.supportsOverlay))
@@ -73,6 +93,10 @@ public class PaintedTileData{
         if(tOverlay == overlay) return;
         op(OpType.overlay, tOverlay.id);
         tile.setOverlay(overlay);
+    }
+
+    private boolean skip(){
+        return editor.isLoading() || world.isGenerating();
     }
     
     public boolean isCenter(){

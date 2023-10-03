@@ -3,8 +3,8 @@ package testing.editor;
 import arc.func.*;
 import arc.math.*;
 import mindustry.content.*;
-import mindustry.editor.*;
 import mindustry.editor.DrawOperation.*;
+import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
@@ -14,14 +14,19 @@ import static mindustry.Vars.*;
 
 /** Very similar to {@link MapEditor}. Made to operate in a live map instead of the editor. */
 public class TerrainPainter{
-    private OperationStack stack = new OperationStack();
-    private DrawOperation currentOp;
+    private PaintOperationStack stack = new PaintOperationStack();
+    private PaintOperation currentOp;
     private PaintedTileData[][] data;
+    private boolean loading;
 
     public float brushSize = 1;
     public int rotation;
     public Block drawBlock = Blocks.boulder;
     public Team drawTeam = Team.sharded; //TODO drawing buildings
+
+    public boolean isLoading(){
+        return loading;
+    }
 
     private void reset(){
         clearOp();
@@ -30,6 +35,7 @@ public class TerrainPainter{
     }
 
     public void beginEditing(){
+        loading = true;
         Tiles tiles = tiles();
         data = new PaintedTileData[width()][height()];
         for(int x = 0; x < width(); x++){
@@ -38,12 +44,19 @@ public class TerrainPainter{
                 data[x][y] = new PaintedTileData(t);
             }
         }
+        loading = false;
     }
 
     /** Converts all tiles in the world to normal {@link Tile}s. */
     public void endEditing(){
         data = null;
-        clearOp();
+        reset();
+    }
+
+    public void load(Runnable r){
+        loading = true;
+        r.run();
+        loading = false;
     }
 
     public Tiles tiles(){
@@ -202,7 +215,9 @@ public class TerrainPainter{
     }
 
     public void addTileOp(long data){
-        if(currentOp == null) currentOp = new DrawOperation();
+        if(loading) return;
+
+        if(currentOp == null) currentOp = new PaintOperation();
         currentOp.addOperation(data);
     }
 

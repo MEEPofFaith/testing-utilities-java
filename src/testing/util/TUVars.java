@@ -15,6 +15,7 @@ public class TUVars{
     public static Team curTeam = Team.sharded;
     public static TUBaseDialog activeDialog;
     public static TerrainPainter painter = new TerrainPainter();
+    public static TerrainPaintbrush paintbrush = new TerrainPaintbrush();
     public static boolean foos = Structs.contains(Version.class.getDeclaredFields(), var -> var.getName().equals("foos"));
     public static float iconSize = 40f, buttonSize = 24f, sliderWidth = 140f, fieldWidth = 80f;
 
