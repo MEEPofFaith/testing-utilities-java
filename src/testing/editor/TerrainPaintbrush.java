@@ -3,6 +3,7 @@ package testing.editor;
 import arc.*;
 import mindustry.editor.*;
 import mindustry.game.EventType.*;
+import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -18,7 +19,7 @@ public class TerrainPaintbrush{
 
     public TerrainPaintbrush(){
         Events.run(Trigger.update, () -> {
-            if(state.isGame()){
+            if(state.isGame() && Setup.terrainMenu.shown()){
                 if(!scene.hasMouse()){
 
                 }else{

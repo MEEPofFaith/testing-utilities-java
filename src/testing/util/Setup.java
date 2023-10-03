@@ -14,7 +14,6 @@ import mindustry.mod.Mods.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
-import testing.ui.fragments.*;
 
 import static mindustry.Vars.*;
 
@@ -22,7 +21,7 @@ public class Setup{
     public static boolean on2r2t, posLabelAligned = false;
     private static Table temp;
 
-    public static NewTerrainPainterFragment terrainFrag;
+    public static TerrainPainterMenu terrainMenu;
 
     public static Table newTable(){
         Table table = new Table().bottom().left();
@@ -30,6 +29,16 @@ public class Setup{
             t.defaults().size(TUVars.iconSize, TUVars.iconSize);
             temp = t;
         }).left();
+        return table;
+    }
+
+    public static Table newTablePainter(){
+        Table table = new Table().bottom().left();
+        terrainMenu = new TerrainPainterMenu();
+        table.table(Tex.buttonSideRight, t -> {
+            terrainMenu.build(t);
+        }).left();
+        row(table);
         return table;
     }
 
@@ -66,8 +75,8 @@ public class Setup{
             on2r2t = (e.ip.equals("130.61.214.19") || e.ip.equals("n1.yeet.ml")) && e.port == 6568;
         });
 
-        //Build normal UI.
-        Table mainButtons = newTable();
+        //Build normal UI. Includes terrain painter.
+        Table mainButtons = newTablePainter();
         mainButtons.setOrigin(Align.bottomLeft);
 
         ///First row
@@ -123,9 +132,6 @@ public class Setup{
         });
         ui.hudGroup.addChild(commandButtons);
         offset(commandButtons);
-
-        terrainFrag = new NewTerrainPainterFragment();
-        terrainFrag.build(ui.hudGroup);
 
         Table miniPos = ui.hudGroup.find("minimap/position");
         Label pos = miniPos.find("position");
