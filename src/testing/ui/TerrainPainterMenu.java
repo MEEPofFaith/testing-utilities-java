@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -16,28 +17,37 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.legacy.*;
 import testing.editor.*;
 import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
-import static testing.ui.TUDialogs.teamDialog;
+import static testing.ui.TUDialogs.*;
 import static testing.util.TUVars.*;
 
 public class TerrainPainterMenu{
     TextField search;
     Table selection = new Table();
     private boolean show = false;
+    private boolean buildings = false;
 
-    public void build(Table t){
+    public void build(Group hudGroup, Table t){
         t.name = "menu";
         t.visible(() -> show);
         t.table(s -> {
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
-        }).fillX().padBottom(4).row();
+            s.button(TUIcons.get(Icon.crafting), Styles.squareTogglei, buttonSize, () -> {
+                buildings = !buildings;
+                rebuild();
+            }).checked(b -> buildings).size(iconSize);
+        }).fillX().padBottom(4);
+
+        t.row();
 
         t.label(() -> "[accent]" + painter.drawBlock.localizedName).padBottom(6).row();
 
@@ -48,17 +58,6 @@ public class TerrainPainterMenu{
             sel.add(selection);
         }).fillX().padBottom(4).height(h);
         t.row();
-
-        //TODO editor buttons
-        /*
-            Undo Redo   Pick
-            Line Pencil Eraser
-            Fill Spray  Rotate
-            --- --- --- --- ---
-            Team selection (Do I give the painter the capability to draw blocks? Since you can place them manually in-game.)
-            Brush size
-            Cliff convert
-         */
 
         t.table(tools -> {
             //From MapEditorDialog
@@ -126,7 +125,7 @@ public class TerrainPainterMenu{
                         table.pack();
                         table.act(graphics.getDeltaTime());
 
-                        tools.add(table);
+                        hudGroup.addChild(table);
                         lastTable[0] = table;
                     });
                 }
@@ -195,7 +194,7 @@ public class TerrainPainterMenu{
         label.setAlignment(Align.center);
         label.touchable = Touchable.disabled;
 
-        t.stack(slider, label).width(50f * 3 - 20f).padTop(4f);
+        t.stack(slider, label).width(sliderWidth).padTop(4f);
         t.row();
 
         TUElements.imageButton(
@@ -232,19 +231,16 @@ public class TerrainPainterMenu{
         return show;
     }
 
-    private void rebuild(){
+    private void rebuild(){ //TODO switching between terrain blocks and buildings
         selection.clear();
         String text = search.getText();
 
         Seq<Block> array = content.blocks()
             .select(b ->
-                (
-                    b.isFloor() || b.isOverlay() || b.isStatic() ||
-                        b instanceof Prop || b instanceof TreeBlock || b instanceof TallBlock || b instanceof Cliff
-                ) &&
-                    !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn &&
-                    (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
-                    (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase())));
+                blockFilter(b) &&
+                (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
+                (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase()))
+            );
         if(array.size == 0) return;
 
         selection.table(list -> {
@@ -281,5 +277,33 @@ public class TerrainPainterMenu{
                 }
             }
         }).growX().left().padBottom(10);
+    }
+
+    private boolean blockFilter(Block b){
+        if(buildings){
+            return isBuilding(b);
+        }else{
+            return isTerrainBlock(b);
+        }
+    }
+
+    private boolean isTerrainBlock(Block b){
+        return (
+            b.isFloor() || b.isOverlay() || b.isStatic() ||
+            b instanceof Prop ||
+            b instanceof TreeBlock ||
+            b instanceof TallBlock ||
+            b instanceof Cliff
+        ) &&
+            !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn;
+    }
+
+    private boolean isBuilding(Block b){
+        return !b.isFloor() && !b.isStatic() &&
+            !(b instanceof Prop) &&
+            !(b instanceof TallBlock) &&
+            !(b instanceof TreeBlock) &&
+            !(b instanceof ConstructBlock) &&
+            !(b instanceof LegacyBlock);
     }
 }

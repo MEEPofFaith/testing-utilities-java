@@ -36,7 +36,7 @@ public class Setup{
         Table table = new Table().bottom().left();
         terrainMenu = new TerrainPainterMenu();
         table.table(Tex.buttonSideRight, t -> {
-            terrainMenu.build(t);
+            terrainMenu.build(ui.hudGroup, t);
         }).left();
         row(table);
         return table;
