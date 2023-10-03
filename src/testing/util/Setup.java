@@ -22,7 +22,7 @@ public class Setup{
     public static boolean on2r2t, posLabelAligned = false;
     private static Table temp;
 
-    public static TerrainPainterFragment terrainFrag;
+    public static NewTerrainPainterFragment terrainFrag;
 
     public static Table newTable(){
         Table table = new Table().bottom().left();
@@ -124,7 +124,7 @@ public class Setup{
         ui.hudGroup.addChild(commandButtons);
         offset(commandButtons);
 
-        terrainFrag = new TerrainPainterFragment();
+        terrainFrag = new NewTerrainPainterFragment();
         terrainFrag.build(ui.hudGroup);
 
         Table miniPos = ui.hudGroup.find("minimap/position");

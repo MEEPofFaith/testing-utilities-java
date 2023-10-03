@@ -115,7 +115,7 @@ public class TestUtils extends Mod{
                 Draw.z(Layer.endPixeled);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
-                Setup.terrainFrag.drawPos();
+                //Setup.terrainFrag.drawPos();
                 if(!teleport && !disableTeleport() && !player.unit().type.internal && input.alt()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);
@@ -195,7 +195,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableCampaign(){
-        return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
+        return state.isCampaign() && !(settings.getBool("tu-meep-privileges"));
     }
 
     public static boolean click(){
