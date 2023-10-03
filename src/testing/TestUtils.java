@@ -202,6 +202,17 @@ public class TestUtils extends Mod{
         return mobile ? input.isTouched() : input.keyDown(KeyCode.mouseLeft);
     }
 
+    public static boolean anyClick(){
+        return mobile ? input.isTouched() : (input.keyDown(KeyCode.mouseLeft) || input.keyDown(KeyCode.mouseRight) || input.keyDown(KeyCode.mouseMiddle));
+    }
+
+    public static KeyCode getClick(){
+        if(input.keyDown(KeyCode.mouseLeft)) return KeyCode.mouseLeft;
+        if(input.keyDown(KeyCode.mouseRight)) return KeyCode.mouseRight;
+        if(input.keyDown(KeyCode.mouseMiddle)) return KeyCode.mouseLeft;
+        return null;
+    }
+
     /** Not a setting, but rather adds an image to the settings menu. */
     static class Banner extends Setting{
         float width;

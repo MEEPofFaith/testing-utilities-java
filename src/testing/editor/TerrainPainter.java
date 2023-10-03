@@ -163,7 +163,7 @@ public class TerrainPainter{
                         continue;
                     }
 
-                    drawer.get(getData(wx, wy));
+                    drawer.get(data(wx, wy));
                 }
             }
         }
@@ -179,7 +179,7 @@ public class TerrainPainter{
                     continue;
                 }
 
-                drawer.get(getData(wx, wy));
+                drawer.get(data(wx, wy));
             }
         }
     }
@@ -225,11 +225,11 @@ public class TerrainPainter{
         currentOp.addOperation(data);
     }
 
-    public PaintedTileData getData(int x, int y){
+    public PaintedTileData data(int x, int y){
         return data[x][y];
     }
 
-    public PaintedTileData getData(Tile tile){
-        return getData(tile.x, tile.y);
+    public PaintedTileData data(Tile tile){
+        return data(tile.x, tile.y);
     }
 }

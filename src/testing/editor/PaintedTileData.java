@@ -1,6 +1,7 @@
 package testing.editor;
 
 import arc.func.*;
+import mindustry.content.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.editor.*;
 import mindustry.game.*;
@@ -40,6 +41,23 @@ public class PaintedTileData{
         tile.setFloor(type);
     }
 
+    /** Sets the floor, preserving overlay.*/
+    public void setFloorUnder(Floor floor){
+        Block overlay = overlay();
+        setFloor(floor);
+        if(overlay() != overlay){
+            setOverlay(overlay);
+        }
+    }
+
+    public void setBlock(Block type){
+        setBlock(type, Team.derelict);
+    }
+
+    public void setBlock(Block type, Team team){
+        setBlock(type, team, 0);
+    }
+
     public void setBlock(Block type, Team team, int rotation){
         setBlock(type, team, rotation, type::newBuilding);
     }
@@ -57,7 +75,7 @@ public class PaintedTileData{
         }
 
         if(!isCenter()){
-            PaintedTileData cen = painter.getData(tBuild.tile);
+            PaintedTileData cen = painter.data(tBuild.tile);
             cen.op(OpType.rotation, (byte)tBuild.rotation);
             cen.op(OpType.team, (byte)tBuild.team.id);
             cen.op(OpType.block, tBlock.id);
@@ -96,7 +114,7 @@ public class PaintedTileData{
     }
 
     private boolean skip(){
-        return editor.isLoading() || world.isGenerating();
+        return painter.isLoading() || world.isGenerating();
     }
     
     public boolean isCenter(){
@@ -149,6 +167,14 @@ public class PaintedTileData{
 
     public void setOverlayID(short ore){
         setOverlay(content.block(ore));
+    }
+
+    public void remove(){
+        setBlock(Blocks.air);
+    }
+
+    public void clearOverlay(){
+        setOverlayID((short)0);
     }
 
     private void op(OpType type, short value){

@@ -183,9 +183,9 @@ public class TerrainPainterMenu{
         t.row();
 
         Slider slider = new Slider(0, MapEditor.brushSizes.length - 1, 1, false);
-        slider.moved(f -> editor.brushSize = MapEditor.brushSizes[(int)f]);
+        slider.moved(f -> painter.brushSize = MapEditor.brushSizes[(int)f]);
         for(int j = 0; j < MapEditor.brushSizes.length; j++){
-            if(MapEditor.brushSizes[j] == editor.brushSize){
+            if(MapEditor.brushSizes[j] == painter.brushSize){
                 slider.setValue(j);
             }
         }

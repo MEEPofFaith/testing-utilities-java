@@ -11,7 +11,6 @@ import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.world.*;
 
-import static mindustry.Vars.editor;
 import static testing.util.TUVars.*;
 
 /** Mimics {@link EditorTool} */
@@ -20,9 +19,9 @@ public enum PainterTool{
     none(KeyCode.v),
     pick(KeyCode.i){
         public void touched(int x, int y){
-            if(!Structs.inBounds(x, y, editor.width(), editor.height())) return;
+            if(!Structs.inBounds(x, y, painter.width(), painter.height())) return;
 
-            Tile tile = editor.tile(x, y);
+            Tile tile = painter.tile(x, y);
             painter.drawBlock = tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block();
         }
     },
@@ -61,18 +60,18 @@ public enum PainterTool{
         public void touched(int x, int y){
             if(mode == -1){
                 //normal mode
-                editor.drawBlocks(x, y);
+                painter.drawBlocks(x, y);
             }else if(mode == 0){
                 //replace mode
-                editor.drawBlocksReplace(x, y);
+                painter.drawBlocksReplace(x, y);
             }else if(mode == 1){
                 //square mode
-                editor.drawBlocks(x, y, true, false, tile -> true);
+                painter.drawBlocks(x, y, true, false, tile -> true);
             }else if(mode == 2){
                 //draw teams
-                editor.drawCircle(x, y, tile -> tile.setTeam(editor.drawTeam));
+                painter.drawCircle(x, y, painter.brushSize, tile -> tile.setTeam(painter.drawTeam));
             }else if(mode == 3){
-                editor.drawBlocks(x, y, false, true, tile -> tile.floor().isLiquid);
+                painter.drawBlocks(x, y, false, true, tile -> tile.floor().isLiquid);
             }
 
         }
@@ -85,13 +84,13 @@ public enum PainterTool{
 
         @Override
         public void touched(int x, int y){
-            editor.drawCircle(x, y, tile -> {
+            painter.drawCircle(x, y, painter.brushSize, data -> {
                 if(mode == -1){
                     //erase block
-                    tile.remove();
+                    data.remove();
                 }else if(mode == 0){
                     //erase ore
-                    tile.clearOverlay();
+                    data.clearOverlay();
                 }
             });
         }
@@ -105,12 +104,12 @@ public enum PainterTool{
 
         @Override
         public void touched(int x, int y){
-            if(!Structs.inBounds(x, y, editor.width(), editor.height())) return;
-            Tile tile = editor.tile(x, y);
+            if(!Structs.inBounds(x, y, painter.width(), painter.height())) return;
+            Tile tile = painter.tile(x, y);
 
             if(tile == null) return;
 
-            if(editor.drawBlock.isMultiblock() && (mode == 0 || mode == -1)){
+            if(painter.drawBlock.isMultiblock() && (mode == 0 || mode == -1)){
                 //don't fill multiblocks, thanks
                 pencil.touched(x, y);
                 return;
@@ -123,24 +122,24 @@ public enum PainterTool{
                     return;
                 }
 
-                Boolf<Tile> tester;
-                Cons<Tile> setter;
+                Boolf<PaintedTileData> tester;
+                Cons<PaintedTileData> setter;
 
-                if(editor.drawBlock.isOverlay()){
+                if(painter.drawBlock.isOverlay()){
                     Block dest = tile.overlay();
-                    if(dest == editor.drawBlock) return;
+                    if(dest == painter.drawBlock) return;
                     tester = t -> t.overlay() == dest && (t.floor().hasSurface() || !t.floor().needsSurface);
-                    setter = t -> t.setOverlay(editor.drawBlock);
-                }else if(editor.drawBlock.isFloor()){
+                    setter = t -> t.setOverlay(painter.drawBlock);
+                }else if(painter.drawBlock.isFloor()){
                     Block dest = tile.floor();
-                    if(dest == editor.drawBlock) return;
+                    if(dest == painter.drawBlock) return;
                     tester = t -> t.floor() == dest;
-                    setter = t -> t.setFloorUnder(editor.drawBlock.asFloor());
+                    setter = t -> t.setFloorUnder(painter.drawBlock.asFloor());
                 }else{
                     Block dest = tile.block();
-                    if(dest == editor.drawBlock) return;
+                    if(dest == painter.drawBlock) return;
                     tester = t -> t.block() == dest;
-                    setter = t -> t.setBlock(editor.drawBlock, editor.drawTeam);
+                    setter = t -> t.setBlock(painter.drawBlock, painter.drawTeam);
                 }
 
                 //replace only when the mode is 0 using the specified functions
@@ -150,12 +149,12 @@ public enum PainterTool{
                 //only fill synthetic blocks, it's meaningless otherwise
                 if(tile.synthetic()){
                     Team dest = tile.team();
-                    if(dest == editor.drawTeam) return;
-                    fill(x, y, true, t -> t.getTeamID() == dest.id && t.synthetic(), t -> t.setTeam(editor.drawTeam));
+                    if(dest == painter.drawTeam) return;
+                    fill(x, y, true, t -> t.getTeamID() == dest.id && t.tile.synthetic(), t -> t.setTeam(painter.drawTeam));
                 }
             }else if(mode == 2){ //erase mode
-                Boolf<Tile> tester;
-                Cons<Tile> setter;
+                Boolf<PaintedTileData> tester;
+                Cons<PaintedTileData> setter;
 
                 if(tile.block() != Blocks.air){
                     Block dest = tile.block();
@@ -177,14 +176,14 @@ public enum PainterTool{
             }
         }
 
-        void fill(int x, int y, boolean replace, Boolf<Tile> tester, Cons<Tile> filler){
-            int width = editor.width(), height = editor.height();
+        void fill(int x, int y, boolean replace, Boolf<PaintedTileData> tester, Cons<PaintedTileData> filler){
+            int width = painter.width(), height = painter.height();
 
             if(replace){
                 //just do it on everything
                 for(int cx = 0; cx < width; cx++){
                     for(int cy = 0; cy < height; cy++){
-                        Tile tile = editor.tile(cx, cy);
+                        PaintedTileData tile = painter.data(cx, cy);
                         if(tester.get(tile)){
                             filler.get(tile);
                         }
@@ -205,23 +204,23 @@ public enum PainterTool{
                         y = Point2.y(popped);
 
                         x1 = x;
-                        while(x1 >= 0 && tester.get(editor.tile(x1, y))) x1--;
+                        while(x1 >= 0 && tester.get(painter.data(x1, y))) x1--;
                         x1++;
                         boolean spanAbove = false, spanBelow = false;
-                        while(x1 < width && tester.get(editor.tile(x1, y))){
-                            filler.get(editor.tile(x1, y));
+                        while(x1 < width && tester.get(painter.data(x1, y))){
+                            filler.get(painter.data(x1, y));
 
-                            if(!spanAbove && y > 0 && tester.get(editor.tile(x1, y - 1))){
+                            if(!spanAbove && y > 0 && tester.get(painter.data(x1, y - 1))){
                                 stack.add(Point2.pack(x1, y - 1));
                                 spanAbove = true;
-                            }else if(spanAbove && !tester.get(editor.tile(x1, y - 1))){
+                            }else if(spanAbove && !tester.get(painter.data(x1, y - 1))){
                                 spanAbove = false;
                             }
 
-                            if(!spanBelow && y < height - 1 && tester.get(editor.tile(x1, y + 1))){
+                            if(!spanBelow && y < height - 1 && tester.get(painter.data(x1, y + 1))){
                                 stack.add(Point2.pack(x1, y + 1));
                                 spanBelow = true;
-                            }else if(spanBelow && y < height - 1 && !tester.get(editor.tile(x1, y + 1))){
+                            }else if(spanBelow && y < height - 1 && !tester.get(painter.data(x1, y + 1))){
                                 spanBelow = false;
                             }
                             x1++;
@@ -250,16 +249,16 @@ public enum PainterTool{
         public void touched(int x, int y){
 
             //floor spray
-            if(editor.drawBlock.isFloor()){
-                editor.drawCircle(x, y, tile -> {
+            if(painter.drawBlock.isFloor()){
+                painter.drawCircle(x, y, painter.brushSize, tile -> {
                     if(Mathf.chance(chance)){
-                        tile.setFloor(editor.drawBlock.asFloor());
+                        tile.setFloor(painter.drawBlock.asFloor());
                     }
                 });
             }else if(mode == 0){ //replace-only mode, doesn't affect air
-                editor.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
+                painter.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
             }else{
-                editor.drawBlocks(x, y, tile -> Mathf.chance(chance));
+                painter.drawBlocks(x, y, tile -> Mathf.chance(chance));
             }
         }
     };
