@@ -1,7 +1,6 @@
 package testing.editor;
 
 import arc.func.*;
-import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -15,9 +14,7 @@ import static testing.util.TUVars.*;
 
 /** Mimics {@link EditorTool} */
 public enum PainterTool{
-    /** No tool is selected, for when you want to build. */
-    none(KeyCode.v),
-    pick(KeyCode.i){
+    pick(){
         public void touched(int x, int y){
             if(!Structs.inBounds(x, y, painter.width(), painter.height())) return;
 
@@ -25,7 +22,7 @@ public enum PainterTool{
             painter.drawBlock = tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block();
         }
     },
-    line(KeyCode.l, "replace", "orthogonal"){
+    line("replace", "orthogonal"){
 
         @Override
         public void touchedLine(int x1, int y1, int x2, int y2){
@@ -50,7 +47,7 @@ public enum PainterTool{
         }
     },
     //Anuke, I don't care. I'm going to make underliquid pubic in my painter and you can't stop me.
-    pencil(KeyCode.b, "replace", "square", "drawteams", "underliquid"){
+    pencil("replace", "square", "drawteams", "underliquid"){
         {
             edit = true;
             draggable = true;
@@ -76,7 +73,7 @@ public enum PainterTool{
 
         }
     },
-    eraser(KeyCode.e, "eraseores"){
+    eraser("eraseores"){
         {
             edit = true;
             draggable = true;
@@ -95,7 +92,7 @@ public enum PainterTool{
             });
         }
     },
-    fill(KeyCode.g, "replaceall", "fillteams", "fillerase"){
+    fill("replaceall", "fillteams", "fillerase"){
         {
             edit = true;
         }
@@ -237,7 +234,7 @@ public enum PainterTool{
             }
         }
     },
-    spray(KeyCode.r, "replace"){
+    spray("replace"){
         final double chance = 0.012;
 
         {
@@ -265,31 +262,18 @@ public enum PainterTool{
 
     /** All the internal alternate placement modes of this tool. */
     public final String[] altModes;
-    /** Key to activate this tool. */
-    public KeyCode key = KeyCode.unset; //TODO do I make my terrain painter even accept keybind inputs?
     /** The current alternate placement mode. -1 is the standard mode, no changes.*/
     public int mode = -1;
     /** Whether this tool causes canvas changes when touched.*/
     public boolean edit;
     /** Whether this tool should be dragged across the canvas when the mouse moves.*/
     public boolean draggable;
-
     PainterTool(){
         this(new String[]{});
     }
 
-    PainterTool(KeyCode code){
-        this(new String[]{});
-        this.key = code;
-    }
-
     PainterTool(String... altModes){
         this.altModes = altModes;
-    }
-
-    PainterTool(KeyCode code, String... altModes){
-        this.altModes = altModes;
-        this.key = code;
     }
 
     public void touched(int x, int y){}
