@@ -46,8 +46,8 @@ public enum PainterTool{
             });
         }
     },
-    //Anuke, I don't care. I'm going to make underliquid pubic in my painter and you can't stop me.
-    pencil("replace", "square", "drawteams", "underliquid"){
+    //the "under liquid" rendering is too buggy to make public
+    pencil("replace", "square", "drawteams"/*, "underliquid"*/){
         {
             edit = true;
             draggable = true;
