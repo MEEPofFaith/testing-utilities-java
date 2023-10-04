@@ -1,10 +1,10 @@
 package testing.editor;
 
 import arc.struct.*;
+import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
@@ -37,8 +37,9 @@ public class PaintOperation{
 
     private void updateTile(int i){
         long l = array.get(i);
-        array.set(i, TileOp.get(TileOp.x(l), TileOp.y(l), TileOp.type(l), getTile(painter.tile(TileOp.x(l), TileOp.y(l)), TileOp.type(l))));
-        setTile(painter.tile(TileOp.x(l), TileOp.y(l)), TileOp.type(l), TileOp.value(l));
+        Tile tile = painter.tile(PaintOp.x(l), PaintOp.y(l));
+        array.set(i, PaintOp.get(PaintOp.x(l), PaintOp.y(l), PaintOp.type(l), getTile(tile, PaintOp.type(l)), tile.data));
+        setTile(painter.tile(PaintOp.x(l), PaintOp.y(l)), PaintOp.type(l), PaintOp.value(l), PaintOp.data(l));
     }
 
     private short getTile(Tile tile, byte type){
@@ -56,7 +57,7 @@ public class PaintOperation{
         throw new IllegalArgumentException("Invalid type.");
     }
 
-    private void setTile(Tile tile, byte type, short to){
+    private void setTile(Tile tile, byte type, short to, byte data){
         painter.load(() -> {
             if(type == OpType.floor.ordinal()){
                 if(content.block(to) instanceof Floor floor){
@@ -64,7 +65,19 @@ public class PaintOperation{
                 }
             }else if(type == OpType.block.ordinal()){
                 Block block = content.block(to);
+
+                if(block == Blocks.cliff){
+                    if(data == 0){
+                        painter.pendingCliffs.add(tile); //Pending cliff was added
+                    }else{
+                        painter.pendingCliffs.remove(tile); //Preexisting cliff was added
+                    }
+                }else if(tile.block() == Blocks.cliff){
+                    if(tile.data == 0) painter.pendingCliffs.remove(tile); //Pending cliff was removed
+                }
+
                 tile.setBlock(block, tile.team(), tile.build == null ? 0 : tile.build.rotation);
+                tile.data = data;
             }else if(type == OpType.rotation.ordinal()){
                 if(tile.build != null) tile.build.rotation = to;
             }else if(type == OpType.team.ordinal()){

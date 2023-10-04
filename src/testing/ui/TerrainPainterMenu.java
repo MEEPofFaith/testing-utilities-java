@@ -199,7 +199,7 @@ public class TerrainPainterMenu{
 
         TUElements.imageButton(
             t, TUIcons.get(Icon.terrain), Styles.defaulti, buttonSize,
-            () -> painter.addCliffs(),
+            () -> painter.flushCliffs(),
             () -> "@tu-painter.cliffs",
             "@tu-tooltip.painter-cliffs"
         ).padTop(4f);

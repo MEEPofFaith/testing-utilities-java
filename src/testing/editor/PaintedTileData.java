@@ -74,16 +74,27 @@ public class PaintedTileData{
             return;
         }
 
+        byte data = 0;
+        if(type == Blocks.cliff){
+            painter.pendingCliffs.add(tile);
+            tile.data = 0;
+        }else if(tBlock == Blocks.cliff){
+            painter.pendingCliffs.remove(tile);
+            data = tile.data;
+            tile.data = 0;
+        }
+
         if(!isCenter()){
             PaintedTileData cen = painter.data(tBuild.tile);
             cen.op(OpType.rotation, (byte)tBuild.rotation);
             cen.op(OpType.team, (byte)tBuild.team.id);
-            cen.op(OpType.block, tBlock.id);
+            cen.op(OpType.block, tBlock.id, data);
         }else{
             if(tBuild != null) op(OpType.rotation, (byte)tBuild.rotation);
             if(tBuild != null) op(OpType.team, (byte)tBuild.team.id);
-            op(OpType.block, tBlock.id);
+            op(OpType.block, tBlock.id, data);
         }
+
         tile.setBlock(type, team, rotation, entityprov);
     }
     
@@ -178,6 +189,10 @@ public class PaintedTileData{
     }
 
     private void op(OpType type, short value){
-        painter.addTileOp(TileOp.get(x(), y(), (byte)type.ordinal(), value));
+        op(type, value, (byte)0);
+    }
+
+    private void op(OpType type, short value, byte data){
+        painter.addPaintOp(PaintOp.get(x(), y(), (byte)type.ordinal(), value, data));
     }
 }

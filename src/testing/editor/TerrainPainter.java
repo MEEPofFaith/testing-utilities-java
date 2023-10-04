@@ -3,12 +3,13 @@ package testing.editor;
 import arc.*;
 import arc.func.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.editor.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
@@ -21,10 +22,11 @@ public class TerrainPainter{
     private PaintedTileData[][] data;
     private boolean loading;
 
+    public final Seq<Tile> pendingCliffs = new Seq<>();
     public float brushSize = 1;
     public int rotation;
     public Block drawBlock = Blocks.boulder;
-    public Team drawTeam = Team.sharded; //TODO drawing buildings
+    public Team drawTeam = Team.sharded;
 
     public boolean isLoading(){
         return loading;
@@ -33,7 +35,8 @@ public class TerrainPainter{
     private void reset(){
         clearOp();
         brushSize = 1;
-        drawBlock = Blocks.stone;
+        drawBlock = Blocks.boulder;
+        flushCliffs();
     }
 
     public void beginEditing(){
@@ -113,7 +116,7 @@ public class TerrainPainter{
                     }
                 }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
                     if(drawBlock.rotate && tile.build() != null && tile.build().rotation != rotation){
-                        addTileOp(TileOp.get(tile.x(), tile.y(), (byte)OpType.rotation.ordinal(), (byte)rotation));
+                        addPaintOp(PaintOp.get(tile.x(), tile.y(), (byte)OpType.rotation.ordinal(), (byte)rotation));
                     }
 
                     tile.setBlock(drawBlock, drawTeam, rotation);
@@ -187,8 +190,33 @@ public class TerrainPainter{
         }
     }
 
-    public void addCliffs(){
-        //TODO
+    public void flushCliffs(){
+        flushCliffs(true);
+    }
+
+    public void flushCliffs(boolean op){
+        if(pendingCliffs.isEmpty()) return;
+
+        for(Tile tile : pendingCliffs){
+            if(!tile.block().isStatic() || tile.block() != Blocks.cliff) continue;
+            int rotation = 0;
+            for(int i = 0; i < 8; i++){
+                Tile other = world.tiles.get(tile.x + Geometry.d8[i].x, tile.y + Geometry.d8[i].y);
+                if(other != null && !other.block().isStatic()){
+                    rotation |= (1 << i);
+                }
+            }
+            if(op) addPaintOp(PaintOp.get(tile.x, tile.y, (byte)OpType.block.ordinal(), Blocks.cliff.id, tile.data));
+            tile.data = (byte)rotation;
+        }
+        for(Tile tile : pendingCliffs){
+            if(tile.block() == Blocks.cliff && tile.data == 0){
+                tile.setBlock(Blocks.air);
+            }
+        }
+
+        if(op) flushOp();
+        pendingCliffs.clear();
     }
 
     public void clearOp(){
@@ -221,7 +249,7 @@ public class TerrainPainter{
         currentOp = null;
     }
 
-    public void addTileOp(long data){
+    public void addPaintOp(long data){
         if(loading) return;
 
         if(currentOp == null) currentOp = new PaintOperation();
