@@ -231,6 +231,19 @@ public class TerrainPainterFragment{
         Events.run(Trigger.draw, () -> {
             if(show) ui.hudfrag.shown = false;
         });
+
+        //Should run after rebuild
+        ui.paused.shown(() -> {
+            //Last button is quit
+            TextButton l = (TextButton)ui.paused.cont.getChildren().get(!mobile ? 5 : 3);
+            l.clicked(this::hide);
+            l.getListeners().reverse(); //Hide first before quitting
+
+            //Last button is quit
+            TextButton q = (TextButton)ui.paused.cont.getChildren().peek();
+            q.clicked(this::hide);
+            q.getListeners().reverse(); //Hide first before quitting
+        });
     }
 
     public void show(){
@@ -239,6 +252,8 @@ public class TerrainPainterFragment{
     }
 
     public void hide(){
+        if(!show) return;
+
         show = false;
         painter.endEditing();
         painter.clearOp();
