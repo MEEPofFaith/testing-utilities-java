@@ -33,10 +33,8 @@ public class TerrainPainter{
     }
 
     private void reset(){
-        clearOp();
-        brushSize = 1;
-        drawBlock = Blocks.boulder;
         flushCliffs();
+        clearOp();
     }
 
     public void beginEditing(){
