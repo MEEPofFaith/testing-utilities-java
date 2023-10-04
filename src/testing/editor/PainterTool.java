@@ -66,12 +66,12 @@ public enum PainterTool{
                 painter.drawBlocksReplace(x, y);
             }else if(mode == 1){
                 //square mode
-                painter.drawBlocks(x, y, true, false, tile -> true);
+                painter.drawBlocks(x, y, true, false, data -> true);
             }else if(mode == 2){
                 //draw teams
-                painter.drawCircle(x, y, painter.brushSize, tile -> tile.setTeam(painter.drawTeam));
+                painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
             }else if(mode == 3){
-                painter.drawBlocks(x, y, false, true, tile -> tile.floor().isLiquid);
+                painter.drawBlocks(x, y, false, true, data -> data.floor().isLiquid);
             }
 
         }
@@ -128,18 +128,18 @@ public enum PainterTool{
                 if(painter.drawBlock.isOverlay()){
                     Block dest = tile.overlay();
                     if(dest == painter.drawBlock) return;
-                    tester = t -> t.overlay() == dest && (t.floor().hasSurface() || !t.floor().needsSurface);
-                    setter = t -> t.setOverlay(painter.drawBlock);
+                    tester = d -> d.overlay() == dest && (d.floor().hasSurface() || !d.floor().needsSurface);
+                    setter = d -> d.setOverlay(painter.drawBlock);
                 }else if(painter.drawBlock.isFloor()){
                     Block dest = tile.floor();
                     if(dest == painter.drawBlock) return;
-                    tester = t -> t.floor() == dest;
-                    setter = t -> t.setFloorUnder(painter.drawBlock.asFloor());
+                    tester = d -> d.floor() == dest;
+                    setter = d -> d.setFloorUnder(painter.drawBlock.asFloor());
                 }else{
                     Block dest = tile.block();
                     if(dest == painter.drawBlock) return;
-                    tester = t -> t.block() == dest;
-                    setter = t -> t.setBlock(painter.drawBlock, painter.drawTeam);
+                    tester = d -> d.block() == dest;
+                    setter = d -> d.setBlock(painter.drawBlock, painter.drawTeam);
                 }
 
                 //replace only when the mode is 0 using the specified functions
@@ -150,7 +150,7 @@ public enum PainterTool{
                 if(tile.synthetic()){
                     Team dest = tile.team();
                     if(dest == painter.drawTeam) return;
-                    fill(x, y, true, t -> t.getTeamID() == dest.id && t.tile.synthetic(), t -> t.setTeam(painter.drawTeam));
+                    fill(x, y, true, d -> d.getTeamID() == dest.id && d.tile.synthetic(), d -> d.setTeam(painter.drawTeam));
                 }
             }else if(mode == 2){ //erase mode
                 Boolf<PaintedTileData> tester;
@@ -158,12 +158,12 @@ public enum PainterTool{
 
                 if(tile.block() != Blocks.air){
                     Block dest = tile.block();
-                    tester = t -> t.block() == dest;
-                    setter = t -> t.setBlock(Blocks.air);
+                    tester = d -> d.block() == dest;
+                    setter = d -> d.setBlock(Blocks.air);
                 }else if(tile.overlay() != Blocks.air){
                     Block dest = tile.overlay();
-                    tester = t -> t.overlay() == dest;
-                    setter = t -> t.setOverlay(Blocks.air);
+                    tester = d -> d.overlay() == dest;
+                    setter = d -> d.setOverlay(Blocks.air);
                 }else{
                     //trying to erase floor (no)
                     tester = null;
@@ -183,9 +183,9 @@ public enum PainterTool{
                 //just do it on everything
                 for(int cx = 0; cx < width; cx++){
                     for(int cy = 0; cy < height; cy++){
-                        PaintedTileData tile = painter.data(cx, cy);
-                        if(tester.get(tile)){
-                            filler.get(tile);
+                        PaintedTileData data = painter.data(cx, cy);
+                        if(tester.get(data)){
+                            filler.get(data);
                         }
                     }
                 }
@@ -250,15 +250,15 @@ public enum PainterTool{
 
             //floor spray
             if(painter.drawBlock.isFloor()){
-                painter.drawCircle(x, y, painter.brushSize, tile -> {
+                painter.drawCircle(x, y, painter.brushSize, data -> {
                     if(Mathf.chance(chance)){
-                        tile.setFloor(painter.drawBlock.asFloor());
+                        data.setFloor(painter.drawBlock.asFloor());
                     }
                 });
             }else if(mode == 0){ //replace-only mode, doesn't affect air
-                painter.drawBlocks(x, y, tile -> Mathf.chance(chance) && tile.block() != Blocks.air);
+                painter.drawBlocks(x, y, data -> Mathf.chance(chance) && data.block() != Blocks.air);
             }else{
-                painter.drawBlocks(x, y, tile -> Mathf.chance(chance));
+                painter.drawBlocks(x, y, data -> Mathf.chance(chance));
             }
         }
     };

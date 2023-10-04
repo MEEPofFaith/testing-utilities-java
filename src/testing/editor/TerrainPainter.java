@@ -15,7 +15,7 @@ import mindustry.world.blocks.environment.*;
 
 import static mindustry.Vars.*;
 
-/** Very similar to {@link MapEditor}. Made to operate in a live map instead of the editor. */
+/** Based on {@link MapEditor}. Made to operate in a live map instead of the editor. */
 public class TerrainPainter{
     private PaintOperationStack stack = new PaintOperationStack();
     private PaintOperation currentOp;
@@ -82,11 +82,11 @@ public class TerrainPainter{
     }
 
     public void drawBlocksReplace(int x, int y){
-        drawBlocks(x, y, tile -> tile.block() != Blocks.air || drawBlock.isFloor());
+        drawBlocks(x, y, data -> data.block() != Blocks.air || drawBlock.isFloor());
     }
 
     public void drawBlocks(int x, int y){
-        drawBlocks(x, y, false, false, tile -> true);
+        drawBlocks(x, y, false, false, data -> true);
     }
 
     public void drawBlocks(int x, int y, Boolf<PaintedTileData> tester){
@@ -98,28 +98,28 @@ public class TerrainPainter{
             x = Mathf.clamp(x, (drawBlock.size - 1) / 2, width() - drawBlock.size / 2 - 1);
             y = Mathf.clamp(y, (drawBlock.size - 1) / 2, height() - drawBlock.size / 2 - 1);
             if(!hasOverlap(x, y)){
-                tile(x, y).setBlock(drawBlock, drawTeam, rotation);
+                data(x, y).setBlock(drawBlock, drawTeam, rotation);
             }
         }else{
             boolean isFloor = drawBlock.isFloor() && drawBlock != Blocks.air;
 
-            Cons<PaintedTileData> drawer = tile -> {
-                if(!tester.get(tile)) return;
+            Cons<PaintedTileData> drawer = data -> {
+                if(!tester.get(data)) return;
 
                 if(isFloor){
                     if(forceOverlay){
-                        tile.setOverlay(drawBlock.asFloor());
+                        data.setOverlay(drawBlock.asFloor());
                     }else{
-                        if(!(drawBlock.asFloor().wallOre && !tile.block().solid)){
-                            tile.setFloor(drawBlock.asFloor());
+                        if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
+                            data.setFloor(drawBlock.asFloor());
                         }
                     }
-                }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
-                    if(drawBlock.rotate && tile.build() != null && tile.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(tile.x(), tile.y(), (byte)OpType.rotation.ordinal(), (byte)rotation));
+                }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
+                    if(drawBlock.rotate && data.build() != null && data.build().rotation != rotation){
+                        addPaintOp(PaintOp.get(data.x(), data.y(), (byte)OpType.rotation.ordinal(), (byte)rotation));
                     }
 
-                    tile.setBlock(drawBlock, drawTeam, rotation);
+                    data.setBlock(drawBlock, drawTeam, rotation);
                 }
             };
 
@@ -191,10 +191,6 @@ public class TerrainPainter{
     }
 
     public void flushCliffs(){
-        flushCliffs(true);
-    }
-
-    public void flushCliffs(boolean op){
         if(pendingCliffs.isEmpty()) return;
 
         for(Tile tile : pendingCliffs){
@@ -206,7 +202,7 @@ public class TerrainPainter{
                     rotation |= (1 << i);
                 }
             }
-            if(op) addPaintOp(PaintOp.get(tile.x, tile.y, (byte)OpType.block.ordinal(), Blocks.cliff.id, tile.data));
+            addPaintOp(PaintOp.get(tile.x, tile.y, (byte)OpType.block.ordinal(), Blocks.cliff.id, tile.data));
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){
@@ -215,7 +211,7 @@ public class TerrainPainter{
             }
         }
 
-        if(op) flushOp();
+        flushOp();
         pendingCliffs.clear();
     }
 
