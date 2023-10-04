@@ -95,8 +95,8 @@ public class TerrainPaintbrush{
                     Draw.color(Pal.accent);
                     Lines.stroke(Scl.scl(2f));
 
-                    float x = World.toTile(input.mouseWorldX()) * tilesize - 4f,
-                        y = World.toTile(input.mouseWorldY()) * tilesize - 4f;
+                    float x = World.toTile(input.mouseWorldX()) * tilesize,
+                        y = World.toTile(input.mouseWorldY()) * tilesize;
 
                     if((!painter.drawBlock.isMultiblock() || tool == PainterTool.eraser) && tool != PainterTool.fill){
                         if(tool == PainterTool.line && drawing){
@@ -107,9 +107,9 @@ public class TerrainPaintbrush{
                         if((tool.edit || (tool == PainterTool.line && !drawing)) && (!mobile || drawing)){
                             //pencil square outline
                             if(tool == PainterTool.pencil && tool.mode == 1){
-                                Lines.square(x, y, (painter.brushSize == 1.5f ? 1f : painter.brushSize) * tilesize + 0.5f);
+                                Lines.square(x, y, (painter.brushSize == 1.5f ? 1f : painter.brushSize) * tilesize + 4f);
                             }else{
-                                Lines.poly(brushPolygons[index], x, y, tilesize);
+                                Lines.poly(brushPolygons[index], x - 4f, y - 4f, tilesize);
                             }
                         }
                     }else{
@@ -120,7 +120,7 @@ public class TerrainPaintbrush{
                             Lines.rect(startX * tilesize - size / 2 + offset, startY * tilesize - size / 2 + offset, size, size);
                             Lines.rect(lastX * tilesize - size / 2 + offset, lastY * tilesize - size / 2 + offset, size, size);
                         }else if((tool.edit || tool == PainterTool.line) && (!mobile || drawing)){
-                            Lines.rect(x + 4f - size / 2 + offset, y + 4f - size / 2 + offset, size, size);
+                            Lines.rect(x - size / 2 + offset, y - size / 2 + offset, size, size);
                         }
                     }
                     Draw.color();
