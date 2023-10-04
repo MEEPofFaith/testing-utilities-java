@@ -21,7 +21,7 @@ public class Setup{
     public static boolean on2r2t, posLabelAligned = false;
     private static Table temp;
 
-    public static TerrainPainterMenu terrainMenu;
+    public static TerrainPainterFragment terrainFrag;
 
     public static Table newTable(){
         Table table = new Table().bottom().left();
@@ -29,16 +29,6 @@ public class Setup{
             t.defaults().size(TUVars.iconSize, TUVars.iconSize);
             temp = t;
         }).left();
-        return table;
-    }
-
-    public static Table newTablePainter(){
-        Table table = new Table().bottom().left();
-        terrainMenu = new TerrainPainterMenu();
-        table.table(Tex.buttonSideRight, t -> {
-            terrainMenu.build(ui.hudGroup, t);
-        }).left();
-        row(table);
         return table;
     }
 
@@ -75,8 +65,8 @@ public class Setup{
             on2r2t = (e.ip.equals("130.61.214.19") || e.ip.equals("n1.yeet.ml")) && e.port == 6568;
         });
 
-        //Build normal UI. Includes terrain painter.
-        Table mainButtons = newTablePainter();
+        //Build normal UI.
+        Table mainButtons = newTable();
         mainButtons.setOrigin(Align.bottomLeft);
 
         ///First row
@@ -149,6 +139,9 @@ public class Setup{
         );
         miniPos.getCell(miniPos.find("minimap")).top().right();
         miniPos.getCell(pos).top().right();
+
+        terrainFrag = new TerrainPainterFragment();
+        terrainFrag.build(ui.hudGroup);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(posLabelAligned) return;

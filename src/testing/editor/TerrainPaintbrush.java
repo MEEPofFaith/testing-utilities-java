@@ -44,7 +44,7 @@ public class TerrainPaintbrush{
         }
 
         Events.run(Trigger.update, () -> {
-            if(state.isGame() && Setup.terrainMenu.shown()){
+            if(state.isGame() && Setup.terrainFrag.shown()){
                 if(scene.hasMouse()){
                     touchUp(lastX, lastY);
                 }else{
@@ -78,7 +78,7 @@ public class TerrainPaintbrush{
         Events.run(Trigger.draw, () -> {
             Draw.z(Layer.overlayUI);
 
-            if(state.isGame() && Setup.terrainMenu.shown()){
+            if(state.isGame() && Setup.terrainFrag.shown()){
                 drawPendingCliffs();
                 drawGrid();
 
