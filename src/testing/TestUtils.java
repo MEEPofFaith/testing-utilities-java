@@ -112,11 +112,10 @@ public class TestUtils extends Mod{
                 Spawn.spawnHover = Spawn.blockHover = false;
             });
             Events.run(Trigger.draw, () -> {
-                Draw.z(Layer.endPixeled);
+                Draw.z(Layer.overlayUI + 0.04f);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
-                //Setup.terrainFrag.drawPos();
-                if(!teleport && !disableTeleport() && !player.unit().type.internal && input.alt()){
+                if(!teleport && canTeleport()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);
                     float x1 = player.x, y1 = player.y,
@@ -137,7 +136,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableTeleport() && !player.unit().type.internal && input.alt() && click()){
+                    if(canTeleport() && click()){
                         player.shooting(false);
                         if(teleport) return;
                         teleport = true;
@@ -192,6 +191,10 @@ public class TestUtils extends Mod{
 
     public static boolean disableTeleport(){
         return TUVars.foos || (net.client() ? !Setup.on2r2t : disableCampaign());
+    }
+
+    public static boolean canTeleport(){
+        return !mobile && !disableTeleport() && !player.unit().type.internal && input.alt();
     }
 
     public static boolean disableCampaign(){

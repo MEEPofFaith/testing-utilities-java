@@ -48,6 +48,8 @@ public class TerrainPaintbrush{
                 if(scene.hasMouse()){
                     touchUp(lastX, lastY);
                 }else{
+                    if(TestUtils.canTeleport()) return;
+
                     int tx = World.toTile(input.mouseWorldX()),
                         ty = World.toTile(input.mouseWorldY());
 
@@ -131,6 +133,8 @@ public class TerrainPaintbrush{
     }
 
     private void drawBrush(){
+        if(TestUtils.canTeleport()) return;
+
         int index = 0;
         for(int i = 0; i < MapEditor.brushSizes.length; i++){
             if(painter.brushSize == MapEditor.brushSizes[i]){
