@@ -14,10 +14,11 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
 import static mindustry.Vars.*;
+import static testing.util.TUVars.*;
 
 /** Based on {@link MapEditor}. Made to operate in a live map instead of the editor. */
 public class TerrainPainter{
-    private PaintOperationStack stack = new PaintOperationStack();
+    private final PaintOperationStack stack = new PaintOperationStack();
     private PaintOperation currentOp;
     private PaintedTileData[][] data;
     private boolean loading;
@@ -54,6 +55,7 @@ public class TerrainPainter{
     public void endEditing(){
         data = null;
         reset();
+        paintbrush.drawGrid = false;
         Events.fire(new WorldLoadEvent());
     }
 

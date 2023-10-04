@@ -145,30 +145,31 @@ public class TerrainPainterMenu{
             ImageButton undo = tools.button(Icon.undo, Styles.flati, painter::undo).get();
             ImageButton redo = tools.button(Icon.redo, Styles.flati, painter::redo).get();
 
-            addTool.get(PainterTool.pick);
-
-            tools.row();
-
             undo.setDisabled(() -> !painter.canUndo());
             redo.setDisabled(() -> !painter.canRedo());
 
             undo.update(() -> undo.getImage().setColor(undo.isDisabled() ? Color.gray : Color.white));
             redo.update(() -> redo.getImage().setColor(redo.isDisabled() ? Color.gray : Color.white));
 
-            addTool.get(PainterTool.line);
-            addTool.get(PainterTool.pencil);
-            addTool.get(PainterTool.eraser);
+            addTool.get(PainterTool.pick);
 
-            tools.row();
-
-            addTool.get(PainterTool.fill);
-            addTool.get(PainterTool.spray);
+            ImageButton grid = tools.button(Icon.grid, Styles.squareTogglei, () -> paintbrush.drawGrid = !paintbrush.drawGrid).get();
+            grid.getStyle().down = Styles.flatOver;
+            grid.update(() -> grid.setChecked(paintbrush.drawGrid));
 
             ImageButton rotate = tools.button(Icon.right, Styles.flati, () -> painter.rotation = (painter.rotation + 1) % 4).get();
             rotate.getImage().update(() -> {
                 rotate.getImage().setRotation(painter.rotation * 90);
                 rotate.getImage().setOrigin(Align.center);
             });
+
+            tools.row();
+
+            addTool.get(PainterTool.line);
+            addTool.get(PainterTool.pencil);
+            addTool.get(PainterTool.eraser);
+            addTool.get(PainterTool.fill);
+            addTool.get(PainterTool.spray);
         });
 
         t.row();

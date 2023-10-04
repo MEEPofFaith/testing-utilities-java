@@ -1,6 +1,7 @@
 package testing.editor;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
@@ -33,6 +34,7 @@ public class TerrainPaintbrush{
     private boolean drawing;
     private int lastX, lastY;
     private int startX, startY;
+    public boolean drawGrid;
 
     public TerrainPaintbrush(){
         for(int i = 0; i < MapEditor.brushSizes.length; i++){
@@ -75,58 +77,100 @@ public class TerrainPaintbrush{
             Draw.z(Layer.overlayUI);
 
             if(state.isGame() && Setup.terrainMenu.shown()){
-                if(!painter.pendingCliffs.isEmpty()){
-                    Draw.alpha(0.25f + Mathf.sinDeg(Time.time * 2f) * 0.25f);
-                    for(Tile t : painter.pendingCliffs){
-                        Draw.rect(Blocks.cliff.uiIcon, t.worldx(), t.worldy(), tilesize, tilesize);
-                    }
-                    Draw.color();
-                }
+                drawPendingCliffs();
+                drawGrid();
 
                 if(!scene.hasMouse()){
-                    int index = 0;
-                    for(int i = 0; i < MapEditor.brushSizes.length; i++){
-                        if(painter.brushSize == MapEditor.brushSizes[i]){
-                            index = i;
-                            break;
-                        }
-                    }
-
-                    Draw.color(Pal.accent);
-                    Lines.stroke(Scl.scl(2f));
-
-                    float x = World.toTile(input.mouseWorldX()) * tilesize,
-                        y = World.toTile(input.mouseWorldY()) * tilesize;
-
-                    if((!painter.drawBlock.isMultiblock() || tool == PainterTool.eraser) && tool != PainterTool.fill){
-                        if(tool == PainterTool.line && drawing){
-                            Lines.poly(brushPolygons[index], startX * tilesize - 4f, startY * tilesize - 4f, tilesize);
-                            Lines.poly(brushPolygons[index], lastX * tilesize - 4f, lastY * tilesize - 4f, tilesize);
-                        }
-
-                        if((tool.edit || (tool == PainterTool.line && !drawing)) && (!mobile || drawing)){
-                            //pencil square outline
-                            if(tool == PainterTool.pencil && tool.mode == 1){
-                                Lines.square(x, y, (painter.brushSize == 1.5f ? 1f : painter.brushSize) * tilesize + 4f);
-                            }else{
-                                Lines.poly(brushPolygons[index], x - 4f, y - 4f, tilesize);
-                            }
-                        }
-                    }else{
-                        float size = painter.drawBlock.size * tilesize,
-                            offset = (1 - painter.drawBlock.size % 2) * tilesize / 2f;
-
-                        if(tool == PainterTool.line && drawing){
-                            Lines.rect(startX * tilesize - size / 2 + offset, startY * tilesize - size / 2 + offset, size, size);
-                            Lines.rect(lastX * tilesize - size / 2 + offset, lastY * tilesize - size / 2 + offset, size, size);
-                        }else if((tool.edit || tool == PainterTool.line) && (!mobile || drawing)){
-                            Lines.rect(x - size / 2 + offset, y - size / 2 + offset, size, size);
-                        }
-                    }
-                    Draw.color();
+                    Draw.z(Layer.overlayUI + 0.02f);
+                    drawBrush();
                 }
             }
         });
+    }
+
+    private void drawGrid(){
+        if(!drawGrid) return;
+
+        int x1 = (int)(Math.max(0, camera.position.x - camera.width / 2f - tilesize) / tilesize),
+            y1 = (int)(Math.max(0, camera.position.y - camera.height / 2f - tilesize) / tilesize),
+            x2 = (int)(Math.min(world.unitWidth(), camera.position.x + camera.width / 2f + tilesize) / tilesize),
+            y2 = (int)(Math.min(world.unitHeight(), camera.position.y + camera.height / 2f + tilesize) / tilesize);
+
+        Lines.stroke(1);
+        for(int i = x1; i <= x2; i++){
+            setGridColor(i);
+            Lines.line(i * tilesize - 4f, y1 * tilesize - 4f, i * tilesize - 4f, y2 * tilesize - 4f);
+        }
+        for(int i = y1; i <= y2; i++){
+            setGridColor(i);
+            Lines.line(x1 * tilesize - 4f, i * tilesize - 4f, x2 * tilesize - 4f, i * tilesize - 4f);
+        }
+        Draw.color();
+        Draw.z(Layer.overlayUI);
+    }
+
+    private void setGridColor(int i){
+        if(i % 16 == 0){
+            Draw.color(Pal.accent);
+            Draw.z(Layer.overlayUI + 0.01f);
+        }else{
+            Draw.color(Color.gray);
+            Draw.z(Layer.overlayUI);
+        }
+        Draw.alpha(0.5f);
+    }
+
+    private void drawPendingCliffs(){
+        if(painter.pendingCliffs.isEmpty()) return;
+
+        Draw.alpha(0.75f + Mathf.sinDeg(Time.time * 2f) * 0.25f);
+        for(Tile t : painter.pendingCliffs){
+            Draw.rect(Blocks.cliff.uiIcon, t.worldx(), t.worldy(), tilesize, tilesize);
+        }
+        Draw.color();
+    }
+
+    private void drawBrush(){
+        int index = 0;
+        for(int i = 0; i < MapEditor.brushSizes.length; i++){
+            if(painter.brushSize == MapEditor.brushSizes[i]){
+                index = i;
+                break;
+            }
+        }
+
+        Draw.color(Pal.accent);
+        Lines.stroke(Scl.scl(2f));
+
+        float x = World.toTile(input.mouseWorldX()) * tilesize,
+            y = World.toTile(input.mouseWorldY()) * tilesize;
+
+        if((!painter.drawBlock.isMultiblock() || tool == PainterTool.eraser) && tool != PainterTool.fill){
+            if(tool == PainterTool.line && drawing){
+                Lines.poly(brushPolygons[index], startX * tilesize - 4f, startY * tilesize - 4f, tilesize);
+                Lines.poly(brushPolygons[index], lastX * tilesize - 4f, lastY * tilesize - 4f, tilesize);
+            }
+
+            if((tool.edit || (tool == PainterTool.line && !drawing)) && (!mobile || drawing)){
+                //pencil square outline
+                if(tool == PainterTool.pencil && tool.mode == 1){
+                    Lines.square(x, y, (painter.brushSize == 1.5f ? 1f : painter.brushSize) * tilesize + 4f);
+                }else{
+                    Lines.poly(brushPolygons[index], x - 4f, y - 4f, tilesize);
+                }
+            }
+        }else{
+            float size = painter.drawBlock.size * tilesize,
+                offset = (1 - painter.drawBlock.size % 2) * tilesize / 2f;
+
+            if(tool == PainterTool.line && drawing){
+                Lines.rect(startX * tilesize - size / 2 + offset, startY * tilesize - size / 2 + offset, size, size);
+                Lines.rect(lastX * tilesize - size / 2 + offset, lastY * tilesize - size / 2 + offset, size, size);
+            }else if((tool.edit || tool == PainterTool.line) && (!mobile || drawing)){
+                Lines.rect(x - size / 2 + offset, y - size / 2 + offset, size, size);
+            }
+        }
+        Draw.color();
     }
 
     private void touchDown(int x, int y, KeyCode button){
