@@ -63,7 +63,7 @@ public class TerrainPaintbrush{
 
                     if(mobile){
                         hold += TUVars.delta();
-                        if(hold < 2f * 60f) return;
+                        if(hold < 0.43f * 60f) return;
                     }
 
                     if(!drawing){

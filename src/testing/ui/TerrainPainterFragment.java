@@ -234,7 +234,7 @@ public class TerrainPainterFragment{
 
         //Should run after rebuild
         ui.paused.shown(() -> {
-            //Last button is quit
+            //5th/3rd button is load
             TextButton l = (TextButton)ui.paused.cont.getChildren().get(!mobile ? 5 : 3);
             l.clicked(this::hide);
             l.getListeners().reverse(); //Hide first before quitting
