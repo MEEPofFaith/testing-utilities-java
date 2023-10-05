@@ -41,8 +41,8 @@ public class TerrainPainterFragment{
 
         parent.fill(t -> {
             t.name = "terrainpainterselection";
-            t.center().right().visible(visibility);
-            t.table(Tex.buttonSideLeft, all -> {
+            t.bottom().right().visible(visibility);
+            t.table(Tex.buttonEdge1, all -> {
                 all.table(s -> {
                     s.image(Icon.zoom).padRight(8);
                     search = s.field(null, text -> rebuild()).growX().get();
@@ -67,8 +67,8 @@ public class TerrainPainterFragment{
 
         parent.fill(t -> {
             t.name = "terrainpaintermenu";
-            t.center().left().visible(visibility);
-            t.table(Tex.buttonSideRight, all -> {
+            t.bottom().left().visible(visibility);
+            t.table(Tex.buttonEdge3, all -> {
                 all.table(tools -> {
                     //From MapEditorDialog
                     ButtonGroup<ImageButton> group = new ButtonGroup<>();
