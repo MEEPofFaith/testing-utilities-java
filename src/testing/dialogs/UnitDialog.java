@@ -156,7 +156,7 @@ public class UnitDialog extends TUBaseDialog{
                     if(!state.isGame()){
                         expectingPos = false;
                     }else if(TestUtils.click()){
-                        if(!scene.hasMouse()){
+                        if(!Utils.hasMouse()){
                             spawnPos.set(input.mouseWorld());
                             if(net.client()){
                                 spawnPos.x = Mathf.floor(spawnPos.x);
@@ -178,7 +178,7 @@ public class UnitDialog extends TUBaseDialog{
     public void drawPos(){
         if(net.client()) return;
         float x, y;
-        if(expectingPos && state.isGame() && !scene.hasMouse()){
+        if(expectingPos && state.isGame() && !Utils.hasMouse()){
             x = input.mouseWorldX();
             y = input.mouseWorldY();
             if(net.client()){

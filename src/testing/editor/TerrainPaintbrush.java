@@ -45,7 +45,7 @@ public class TerrainPaintbrush{
 
         Events.run(Trigger.update, () -> {
             if(state.isGame() && Setup.terrainFrag.shown()){
-                if(scene.hasMouse()){
+                if(Utils.hasMouse()){
                     touchUp(lastX, lastY);
                 }else{
                     if(TestUtils.canTeleport()) return;
@@ -82,7 +82,7 @@ public class TerrainPaintbrush{
                 drawPendingCliffs();
                 drawGrid();
 
-                if(!scene.hasMouse()){
+                if(!Utils.hasMouse()){
                     Draw.z(Layer.overlayUI + 0.02f);
                     drawBrush();
                 }

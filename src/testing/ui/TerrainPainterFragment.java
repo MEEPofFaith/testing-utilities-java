@@ -68,6 +68,7 @@ public class TerrainPainterFragment{
         parent.fill(t -> {
             t.name = "terrainpaintermenu";
             t.bottom().left().visible(visibility);
+            t.setFillParent(false);
             t.table(Tex.buttonEdge3, all -> {
                 all.table(tools -> {
                     //From MapEditorDialog
