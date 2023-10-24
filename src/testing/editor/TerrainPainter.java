@@ -81,6 +81,10 @@ public class TerrainPainter{
         return world.height();
     }
 
+    public float brushSize(){
+        return drawBlock instanceof SteamVent ? 2 : brushSize;
+    }
+
     public void drawBlocksReplace(int x, int y){
         drawBlocks(x, y, data -> data.block() != Blocks.air || drawBlock.isFloor());
     }
