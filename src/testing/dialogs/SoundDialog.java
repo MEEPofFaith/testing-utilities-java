@@ -65,7 +65,7 @@ public class SoundDialog extends TUBaseDialog{
                 s.button("@tu-sound-menu.play", () -> {
                     AudioBus prev = sound.bus;
                     sound.setBus(soundRoomBus);
-                    sound.play(Mathf.range(minVol, maxVol), Mathf.range(minPitch, maxPitch), 0f, false, false);
+                    sound.play(Mathf.random(minVol, maxVol), Mathf.random(minPitch, maxPitch), 0f, false, false);
                     sound.setBus(prev);
                 }).wrapLabel(false).grow();
                 s.table(f -> {
