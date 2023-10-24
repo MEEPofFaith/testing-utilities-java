@@ -234,20 +234,16 @@ public class TerrainPainterFragment{
 
         //Should run after rebuild
         ui.paused.shown(() -> {
-            //5th/3rd button is load
-            TextButton l = (TextButton)ui.paused.cont.getChildren().get(!mobile ? 5 : 3);
-            l.clicked(this::hide);
-            l.getListeners().reverse(); //Hide first before quitting
-
-            //Last button is quit
-            TextButton q = (TextButton)ui.paused.cont.getChildren().peek();
-            q.clicked(this::hide);
-            q.getListeners().reverse(); //Hide first before quitting
+            if(show){
+                ui.showInfoFade("@tu-painter.paused");
+                Core.app.post(() -> ui.paused.hide());
+            }
         });
     }
 
     public void show(){
         show = true;
+        control.input.commandMode = false;
         painter.beginEditing();
     }
 
