@@ -9,7 +9,6 @@ import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.input.*;
 import mindustry.mod.Mods.*;
 import testing.*;
 import testing.buttons.*;
@@ -151,10 +150,7 @@ public class Setup{
     }
 
     public static boolean buttonVisibility(){
-        if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
-        if(!mobile) return true;
-
-        return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+        return !(!ui.hudfrag.shown || ui.minimapfrag.shown());
     }
 
     private static String fix(float f){
