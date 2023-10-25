@@ -214,7 +214,7 @@ public class TerrainPainterFragment{
                     () -> painter.flushCliffs(),
                     () -> "@tu-painter.cliffs",
                     "@tu-tooltip.painter-cliffs"
-                ).padTop(4f);
+                ).padTop(4f).disabled(b -> painter.pendingCliffs.isEmpty());
 
                 all.row();
 
