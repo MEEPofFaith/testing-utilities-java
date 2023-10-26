@@ -233,13 +233,15 @@ public class TerrainPainterFragment{
             if(show) ui.hudfrag.shown = false;
         });
 
-        //Should run after rebuild
+        //Disable pause menu when open and display message
         ui.paused.shown(() -> {
             if(show){
                 ui.showInfoFade("@tu-painter.paused");
                 Core.app.post(() -> ui.paused.hide());
             }
         });
+
+        Events.on(GameOverEvent.class, e -> hide());
     }
 
     public void show(){

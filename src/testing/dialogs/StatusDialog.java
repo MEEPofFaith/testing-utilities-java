@@ -27,7 +27,6 @@ public class StatusDialog extends TUBaseDialog{
     private float duration = 10f;
     private boolean perma;
 
-
     public StatusDialog(){
         super("@tu-status-menu.name");
 
