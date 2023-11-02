@@ -77,7 +77,7 @@ public class BlockDialog extends TUBaseDialog{
                 p, TUIcons.get(Icon.up), TUStyles.lefti, TUVars.buttonSize,
                 () -> rotation = Mathf.mod(rotation - 1, 4),
                 null, "@tu-tooltip.block-rotate"
-            );
+            ).get();
             rb.setDisabled(() -> !block.rotate);
             rb.update(() -> ((TextureRegionDrawable)(rb.getStyle().imageUp)).setRegion(getDirection()));
 
@@ -86,7 +86,7 @@ public class BlockDialog extends TUBaseDialog{
                 this::placeBlock,
                 () -> "@tu-block-menu.place",
                 "@tu-tooltip.block-place"
-            );
+            ).get();
             pb.setDisabled(() -> world.tile(placePos) == null);
             pb.update(() -> {
                 ((TextureRegionDrawable)(pb.getStyle().imageUp)).setRegion(block.uiIcon);
@@ -97,19 +97,19 @@ public class BlockDialog extends TUBaseDialog{
                 this::deleteBlock,
                 () -> "@tu-block-menu.delete",
                 "@tu-tooltip.block-delete"
-            );
+            ).get();
         }).padTop(6f).row();
 
         ImageButton pb = TUElements.imageButton(
             cont, TUIcons.get(Icon.terrain), Styles.defaulti, TUVars.buttonSize,
             () -> {
-                Setup.terrainFrag.show = true;
+                Setup.terrainFrag.show();
                 hide();
             },
             () -> "@tu-block-menu.open-painter",
             "@tu-tooltip.block-terrain-painter-open"
-        );
-        pb.setDisabled(() -> net.client() || Setup.terrainFrag.show);
+        ).get();
+        pb.setDisabled(() -> net.client() || Setup.terrainFrag.shown());
 
         if(!initialized){
             Events.on(WorldLoadEndEvent.class, e -> {
@@ -121,7 +121,7 @@ public class BlockDialog extends TUBaseDialog{
                     if(!state.isGame()){
                         expectingPos = false;
                     }else if(TestUtils.click()){
-                        if(!scene.hasMouse()){
+                        if(!Utils.hasMouse()){
                             int x = World.toTile(input.mouseWorldX()),
                                 y = World.toTile(input.mouseWorldY());
                             placePos = Point2.pack(x, y);
@@ -143,7 +143,7 @@ public class BlockDialog extends TUBaseDialog{
         float size = block.size * tilesize,
             offset = (1 - block.size % 2) * tilesize / 2f,
             x, y;
-        if(expectingPos && state.isGame() && !scene.hasMouse()){
+        if(expectingPos && state.isGame() && !Utils.hasMouse()){
             x = World.toTile(input.mouseWorldX()) * tilesize;
             y = World.toTile(input.mouseWorldY()) * tilesize;
         }else if(Spawn.blockHover){

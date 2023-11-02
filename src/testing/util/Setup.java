@@ -9,12 +9,10 @@ import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.input.*;
 import mindustry.mod.Mods.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
-import testing.ui.fragments.*;
 
 import static mindustry.Vars.*;
 
@@ -126,25 +124,25 @@ public class Setup{
         ui.hudGroup.addChild(commandButtons);
         offset(commandButtons);
 
-        terrainFrag = new TerrainPainterFragment();
-        terrainFrag.build(ui.hudGroup);
-
         Table miniPos = ui.hudGroup.find("minimap/position");
         Label pos = miniPos.find("position");
         pos.setText(() ->
             (Core.settings.getBool("position") ?
                 player.tileX() + ", " + player.tileY() + "\n" +
-                    "[accent]" + fix(player.x) + ", " + fix(player.y) + "\n" :
+                (Core.settings.getBool("tu-wu-coords", true) ? "[accent]" + fix(player.x) + ", " + fix(player.y) + "\n" : "") :
                 ""
             ) +
             (Core.settings.getBool("mouseposition") ?
                 "[lightgray]" + World.toTile(Core.input.mouseWorldX()) + ", " + World.toTile(Core.input.mouseWorldY()) + "\n" +
-                    "[#d4816b]" + fix(Core.input.mouseWorldX()) + ", " + fix(Core.input.mouseWorldY()) : //accentBack is not an indexed color for [] format
+                (Core.settings.getBool("tu-wu-coords", true) ? "[#d4816b]" + fix(Core.input.mouseWorldX()) + ", " + fix(Core.input.mouseWorldY()) : "") : //accentBack is not an indexed color for [] format
                 ""
             )
         );
         miniPos.getCell(miniPos.find("minimap")).top().right();
         miniPos.getCell(pos).top().right();
+
+        terrainFrag = new TerrainPainterFragment();
+        terrainFrag.build(ui.hudGroup);
 
         Events.on(WorldLoadEvent.class, e -> {
             if(posLabelAligned) return;
@@ -154,10 +152,7 @@ public class Setup{
     }
 
     public static boolean buttonVisibility(){
-        if(!ui.hudfrag.shown || ui.minimapfrag.shown()) return false;
-        if(!mobile) return true;
-
-        return !(control.input instanceof MobileInput input) || input.lastSchematic == null || input.selectPlans.isEmpty();
+        return !(!ui.hudfrag.shown || ui.minimapfrag.shown());
     }
 
     private static String fix(float f){

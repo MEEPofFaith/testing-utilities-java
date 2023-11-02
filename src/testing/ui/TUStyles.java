@@ -1,6 +1,7 @@
 package testing.ui;
 
 import arc.scene.style.*;
+import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -14,7 +15,13 @@ public class TUStyles{
         buttonCenter, buttonCenterDown, buttonCenterOver,
         buttonRight, buttonRightOver, buttonRightDown,
         paneBottom;
-    public static ImageButtonStyle tuImageStyle, togglei, lefti, toggleLefti, righti, toggleRighti, centeri;
+    public static ButtonStyle right;
+    public static ImageButtonStyle
+        tuImageStyle,
+        togglei,
+        lefti, toggleLefti,
+        righti, toggleRighti,
+        centeri, toggleCenteri;
 
     public static void init(){
         buttonLeft = atlas.getDrawable("test-utils-button-left");
@@ -27,6 +34,12 @@ public class TUStyles{
         buttonRightDown = atlas.getDrawable("test-utils-button-right-down");
         buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
         paneBottom = atlas.getDrawable("test-utils-pane-bottom");
+
+        right = new ButtonStyle(Styles.defaultb){{
+            up = buttonRight;
+            down = buttonRightDown;
+            over = buttonRightOver;
+        }};
 
         tuImageStyle = new ImageButtonStyle(Styles.logici){{
             down = Styles.flatDown;
@@ -63,6 +76,10 @@ public class TUStyles{
             up = buttonCenter;
             down = buttonCenterDown;
             over = buttonCenterOver;
+        }};
+
+        toggleCenteri = new ImageButtonStyle(centeri){{
+            checked = buttonCenterOver;
         }};
     }
 }

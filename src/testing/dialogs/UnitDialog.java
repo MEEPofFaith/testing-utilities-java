@@ -98,7 +98,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> teamDialog.show(spawnTeam, team -> spawnTeam = team),
                 () -> bundle.format("tu-unit-menu.set-team", "[#" + spawnTeam.color + "]" + teamName() + "[]"),
                 "@tu-tooltip.unit-set-team"
-            ).setDisabled(() -> net.client());
+            ).get().setDisabled(() -> net.client());
 
             TUElements.imageButton(
                 t, TUIcons.get(Icon.map), TUStyles.toggleRighti, TUVars.buttonSize,
@@ -108,7 +108,7 @@ public class UnitDialog extends TUBaseDialog{
                 },
                 () -> bundle.format("tu-unit-menu.pos", spawnPos.x / 8f, spawnPos.y / 8f),
                 "@tu-tooltip.unit-pos"
-            ).setDisabled(() -> net.client());
+            ).get().setDisabled(() -> net.client());
         }).padTop(6).row();
 
         cont.table(b -> {
@@ -117,7 +117,7 @@ public class UnitDialog extends TUBaseDialog{
                 this::transform,
                 () -> "@tu-unit-menu.transform",
                 "@tu-tooltip.unit-transform"
-            );
+            ).get();
             ib.setDisabled(() -> player.unit().type.internal);
 
             ImageButton db = TUElements.imageButton(
@@ -125,7 +125,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> despawns = !despawns,
                 () -> "@tu-unit-menu.despawns",
                 "@tu-tooltip.unit-despawns"
-            );
+            ).get();
             db.setDisabled(() -> net.client());
             db.update(() -> db.setChecked(despawns));
         }).padTop(6).row();
@@ -136,14 +136,14 @@ public class UnitDialog extends TUBaseDialog{
                 this::spawn,
                 () -> "@tu-unit-menu." + (amount != 1 ? "spawn-plural" : "spawn"),
                 "@tu-tooltip.unit-spawn"
-            ).setDisabled(() -> net.client());
+            ).get().setDisabled(() -> net.client());
 
             TUElements.imageButton(
                 b, TUIcons.get(Icon.waves), TUStyles.toggleRighti, TUVars.buttonSize,
                 () -> waveChangeDialog.show(),
                 () -> "@tu-unit-menu.waves",
                 "@tu-tooltip.unit-set-wave"
-            ).setDisabled(() -> net.client());
+            ).get().setDisabled(() -> net.client());
         }).padTop(6);
 
         if(!initialized){
@@ -156,7 +156,7 @@ public class UnitDialog extends TUBaseDialog{
                     if(!state.isGame()){
                         expectingPos = false;
                     }else if(TestUtils.click()){
-                        if(!scene.hasMouse()){
+                        if(!Utils.hasMouse()){
                             spawnPos.set(input.mouseWorld());
                             if(net.client()){
                                 spawnPos.x = Mathf.floor(spawnPos.x);
@@ -178,7 +178,7 @@ public class UnitDialog extends TUBaseDialog{
     public void drawPos(){
         if(net.client()) return;
         float x, y;
-        if(expectingPos && state.isGame() && !scene.hasMouse()){
+        if(expectingPos && state.isGame() && !Utils.hasMouse()){
             x = input.mouseWorldX();
             y = input.mouseWorldY();
             if(net.client()){

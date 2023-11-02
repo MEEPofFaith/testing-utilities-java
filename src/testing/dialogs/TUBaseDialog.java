@@ -1,5 +1,7 @@
 package testing.dialogs;
 
+import arc.*;
+import mindustry.game.EventType.*;
 import mindustry.ui.dialogs.*;
 import testing.util.*;
 
@@ -14,6 +16,8 @@ public class TUBaseDialog extends BaseDialog{
         shown(() -> {
             TUVars.activeDialog = this;
         });
+
+        Events.on(GameOverEvent.class, e -> hide());
     }
 
     protected void rebuild(){

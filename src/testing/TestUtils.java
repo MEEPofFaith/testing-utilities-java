@@ -106,17 +106,16 @@ public class TestUtils extends Mod{
                 }
             });
 
-            //position drawing + sk7725/whynotteleport
+            //Spawn position drawing and sk7725/whynotteleport. (Anything beyond here does not have mobile support.)
             if(mobile) return;
             Events.on(WorldLoadEvent.class, e -> {
                 Spawn.spawnHover = Spawn.blockHover = false;
             });
             Events.run(Trigger.draw, () -> {
-                Draw.z(Layer.endPixeled);
+                Draw.z(Layer.overlayUI + 0.04f);
                 unitDialog.drawPos();
                 blockDialog.drawPos();
-                Setup.terrainFrag.drawPos();
-                if(!teleport && !disableTeleport() && !player.unit().type.internal && input.alt()){
+                if(!teleport && canTeleport()){
                     Draw.z(Layer.effect);
                     Lines.stroke(2f, Pal.accent);
                     float x1 = player.x, y1 = player.y,
@@ -137,7 +136,7 @@ public class TestUtils extends Mod{
             Events.run(Trigger.update, () -> {
                 if(state.isGame()){
                     //sk7725/whynotteleport
-                    if(!disableTeleport() && !player.unit().type.internal && input.alt() && click()){
+                    if(canTeleport() && click()){
                         player.shooting(false);
                         if(teleport) return;
                         teleport = true;
@@ -172,6 +171,7 @@ public class TestUtils extends Mod{
             t.checkPref("tu-permanent", false);
             t.checkPref("tu-show-hidden", false);
             t.checkPref("tu-fill-all", false);
+            t.checkPref("tu-wu-coords", true);
             t.checkPref("tu-field-editor", false);
             t.pref(new TeamSetting("tu-default-team"));
             t.pref(new Separator(8));
@@ -191,15 +191,30 @@ public class TestUtils extends Mod{
     }
 
     public static boolean disableTeleport(){
-        return net.client() ? !Setup.on2r2t : disableCampaign();
+        return TUVars.foos || (net.client() ? !Setup.on2r2t : disableCampaign());
+    }
+
+    public static boolean canTeleport(){
+        return !mobile && !disableTeleport() && !player.unit().type.internal && input.alt();
     }
 
     public static boolean disableCampaign(){
-        return state.isCampaign() && !(OS.username.equals("MEEP") && settings.getBool("tu-meep-privileges"));
+        return state.isCampaign() && !(settings.getBool("tu-meep-privileges"));
     }
 
     public static boolean click(){
         return mobile ? input.isTouched() : input.keyDown(KeyCode.mouseLeft);
+    }
+
+    public static boolean anyClick(){
+        return mobile ? input.isTouched() : (input.keyDown(KeyCode.mouseLeft) || input.keyDown(KeyCode.mouseRight) || input.keyDown(KeyCode.mouseMiddle));
+    }
+
+    public static KeyCode getClick(){
+        if(input.keyDown(KeyCode.mouseLeft)) return KeyCode.mouseLeft;
+        if(input.keyDown(KeyCode.mouseRight)) return KeyCode.mouseRight;
+        if(input.keyDown(KeyCode.mouseMiddle)) return KeyCode.mouseLeft;
+        return null;
     }
 
     /** Not a setting, but rather adds an image to the settings menu. */

@@ -1,5 +1,6 @@
 package testing.util;
 
+import arc.scene.*;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.game.*;
@@ -48,5 +49,10 @@ public class Utils{
             return spawner.countFlyerSpawns();
         }
         return spawner.countGroundSpawns();
+    }
+
+    public static boolean hasMouse(){
+        Element e = scene.hit(input.mouseX(), input.mouseY(), false);
+        return e != null && !e.fillParent;
     }
 }
