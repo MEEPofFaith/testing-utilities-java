@@ -1,4 +1,4 @@
-package testing.dialogs;
+package testing.dialogs.sound;
 
 import arc.*;
 import arc.audio.*;
@@ -11,6 +11,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import testing.dialogs.*;
 import testing.ui.*;
 
 import static arc.Core.*;
@@ -133,6 +134,8 @@ public class SoundDialog extends TUBaseDialog{
                     }
                 }).padLeft(6f).growX();
             });
+            TUElements.divider(t, "", Color.lightGray);
+            t.button("open filters", () -> TUDialogs.filterDialog.show()).growX();
         }).padTop(6);
 
         //Pause the ui audio bus while open so that button press sounds doesn't play.
