@@ -316,32 +316,18 @@ public class TUFilters{
             new FilterModule<FreeverbFilter>("freeverb", new FreeverbFilter(){{
                 set(0, 0.5f, 0.5f, 1);
             }}){
-                float mode = 0;
                 float rms = 0.5f;
                 float damp = 0.5f;
                 float width = 1;
 
                 {
                     update = () -> {
-                        filter.set(mode, rms, damp, width);
+                        filter.set(0, rms, damp, width);
                         filterUpdate();
                     };
                     buildUI = (t, a) -> {
                         addHeader(t);
                         t.table(sl -> {
-                            TUElements.sliderSet(
-                                sl, text -> {
-                                    mode = Strings.parseFloat(text);
-                                    update.run();
-                                }, () -> String.valueOf(mode),
-                                TextFieldFilter.floatsOnly, null,
-                                0f, 1f, 0.01f, mode, (n, f) -> {
-                                    mode = n;
-                                    f.setText(String.valueOf(n));
-                                    update.run();
-                                }, "@tu-filters-freeverb-mode", null
-                            );
-                            sl.row();
                             TUElements.sliderSet(
                                 sl, text -> {
                                     rms = Strings.parseFloat(text);
