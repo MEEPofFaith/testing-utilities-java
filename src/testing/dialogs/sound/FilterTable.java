@@ -1,5 +1,6 @@
 package testing.dialogs.sound;
 
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.ui.*;
 import testing.dialogs.sound.TUFilters.*;
@@ -15,10 +16,13 @@ public class FilterTable extends Table{
             for(int i = 0; i < TUFilters.filters.length; i++){
                 FilterModule<?> fm = TUFilters.filters[i];
                 col++;
-                sel.button(fm.name, () -> setConfig(fm))
-                    .checked(t -> fm.enabled)
-                    .wrapLabel(false).uniform().grow()
-                    .get().setStyle(Styles.togglet);
+                TextButton tb = sel.button(fm.name, () -> setConfig(fm))
+                    .checked(t -> fm == lastFilter)
+                    .wrapLabel(false).uniform().grow().get();
+                tb.setStyle(Styles.togglet);
+                tb.check("", fm::enable);
+                tb.getCells().reverse();
+
                 if(col == 4){
                     sel.row();
                     col = 0;

@@ -32,7 +32,7 @@ public class TUFilters{
                     buildUI = (t, a) -> {
                         addHeader(t);
                         t.table(sl -> {
-                            sl.add("Type").padRight(6f);
+                            sl.add("Type").padRight(6f).right();
                             sl.button("Wet", () -> {
                                     type = !type;
                                     update.run();
@@ -297,7 +297,7 @@ public class TUFilters{
                                 }, "Amount", ""
                             );
                             sl.row();
-                            sl.add("Waveform").padRight(6f);
+                            sl.add("Waveform").padRight(6f).right();
                             sl.table(w -> {
                                 w.defaults().left();
                                 ButtonGroup<CheckBox> group = new ButtonGroup<>();
@@ -420,6 +420,11 @@ public class TUFilters{
             this.filter = filter;
         }
 
+        public void enable(boolean b){
+            enabled = b;
+            Core.audio.setFilterParam(0, id, Filters.paramWet, enabled ? 1f : 0f);
+        }
+
         public void filterUpdate(){
             Core.audio.setFilter(id, filter);
             Core.audio.setFilterParam(0, id, Filters.paramWet, enabled ? 1 : 0);
@@ -431,10 +436,6 @@ public class TUFilters{
 
         protected void addHeader(Table t){
             TUElements.divider(t, name + " Filter", Pal.accent);
-            t.check("@mod.enable", b -> {
-                enabled = b;
-                Core.audio.setFilterParam(0, id, Filters.paramWet, enabled ? 1f : 0f);
-            }).checked(enabled).row();
         }
     }
 
