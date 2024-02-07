@@ -37,7 +37,7 @@ public class TUFilters{
                                     type = !type;
                                     update.run();
                                 }).checked(type)
-                                .update(tb -> tb.setText(type ? "Dry" : "Wet"))
+                                .update(tb -> tb.setText(type ? "Dry (High Pass)" : "Wet (Low Pass)"))
                                 .wrapLabel(false)
                                 .colspan(2).left();
                             sl.row();
@@ -399,6 +399,7 @@ public class TUFilters{
     }
 
     public static void closed(){
+        if(!init) return;
         for(FilterModule<?> fm : filters){
             fm.enabled = false;
             Core.audio.setFilterParam(0, fm.id, Filters.paramWet, 0);

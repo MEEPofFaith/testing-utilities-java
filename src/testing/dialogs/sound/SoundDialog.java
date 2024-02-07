@@ -23,7 +23,7 @@ public class SoundDialog extends TUBaseDialog{
     private static Seq<Sound> modSounds;
 
     private final Table selection = new Table();
-    private FilterTable filters;
+    private FilterTable filters = null;
     private TextField search;
     private Sound sound = Sounds.pew;
     private int loopSoundID = -1;
@@ -137,6 +137,7 @@ public class SoundDialog extends TUBaseDialog{
                     }
                 }).padLeft(6f).growX();
             }).center().grow().row();
+            if(!Core.settings.getBool("tu-allow-filters", false)) return;
             TUElements.divider(t, "Audio Filters", Color.lightGray);
             t.table(fil -> {
                 fil.add(filters = new FilterTable());
@@ -146,11 +147,11 @@ public class SoundDialog extends TUBaseDialog{
         shown(() -> {
             //Pause the ui audio bus while open so that button press sounds doesn't play.
             audio.setPaused(Sounds.press.bus.id, true);
-            filters.shown();
+            if(filters != null) filters.shown();
         });
         hidden(() -> {
             stopSounds();
-            TUFilters.closed();
+            if(filters != null) TUFilters.closed();
             audio.setPaused(Sounds.press.bus.id, false);
         });
     }
