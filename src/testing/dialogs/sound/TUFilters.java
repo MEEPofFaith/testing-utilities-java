@@ -13,7 +13,7 @@ import testing.ui.*;
 
 public class TUFilters{
     public static FilterModule<?>[] filters;
-    private static final Interval timer = new Interval(1);
+    private static boolean init;
 
     public static void init(){
         filters = new FilterModule[]{
@@ -39,7 +39,7 @@ public class TUFilters{
                                 }).checked(type)
                                 .update(tb -> tb.setText(type ? "Dry" : "Wet"))
                                 .wrapLabel(false)
-                                .colspan(2);
+                                .colspan(2).left();
                             sl.row();
                             TUElements.sliderSet(
                                 sl, text -> {
@@ -389,19 +389,13 @@ public class TUFilters{
         setupFilters();
     }
 
-    public static void update(){
-        /*if(timer.get(0, 30)){
-            for(FilterModule<?> fm : filters){
-                Core.audio.setFilterParam(0, fm.id, Filters.paramWet, fm.enabled ? 1f : 0f);
-            }
-        }*/
-    }
-
     protected static void setupFilters(){
+        if(init) return;
         for(FilterModule<?> fm : filters){
             Core.audio.setFilter(fm.id, fm.filter);
             Core.audio.setFilterParam(0, fm.id, Filters.paramWet, 0f);
         }
+        init = true;
     }
 
     public static void closed(){

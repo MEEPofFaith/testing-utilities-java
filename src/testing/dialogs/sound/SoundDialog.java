@@ -23,6 +23,7 @@ public class SoundDialog extends TUBaseDialog{
     private static Seq<Sound> modSounds;
 
     private final Table selection = new Table();
+    private FilterTable filters;
     private TextField search;
     private Sound sound = Sounds.pew;
     private int loopSoundID = -1;
@@ -59,7 +60,9 @@ public class SoundDialog extends TUBaseDialog{
 
         cont.pane(all -> all.add(selection)).row();
 
-        cont.table(t -> {
+        TUElements.divider(cont, null, Color.lightGray);
+
+        cont.pane(t -> {
             t.defaults().left();
             TUElements.divider(t, "@tu-sound-menu.sound", Color.lightGray);
             t.table(s -> {
@@ -99,7 +102,7 @@ public class SoundDialog extends TUBaseDialog{
                     maxPitchF[0] = f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get();
                     maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
                 }).padLeft(6f);
-            }).grow().row();
+            }).center().grow().row();
             TUElements.divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
             t.table(l -> {
                 l.defaults().left();
@@ -133,19 +136,23 @@ public class SoundDialog extends TUBaseDialog{
                         Core.audio.setPitch(loopSoundID, loopPitch);
                     }
                 }).padLeft(6f).growX();
-            });
-            TUElements.divider(t, "", Color.lightGray);
-            t.button("Open Filters", () -> TUDialogs.filterDialog.show()).wrapLabel(false);
+            }).center().grow().row();
+            TUElements.divider(t, "Audio Filters", Color.lightGray);
+            t.table(fil -> {
+                fil.add(filters = new FilterTable());
+            }).center().grow();
         }).padTop(6);
 
-        //Pause the ui audio bus while open so that button press sounds doesn't play.
-        shown(() -> audio.setPaused(Sounds.press.bus.id, true));
+        shown(() -> {
+            //Pause the ui audio bus while open so that button press sounds doesn't play.
+            audio.setPaused(Sounds.press.bus.id, true);
+            filters.shown();
+        });
         hidden(() -> {
             stopSounds();
             TUFilters.closed();
             audio.setPaused(Sounds.press.bus.id, false);
         });
-        update(TUFilters::update);
     }
 
     @Override

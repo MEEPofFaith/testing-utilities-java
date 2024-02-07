@@ -12,7 +12,6 @@ public class TUDialogs{
     public static StatusDialog statusDialog;
     public static WorldDialog worldDialog;
     public static InterpDialog interpDialog;
-    public static FilterDialog filterDialog;
     public static SoundDialog soundDialog;
 
     public static void load(){
@@ -23,7 +22,6 @@ public class TUDialogs{
         statusDialog = new StatusDialog();
         worldDialog = new WorldDialog();
         interpDialog = new InterpDialog();
-        filterDialog = new FilterDialog();
         soundDialog = new SoundDialog();
     }
 }

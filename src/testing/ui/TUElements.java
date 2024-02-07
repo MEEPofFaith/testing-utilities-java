@@ -82,11 +82,11 @@ public class TUElements{
     }
 
     public static void divider(Table t, String label, Color color){
-        if(!label.isEmpty()){
+        if(label != null){
             t.add(label).growX().left().color(color);
             t.row();
         }
-        t.image().growX().pad(5f).padLeft(0f).padRight(0f).height(3f).color(color);
+        t.image().growX().pad(5f, 0f, 5f, 0f).height(3f).color(color);
         t.row();
     }
 

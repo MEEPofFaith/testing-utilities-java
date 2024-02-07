@@ -2,18 +2,15 @@ package testing.dialogs.sound;
 
 import arc.scene.ui.layout.*;
 import mindustry.ui.*;
-import testing.dialogs.*;
 import testing.dialogs.sound.TUFilters.*;
 
-public class FilterDialog extends TUBaseDialog{
+public class FilterTable extends Table{
     private final Table config = new Table();
     private FilterModule<?> lastFilter;
 
-    public FilterDialog(){
-        super("@tu-filter-menu.name");
+    public FilterTable(){
         TUFilters.init();
-
-        cont.table(sel -> {
+        table(sel -> {
             int col = 0;
             for(int i = 0; i < TUFilters.filters.length; i++){
                 FilterModule<?> fm = TUFilters.filters[i];
@@ -29,10 +26,13 @@ public class FilterDialog extends TUBaseDialog{
             }
         }).fillX().row();
 
-        cont.add(config).padTop(6);
+        add(config).padTop(6);
 
         setConfig(TUFilters.filters[0]);
-        shown(() -> setConfig(lastFilter));
+    }
+
+    public void shown(){
+        setConfig(lastFilter);
     }
 
     private void setConfig(FilterModule<?> fm){
