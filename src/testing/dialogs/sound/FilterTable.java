@@ -16,7 +16,7 @@ public class FilterTable extends Table{
             for(int i = 0; i < TUFilters.filters.length; i++){
                 FilterModule<?> fm = TUFilters.filters[i];
                 col++;
-                TextButton tb = sel.button(fm.name, () -> setConfig(fm))
+                TextButton tb = sel.button("@tu-filters-" + fm.name, () -> setConfig(fm))
                     .checked(t -> fm == lastFilter)
                     .wrapLabel(false).uniform().grow().get();
                 tb.setStyle(Styles.togglet);

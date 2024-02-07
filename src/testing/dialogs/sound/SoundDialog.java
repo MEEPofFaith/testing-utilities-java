@@ -64,7 +64,7 @@ public class SoundDialog extends TUBaseDialog{
 
         cont.pane(t -> {
             t.defaults().left();
-            TUElements.divider(t, "@tu-sound-menu.sound", Color.lightGray);
+            TUElements.divider(t, "@tu-sound-menu.sound", Pal.accent);
             t.table(s -> {
                 s.button("@tu-sound-menu.play", () -> {
                     AudioBus prev = sound.bus;
@@ -102,8 +102,8 @@ public class SoundDialog extends TUBaseDialog{
                     maxPitchF[0] = f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get();
                     maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
                 }).padLeft(6f);
-            }).center().grow().row();
-            TUElements.divider(t, "@tu-sound-menu.sound-loop", Color.lightGray);
+            }).center().row();
+            TUElements.divider(t, "@tu-sound-menu.sound-loop", Pal.accent);
             t.table(l -> {
                 l.defaults().left();
 
@@ -136,12 +136,12 @@ public class SoundDialog extends TUBaseDialog{
                         Core.audio.setPitch(loopSoundID, loopPitch);
                     }
                 }).padLeft(6f).growX();
-            }).center().grow().row();
+            }).center().row();
             if(!Core.settings.getBool("tu-allow-filters", false)) return;
-            TUElements.divider(t, "Audio Filters", Color.lightGray);
+            TUElements.divider(t, "Audio Filters", Pal.accent);
             t.table(fil -> {
                 fil.add(filters = new FilterTable());
-            }).center().grow();
+            }).center();
         }).padTop(6);
 
         shown(() -> {

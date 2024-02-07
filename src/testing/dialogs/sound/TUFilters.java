@@ -4,11 +4,11 @@ import arc.*;
 import arc.audio.*;
 import arc.audio.Filters.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.graphics.*;
 import testing.ui.*;
 
 public class TUFilters{
@@ -17,7 +17,7 @@ public class TUFilters{
 
     public static void init(){
         filters = new FilterModule[]{
-            new FilterModule<BiquadFilter>("Biquad", new BiquadFilter(){{
+            new FilterModule<BiquadFilter>("biquad", new BiquadFilter(){{
                 set(0, 500, 1);
             }}){
                 boolean type = false;
@@ -32,12 +32,12 @@ public class TUFilters{
                     buildUI = (t, a) -> {
                         addHeader(t);
                         t.table(sl -> {
-                            sl.add("Type").padRight(6f).right();
-                            sl.button("Wet", () -> {
+                            sl.add("@tu-filters-biquad-type").padRight(6f).right();
+                            sl.button("@tu-filters-biquad-wet", () -> {
                                     type = !type;
                                     update.run();
                                 }).checked(type)
-                                .update(tb -> tb.setText(type ? "Dry (High Pass)" : "Wet (Low Pass)"))
+                                .update(tb -> tb.setText("@tu-filters-biquad-" + (type ? "dry" : "wet")))
                                 .wrapLabel(false)
                                 .colspan(2).left();
                             sl.row();
@@ -51,7 +51,7 @@ public class TUFilters{
                                     freq = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Frequency", ""
+                                }, "@tu-filters-freq", "@tu-filters-biquad-freq-desc"
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -64,13 +64,13 @@ public class TUFilters{
                                     res = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Resonance", ""
+                                }, "@tu-filters-biquad-res", "@tu-filters-biquad-res-desc"
                             );
                         });
                     };
                 }
             },
-            new FilterModule<EchoFilter>("Echo", new EchoFilter(){{
+            new FilterModule<EchoFilter>("echo", new EchoFilter(){{
                 set(0.5f, 0.7f, 0.95f);
             }}){
                 float del = 0.5f;
@@ -95,7 +95,7 @@ public class TUFilters{
                                     del = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Delay", ""
+                                }, "@tu-filters-del", "@tu-filters-echo-del-desc"
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -108,7 +108,7 @@ public class TUFilters{
                                     dec = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Decay", ""
+                                }, "@tu-filters-echo-dec", "@tu-filters-echo-dec-desc"
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -121,13 +121,13 @@ public class TUFilters{
                                     fil = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Filter", ""
+                                }, "@tu-filters-echo-fil", "@tu-filters-echo-fil-desc"
                             );
                         });
                     };
                 }
             },
-            new FilterModule<LofiFilter>("Lofi", new LofiFilter(){{
+            new FilterModule<LofiFilter>("lofi", new LofiFilter(){{
                 set(8000, 5);
             }}){
                 float sr = 8000;
@@ -151,7 +151,7 @@ public class TUFilters{
                                     sr = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Sample Rate", ""
+                                }, "@tu-filters-lofi-sr", null
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -164,13 +164,13 @@ public class TUFilters{
                                     dep = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Depth", ""
+                                }, "@tu-filters-lofi-dep", null
                             );
                         });
                     };
                 }
             },
-            new FilterModule<FlangerFilter>("Flanger", new FlangerFilter(){{
+            new FilterModule<FlangerFilter>("flanger", new FlangerFilter(){{
                 set(0.005f, 1f);
             }}){
                 float del = 0.005f;
@@ -193,7 +193,7 @@ public class TUFilters{
                                     del = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Delay", ""
+                                }, "@tu-filters-del", "@tu-filters-flanger-del-desc"
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -206,13 +206,13 @@ public class TUFilters{
                                     freq = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Frequency", ""
+                                }, "@tu-filters-freq", "@tu-filters-flanger-freq-desc"
                             );
                         });
                     };
                 }
             },
-            new FilterModule<WaveShaperFilter>("Wave Shaper", new WaveShaperFilter(){{
+            new FilterModule<WaveShaperFilter>("waveshaper", new WaveShaperFilter(){{
                 set(1);
             }}){
                 float am = 1f;
@@ -235,13 +235,13 @@ public class TUFilters{
                                     am = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Amount", ""
+                                }, "@tu-filters-amount", "@tu-filters-waveshaper-amount-desc"
                             );
                         });
                     };
                 }
             },
-            new FilterModule<BassBoostFilter>("Bass Boost", new BassBoostFilter(){{
+            new FilterModule<BassBoostFilter>("bassboost", new BassBoostFilter(){{
                 set(6);
             }}){
                 float am = 6f;
@@ -264,13 +264,13 @@ public class TUFilters{
                                     am = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Amount", ""
+                                }, "@tu-filters-amount", "@tu-filters-bassboost-amount-desc"
                             );
                         });
                     };
                 }
             },
-            new FilterModule<RobotizeFilter>("Robotize", new RobotizeFilter(){{
+            new FilterModule<RobotizeFilter>("robotize", new RobotizeFilter(){{
                 set(30, 0);
             }}){
                 float freq = 30;
@@ -294,15 +294,15 @@ public class TUFilters{
                                     freq = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Amount", ""
+                                }, "@tu-filters-amount", "@tu-filters-robotize-amount-desc"
                             );
                             sl.row();
-                            sl.add("Waveform").padRight(6f).right();
+                            sl.add("@tu-filters-robotize-wav").padRight(6f).right();
                             sl.table(w -> {
                                 w.defaults().left();
                                 ButtonGroup<CheckBox> group = new ButtonGroup<>();
                                 for(RobotizeWaveforms f : RobotizeWaveforms.values()){
-                                    w.check(f.name(), b -> {
+                                    w.check("@tu-filters-robotize-" + f.name(), b -> {
                                         wav = f.type;
                                         update.run();
                                     }).group(group).checked(wav == f.type);
@@ -313,7 +313,7 @@ public class TUFilters{
                     };
                 }
             },
-            new FilterModule<FreeverbFilter>("Freeverb", new FreeverbFilter(){{
+            new FilterModule<FreeverbFilter>("freeverb", new FreeverbFilter(){{
                 set(0, 0.5f, 0.5f, 1);
             }}){
                 float mode = 0;
@@ -339,7 +339,7 @@ public class TUFilters{
                                     mode = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Mode", ""
+                                }, "@tu-filters-freeverb-mode", null
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -352,7 +352,7 @@ public class TUFilters{
                                     rms = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Room Size", ""
+                                }, "@tu-filters-freeverb-rms", null
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -365,7 +365,7 @@ public class TUFilters{
                                     damp = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Damp", ""
+                                }, "@tu-filters-freeverb-damp", null
                             );
                             sl.row();
                             TUElements.sliderSet(
@@ -378,7 +378,7 @@ public class TUFilters{
                                     width = n;
                                     f.setText(String.valueOf(n));
                                     update.run();
-                                }, "Width", ""
+                                }, "@tu-filters-freeverb-width", null
                             );
                         });
                     };
@@ -436,7 +436,7 @@ public class TUFilters{
         }
 
         protected void addHeader(Table t){
-            TUElements.divider(t, name + " Filter", Pal.accent);
+            TUElements.divider(t, Core.bundle.get("tu-filters-" + name) + " " + Core.bundle.get("tu-filters-filter"), Color.lightGray);
         }
     }
 
