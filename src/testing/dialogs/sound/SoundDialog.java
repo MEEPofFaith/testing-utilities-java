@@ -135,15 +135,17 @@ public class SoundDialog extends TUBaseDialog{
                 }).padLeft(6f).growX();
             });
             TUElements.divider(t, "", Color.lightGray);
-            t.button("open filters", () -> TUDialogs.filterDialog.show()).growX();
+            t.button("Open Filters", () -> TUDialogs.filterDialog.show()).wrapLabel(false);
         }).padTop(6);
 
         //Pause the ui audio bus while open so that button press sounds doesn't play.
         shown(() -> audio.setPaused(Sounds.press.bus.id, true));
         hidden(() -> {
             stopSounds();
+            TUFilters.closed();
             audio.setPaused(Sounds.press.bus.id, false);
         });
+        update(TUFilters::update);
     }
 
     @Override
