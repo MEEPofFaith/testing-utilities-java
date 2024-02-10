@@ -52,7 +52,7 @@ public class TestUtils extends Mod{
                 "impact0078", "desolateRift", "nuclearComplex", "planetaryTerminal",
                 "coastline", "navalFortress",
 
-                "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine",
+                "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine", "caldera-erekir",
                 "stronghold", "crevice", "siege", "crossroads", "karst", "origin"
             );
             mapNames.addAll((String[])Reflect.get(maps.getClass(), "defaultMapNames"));
