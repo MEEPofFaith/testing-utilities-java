@@ -8,13 +8,14 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import testing.ui.*;
 
 import static arc.Core.*;
 
-public class SoundsTable{
+public class SoundsTable extends STable{
     private static Seq<Sound> vanillaSounds;
     private static Seq<Sound> modSounds;
 
@@ -40,8 +41,8 @@ public class SoundsTable{
                 i++;
             }
 
-            modSounds = new Seq<>();
-            Core.assets.getAll(Sound.class, modSounds);
+            ObjectMap<String, Sound> loaded = Reflect.get(Vars.tree, "loadedSounds");
+            modSounds = loaded.values().toSeq();
             modSounds.removeAll(vanillaSounds);
         }
     }
@@ -49,13 +50,14 @@ public class SoundsTable{
     public void createSelection(Table t, TextField search){
         this.search = search;
 
-        t.label(() -> bundle.get("tu-menu.selection") + getName(sound)).padBottom(6).row();
+        t.label(() -> bundle.get("tu-menu.selection") + getName(sound)).padBottom(6).left().row();
 
-        t.pane(all -> all.add(selection)).row();
+        t.pane(all -> all.add(selection).growX()).row();
+
+        rebuild();
     }
 
     public void createPlay(Table t){
-        t.defaults().left();
         TUElements.divider(t, "@tu-sound-menu.sound", Pal.accent);
         t.table(s -> {
             s.button("@tu-sound-menu.play", () -> {
@@ -94,7 +96,7 @@ public class SoundsTable{
                 maxPitchF[0] = f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get();
                 maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
             }).padLeft(6f);
-        }).center().row();
+        }).row();
         TUElements.divider(t, "@tu-sound-menu.sound-loop", Pal.accent);
         t.table(l -> {
             l.defaults().left();
@@ -128,7 +130,7 @@ public class SoundsTable{
                     Core.audio.setPitch(loopSoundID, loopPitch);
                 }
             }).padLeft(6f).growX();
-        }).center().row();
+        });
     }
 
     public void rebuild(){
@@ -142,7 +144,7 @@ public class SoundsTable{
 
                 list.table(v -> {
                     soundList(v, vSounds);
-                });
+                }).growX();
                 list.row();
             }
 
@@ -152,9 +154,9 @@ public class SoundsTable{
 
                 list.table(m -> {
                     soundList(m, mSounds);
-                });
+                }).growX();
             }
-        }).growX().left().padBottom(10);
+        }).growX().padBottom(10);
     }
 
     public void soundList(Table t, Seq<Sound> sounds){

@@ -20,7 +20,7 @@ public class FilterTable extends Table{
                     .checked(t -> fm == lastFilter)
                     .wrapLabel(false).uniform().grow().get();
                 tb.setStyle(Styles.togglet);
-                tb.check("", fm::enable);
+                tb.check("", fm::enable).get().setChecked(fm.enabled);
                 tb.getCells().reverse();
 
                 if(col == 4){

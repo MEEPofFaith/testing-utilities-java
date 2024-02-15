@@ -86,7 +86,7 @@ public class TUElements{
             t.add(label).growX().left().color(color);
             t.row();
         }
-        t.image().growX().pad(5f, 0f, 5f, 0f).height(3f).color(color);
+        t.image().growX().pad(5f, 0f, 5f, 0f).height(3f).color(color).left();
         t.row();
     }
 
