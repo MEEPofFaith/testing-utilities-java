@@ -38,37 +38,36 @@ public class StatusDialog extends TUBaseDialog{
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.pane(all -> {
-            all.add(selection);
-            all.row();
+        cont.pane(all -> all.add(selection)).row();
+        cont.table(null, b -> {
+            b.table(sl -> {
+                sl.collapser(s -> TUElements.sliderSet(
+                    s, text -> duration = Strings.parseFloat(text), () -> String.valueOf(duration),
+                    TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
+                    minDur, maxDur, 0.125f, duration, (n, f) -> {
+                        duration = n;
+                        f.setText(String.valueOf(n));
+                    },
+                    "@tu-status-menu.duration",
+                    "@tu-tooltip.status-duration"
+                ), true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
+            }).colspan(2);
+            b.row();
+            ImageButton ab = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::apply)
+                .wrapLabel(false).right().get();
+            TUElements.boxTooltip(ab, "@tu-tooltip.status-apply");
+            ab.label(() -> "@tu-status-menu.apply").padLeft(6);
 
-            all.collapser(s -> TUElements.sliderSet(
-                s, text -> duration = Strings.parseFloat(text), () -> String.valueOf(duration),
-                TextFieldFilter.floatsOnly, Strings::canParsePositiveFloat,
-                minDur, maxDur, 0.125f, duration, (n, f) -> {
-                    duration = n;
-                    f.setText(String.valueOf(n));
-                },
-                "@tu-status-menu.duration",
-                "@tu-tooltip.status-duration"
-            ), true, () -> !perma && !status.permanent).bottom().get().setDuration(0.06f);
-            all.row();
-
-            all.table(null, b -> {
-                ImageButton ab = b.button(TUIcons.get(Icon.add), TUStyles.lefti, TUVars.buttonSize, this::apply).get();
-                TUElements.boxTooltip(ab, "@tu-tooltip.status-apply");
-                ab.label(() -> "@tu-status-menu.apply").padLeft(6).growX();
-
-                ImageButton pb = b.button(TUIcons.get(Icon.refresh), TUStyles.toggleRighti, TUVars.buttonSize, () -> perma = !perma).get();
-                TUElements.boxTooltip(pb, "@tu-tooltip.status-perma");
-                Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).growX().get();
-                pb.setDisabled(() -> status.permanent);
-                pb.update(() -> {
-                    pb.setChecked(perma);
-                    pl.setColor(pb.isDisabled() ? Color.gray : Color.white);
-                });
-            }).padTop(6);
-        });
+            ImageButton pb = b.button(TUIcons.get(Icon.refresh), TUStyles.toggleRighti, TUVars.buttonSize, () -> perma = !perma)
+                .wrapLabel(false).left().get();
+            TUElements.boxTooltip(pb, "@tu-tooltip.status-perma");
+            Label pl = pb.label(() -> "@tu-status-menu.perma").padLeft(6).get();
+            pb.setDisabled(() -> status.permanent);
+            pb.update(() -> {
+                pb.setChecked(perma);
+                pl.setColor(pb.isDisabled() ? Color.gray : Color.white);
+            });
+        }).padTop(6);
 
         TUElements.boxTooltip(
             buttons.button("$tu-status-menu.clear", Icon.cancel, this::clearStatus).get(),
