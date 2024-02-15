@@ -166,7 +166,7 @@ public class SoundsTable extends STable{
             t.button(getName(s), () -> {
                 stopSounds();
                 sound = s;
-            }).uniform().grow().wrapLabel(false);
+            }).uniformX().grow();
 
             if((++count) % cols == 0){
                 t.row();

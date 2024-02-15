@@ -2,6 +2,7 @@ package testing.dialogs.sound;
 
 import arc.*;
 import arc.audio.*;
+import arc.files.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
@@ -19,6 +20,7 @@ import mindustry.graphics.*;
 import testing.ui.*;
 
 import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class MusicsTable extends STable{
     private static Seq<Music> vanillaMusic;
@@ -41,15 +43,24 @@ public class MusicsTable extends STable{
 
     public MusicsTable(){
         if(modMusic == null){ //Only grab musics once
-            modMusic = new Seq<>();
-            Core.assets.getAll(Music.class, modMusic);
             vanillaMusic = new Seq<>();
-            for(String m : vanillaMusicNames){
-                int index = modMusic.indexOf(mus -> mus.toString().contains(m));
-                if(index == -1) continue;
-                vanillaMusic.add(modMusic.get(index));
-                modMusic.remove(index);
-            }
+            Core.assets.getAll(Music.class, vanillaMusic); //For some reason modded music is not included in getAll
+
+            modMusic = new Seq<>();
+            Vars.mods.eachEnabled(m -> {
+                Fi musicFolder = m.root.child("music");
+                if(musicFolder.exists() && musicFolder.isDirectory()){
+                    String mDir = "music/";
+                    musicFolder.walk(f -> {
+                        String ext = f.extension();
+                        if(ext.equals("mp3") || ext.equals("ogg")){
+                            String path = f.pathWithoutExtension();
+                            int folderIndex = f.pathWithoutExtension().indexOf(mDir);
+                            modMusic.addUnique(tree.loadMusic(path.substring(folderIndex + mDir.length())));
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -110,7 +121,7 @@ public class MusicsTable extends STable{
         for(Music s : sounds){
             t.button(getName(s), () -> {
                 selectedMusic = s;
-            }).uniform().grow().wrapLabel(false);
+            }).uniformX().grow();
 
             if((++count) % cols == 0){
                 t.row();
