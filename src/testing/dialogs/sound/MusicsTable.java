@@ -4,6 +4,10 @@ import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.math.*;
+import arc.scene.*;
+import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -28,6 +32,7 @@ public class MusicsTable extends STable{
 
     private final Table selection = new Table();
     private TextField search;
+    private MusicProgressBar progressBar;
     private Music selectedMusic = Musics.menu;
     protected Music playingMusic = null;
 
@@ -60,7 +65,7 @@ public class MusicsTable extends STable{
         t.table(s -> {
             s.label(() -> "Now playing: " + getName(playingMusic)).left();
             s.row();
-            s.add(new MusicProgressBar(this)).growX();
+            s.add(progressBar = new MusicProgressBar(this)).growX();
             s.row();
             s.table(p -> {
                 p.button("@tu-sound-menu.start", () -> start(selectedMusic)).wrapLabel(false).grow();
@@ -118,11 +123,19 @@ public class MusicsTable extends STable{
     private void start(Music music){
         if(playingMusic != null) playingMusic.stop();
         playingMusic = music;
+
+        float length = 1f;
         if(music != null){
             music.setVolume(1f);
             music.setLooping(false);
             music.play();
+
+            length = (float)(double)Reflect.invoke(Soloud.class, "streamLength",
+                new Object[]{Reflect.get(AudioSource.class, music, "handle")},
+                long.class
+            );
         }
+        progressBar.musicLength = length;
     }
 
     public void stopSounds(){
@@ -144,21 +157,16 @@ public class MusicsTable extends STable{
     }
 
     private static class MusicProgressBar extends Table{
+        public float musicLength;
+
         public MusicProgressBar(MusicsTable musicsTable){
             background(Tex.pane);
 
-            rect((x, y, width, height) -> {
+            Element bar = rect((x, y, width, height) -> {
 
                 Music m = musicsTable.playingMusic;
-                float progress = 0, length = 1;
-                if(m != null){
-                    progress = m.getPosition();
-                    length = (float)(double)Reflect.invoke(Soloud.class, "streamLength",
-                        new Object[]{Reflect.get(AudioSource.class, m, "handle")},
-                        long.class
-                    );
-                }
-                float fin = progress / length;
+                float progress = m != null ? m.getPosition() : 0;
+                float fin = progress / musicLength;
 
                 Lines.stroke(Scl.scl(3f));
                 float mid = y + height / 2f;
@@ -169,20 +177,41 @@ public class MusicsTable extends STable{
                 Draw.color(Color.red);
                 Lines.line(x, mid, x + width * fin, mid);
                 Fill.circle(x + width * fin, mid, 4f);
-            }).grow().left();
+            }).grow().left().get();
+            bar.addListener(new InputListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    if(musicsTable.playingMusic == null) return false;
+                    calcPos(x);
+                    return true;
+                }
+
+                @Override
+                public void touchDragged(InputEvent event, float x, float y, int pointer){
+                    calcPos(x);
+                }
+
+                private void calcPos(float x){
+                    float width = bar.getWidth();
+                    float prog = x / width;
+                    Music m = musicsTable.playingMusic;
+                    float time = prog * musicLength;
+                    setTime(m, time);
+                }
+
+                private void setTime(Music m, float time){
+                    if(!m.isPlaying()) m.play();
+                    m.setPosition(time);
+                    if(!Mathf.equal(m.getPosition(), time)) setTime(m, time);
+                }
+            });
+            bar.addListener(new HandCursorListener());
 
             label(() -> {
                 Music m = musicsTable.playingMusic;
-                float progress = 0, length = 1;
-                if(m != null){
-                    progress = m.getPosition();
-                    length = (float)(double)Reflect.invoke(Soloud.class, "streamLength",
-                        new Object[]{Reflect.get(AudioSource.class, m, "handle")},
-                        long.class
-                    );
-                    return UI.formatTime(progress * 60f) + " / " + UI.formatTime(length * 60f);
-                }
-                return "x:xx / x:xx";
+                return m != null ?
+                    UI.formatTime(m.getPosition() * 60f) + " / " + UI.formatTime(musicLength * 60f) :
+                    "x:xx / x:xx";
             }).padLeft(6f).width(128).right().labelAlign(Align.right);
         }
     }

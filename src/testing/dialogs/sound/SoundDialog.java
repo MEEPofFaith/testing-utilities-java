@@ -6,7 +6,6 @@ import arc.graphics.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import testing.dialogs.*;
@@ -67,8 +66,9 @@ public class SoundDialog extends TUBaseDialog{
                 if(current == musicsTable){
                     musicsTable.update();
                 }else{
-                    Reflect.invoke(Vars.control.sound, "silence");
-                    if(soundControlPlaying() != null) Reflect.invoke(Vars.control.sound, "silence"); //Counteract fade in
+                    Reflect.set(control.sound, "fade", 0f);
+                    Reflect.invoke(control.sound, "silence");
+                    if(soundControlPlaying() != null) Reflect.invoke(control.sound, "silence"); //Counteract fade in
                 }
             }
         });
