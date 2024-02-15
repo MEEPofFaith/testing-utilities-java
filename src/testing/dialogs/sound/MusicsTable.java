@@ -33,6 +33,9 @@ public class MusicsTable extends STable{
     private final Table selection = new Table();
     private TextField search;
     private MusicProgressBar progressBar;
+    private boolean paused;
+    private float targetTime = 0f;
+    private boolean queued = false;
     private Music selectedMusic = Musics.menu;
     protected Music playingMusic = null;
 
@@ -68,7 +71,8 @@ public class MusicsTable extends STable{
             s.add(progressBar = new MusicProgressBar(this)).growX();
             s.row();
             s.table(p -> {
-                p.button("@tu-sound-menu.start", () -> start(selectedMusic)).wrapLabel(false).grow();
+                p.button("@tu-sound-menu.play", () -> play(selectedMusic)).wrapLabel(false).grow();
+                p.button("@tu-sound-menu.pause", this::pause).wrapLabel(false).grow();
                 p.button("@tu-sound-menu.stop", this::stopSounds).wrapLabel(false).grow();
             });
         }).growX();
@@ -120,26 +124,36 @@ public class MusicsTable extends STable{
         return full.substring(full.lastIndexOf("/") + 1);
     }
 
-    private void start(Music music){
+    private void play(Music music){
         if(playingMusic != null) playingMusic.stop();
+        if(playingMusic != music) paused = false;
         playingMusic = music;
 
         float length = 1f;
         if(music != null){
+            music.play();
             music.setVolume(1f);
             music.setLooping(false);
-            music.play();
+            if(paused){
+                paused = false;
+                setTime(music);
+            }
 
-            length = (float)(double)Reflect.invoke(Soloud.class, "streamLength",
-                new Object[]{Reflect.get(AudioSource.class, music, "handle")},
-                long.class
-            );
+            length = musicLength(music);
         }
         progressBar.musicLength = length;
     }
 
+    private void pause(){
+        if(playingMusic != null){
+            paused = true;
+            playingMusic.pause(true);
+            targetTime = playingMusic.getPosition();
+        }
+    }
+
     public void stopSounds(){
-        start(null);
+        play(null);
     }
 
     public void update(){
@@ -148,16 +162,37 @@ public class MusicsTable extends STable{
             Reflect.invoke(Vars.control.sound, "silence");
             if(playing != null) Reflect.invoke(Vars.control.sound, "silence"); //Counteract fade in
         }else{
+            if(paused && playing != null) playing.pause(true);
             Reflect.set(Vars.control.sound, "fade", 1f);
         }
 
         if(playingMusic == null) return;
         playingMusic.setVolume(1f);
         playingMusic.setLooping(false);
+        if(!paused && !queued) targetTime = playingMusic.getPosition();
+    }
+
+    private void setTime(Music m){
+        if(!m.isPlaying() && !paused) m.play();
+        m.setPosition(targetTime);
+        if(!queued && !Mathf.equal(m.getPosition(), targetTime)){
+            queued = true;
+            app.post(() -> {
+                queued = false;
+                setTime(m);
+            });
+        }
+    }
+
+    public static float musicLength(Music music){
+        return (float)(double)Reflect.invoke(Soloud.class, "streamLength",
+            new Object[]{Reflect.get(AudioSource.class, music, "handle")},
+            long.class
+        );
     }
 
     private static class MusicProgressBar extends Table{
-        public float musicLength;
+        public float musicLength = 1f;
 
         public MusicProgressBar(MusicsTable musicsTable){
             background(Tex.pane);
@@ -165,7 +200,7 @@ public class MusicsTable extends STable{
             Element bar = rect((x, y, width, height) -> {
 
                 Music m = musicsTable.playingMusic;
-                float progress = m != null ? m.getPosition() : 0;
+                float progress = m != null ? musicsTable.targetTime : 0;
                 float fin = progress / musicLength;
 
                 Lines.stroke(Scl.scl(3f));
@@ -181,7 +216,6 @@ public class MusicsTable extends STable{
             bar.addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                    if(musicsTable.playingMusic == null) return false;
                     calcPos(x);
                     return true;
                 }
@@ -192,17 +226,13 @@ public class MusicsTable extends STable{
                 }
 
                 private void calcPos(float x){
+                    if(musicsTable.playingMusic == null) musicsTable.play(musicsTable.selectedMusic);
+
                     float width = bar.getWidth();
                     float prog = x / width;
                     Music m = musicsTable.playingMusic;
-                    float time = prog * musicLength;
-                    setTime(m, time);
-                }
-
-                private void setTime(Music m, float time){
-                    if(!m.isPlaying()) m.play();
-                    m.setPosition(time);
-                    if(!Mathf.equal(m.getPosition(), time)) setTime(m, time);
+                    musicsTable.targetTime = prog * musicLength;
+                    musicsTable.setTime(m);
                 }
             });
             bar.addListener(new HandCursorListener());
@@ -210,7 +240,7 @@ public class MusicsTable extends STable{
             label(() -> {
                 Music m = musicsTable.playingMusic;
                 return m != null ?
-                    UI.formatTime(m.getPosition() * 60f) + " / " + UI.formatTime(musicLength * 60f) :
+                    UI.formatTime(musicsTable.targetTime * 60f) + " / " + UI.formatTime(musicLength * 60f) :
                     "x:xx / x:xx";
             }).padLeft(6f).width(128).right().labelAlign(Align.right);
         }

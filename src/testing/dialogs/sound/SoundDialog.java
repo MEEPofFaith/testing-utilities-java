@@ -58,6 +58,7 @@ public class SoundDialog extends TUBaseDialog{
         });
         hidden(() -> {
             soundsTable.stopSounds();
+            musicsTable.stopSounds();
             if(filters != null) TUFilters.closed();
             audio.setPaused(Sounds.press.bus.id, false);
         });
