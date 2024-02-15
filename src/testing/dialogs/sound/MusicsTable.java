@@ -77,7 +77,7 @@ public class MusicsTable extends STable{
     public void createPlay(Table t){
         TUElements.divider(t, "@tu-sound-menu.music", Pal.accent);
         t.table(s -> {
-            s.label(() -> "Now playing: " + getName(playingMusic)).left();
+            s.label(() -> Core.bundle.get("tu-sound-menu.now-playing") + " " + getName(playingMusic)).left();
             s.row();
             s.add(progressBar = new MusicProgressBar(this)).growX();
             s.row();
