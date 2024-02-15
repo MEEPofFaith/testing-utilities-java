@@ -23,14 +23,13 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MusicsTable extends STable{
-    private static Seq<Music> vanillaMusic;
+    private static Seq<Music> vanillaMusic = Seq.with(
+        Musics.menu, Musics.launch, Musics.land, Musics.editor,
+        Musics.game1, Musics.game2, Musics.game3, Musics.game4, Musics.fine,
+        Musics.game5, Musics.game6, Musics.game7, Musics.game8, Musics.game9,
+        Musics.boss1, Musics.boss2
+    );
     private static Seq<Music> modMusic;
-    private static final String[] vanillaMusicNames = {
-        "menu", "launch", "land", "editor",
-        "game1", "game2", "game3", "game4", "fine", "game5",
-        "game6", "game7", "game8", "game8", "game9",
-        "boss1", "boss2"
-    };
 
     private final Table selection = new Table();
     private TextField search;
@@ -43,9 +42,7 @@ public class MusicsTable extends STable{
 
     public MusicsTable(){
         if(modMusic == null){ //Only grab musics once
-            vanillaMusic = new Seq<>();
-            Core.assets.getAll(Music.class, vanillaMusic); //For some reason modded music is not included in getAll
-
+            //For some reason modded music is not included in assets.getAll. Walk through mod files instead.
             modMusic = new Seq<>();
             Vars.mods.eachEnabled(m -> {
                 Fi musicFolder = m.root.child("music");
