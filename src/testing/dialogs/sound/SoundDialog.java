@@ -34,21 +34,25 @@ public class SoundDialog extends TUBaseDialog{
         musicsTable = new MusicsTable();
 
         cont.table(s -> {
-            s.button(TUIcons.get(Icon.menu), () -> {
+            ImageButton ib = new ImageButton(TUIcons.sounds);
+            ib.changed(() -> {
                 current.stopSounds();
                 if(current == soundsTable){
                     current = musicsTable;
+                    ib.replaceImage(new Image(TUIcons.musics));
                 }else{
                     current = soundsTable;
+                    ib.replaceImage(new Image(TUIcons.sounds));
                 }
                 makeUI();
             });
+            s.add(ib).size(TUVars.iconSize);
             s.image(Icon.zoom).padRight(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
 
-        cont.add(all = new Table()).grow();
+        cont.add(all = new Table()).grow().top();
         makeUI();
 
         shown(() -> {
@@ -77,13 +81,14 @@ public class SoundDialog extends TUBaseDialog{
 
     private void makeUI(){
         all.clear();
-        all.defaults().growX().padLeft(32).padRight(32).center();
+        all.defaults().growX().padLeft(32).padRight(32).center().top();
 
         current.createSelection(all, search);
 
         TUElements.divider(all, null, Color.lightGray);
 
         all.pane(t -> {
+            t.defaults().top();
             current.createPlay(t);
             t.row();
 
@@ -93,7 +98,7 @@ public class SoundDialog extends TUBaseDialog{
                 if(filters == null) filters = new FilterTable();
                 fil.add(filters);
             }).center();
-        }).growX().padLeft(32).padRight(32);
+        }).growX().padLeft(32).padRight(32).top();
     }
 
     @Override

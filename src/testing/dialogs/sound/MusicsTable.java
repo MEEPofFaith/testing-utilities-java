@@ -77,15 +77,14 @@ public class MusicsTable extends STable{
     public void createPlay(Table t){
         TUElements.divider(t, "@tu-sound-menu.music", Pal.accent);
         t.table(s -> {
-            s.label(() -> Core.bundle.get("tu-sound-menu.now-playing") + " " + getName(playingMusic)).left();
+            s.label(() -> Core.bundle.get("tu-sound-menu.now-playing") + " " + getName(playingMusic)).left().colspan(3).padBottom(6f);
+            s.row();
+            s.button("@tu-sound-menu.switch", () -> switchMusic(selectedMusic)).wrapLabel(false)
+                .left().colspan(3).disabled(b -> selectedMusic == playingMusic).get().setStyle(TUStyles.round);
             s.row();
             s.add(progressBar = new MusicProgressBar(this)).growX();
-            s.row();
-            s.table(p -> {
-                p.button("@tu-sound-menu.play", () -> play(selectedMusic)).wrapLabel(false).grow();
-                p.button("@tu-sound-menu.pause", this::pause).wrapLabel(false).grow();
-                p.button("@tu-sound-menu.stop", this::stopSounds).wrapLabel(false).grow();
-            });
+            s.button(Icon.play, () -> play(playingMusic)).disabled(b -> !paused);
+            s.button(Icon.pause, this::pause).disabled(b -> paused);
         }).growX();
     }
 
@@ -121,7 +120,8 @@ public class MusicsTable extends STable{
         for(Music s : sounds){
             t.button(getName(s), () -> {
                 selectedMusic = s;
-            }).uniformX().grow();
+            }).uniformX().grow().checked(b -> selectedMusic == s)
+                .get().getStyle().checked = Tex.flatDownBase;
 
             if((++count) % cols == 0){
                 t.row();
@@ -135,11 +135,14 @@ public class MusicsTable extends STable{
         return full.substring(full.lastIndexOf("/") + 1);
     }
 
-    private void play(Music music){
+    private void switchMusic(Music music){
         if(playingMusic != null) playingMusic.stop();
         if(playingMusic != music) paused = false;
         playingMusic = music;
+        play(music);
+    }
 
+    private void play(Music music){
         float length = 1f;
         if(music != null){
             music.play();
@@ -164,7 +167,7 @@ public class MusicsTable extends STable{
     }
 
     public void stopSounds(){
-        play(null);
+        switchMusic(null);
     }
 
     public void update(){
@@ -227,6 +230,7 @@ public class MusicsTable extends STable{
             bar.addListener(new InputListener(){
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                    if(musicsTable.playingMusic == null) return false;
                     calcPos(x);
                     return true;
                 }

@@ -12,6 +12,7 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import testing.ui.*;
+import testing.util.*;
 
 import static arc.Core.*;
 
@@ -60,12 +61,12 @@ public class SoundsTable extends STable{
     public void createPlay(Table t){
         TUElements.divider(t, "@tu-sound-menu.sound", Pal.accent);
         t.table(s -> {
-            s.button("@tu-sound-menu.play", () -> {
+            s.button(Icon.play, () -> {
                 AudioBus prev = sound.bus;
                 sound.setBus(soundRoomBus);
                 sound.play(Mathf.random(minVol, maxVol), Mathf.random(minPitch, maxPitch), 0f, false, false);
                 sound.setBus(prev);
-            }).wrapLabel(false).grow();
+            }).grow().center().right();
             s.table(f -> {
                 f.defaults().left().growX();
                 f.add("@tu-sound-menu.min-vol");
@@ -95,18 +96,18 @@ public class SoundsTable extends STable{
                 f.add("@tu-sound-menu.max-pitch").padLeft(6f);
                 maxPitchF[0] = f.field("" + maxPitch, TextFieldFilter.floatsOnly, v -> maxPitch = Strings.parseFloat(v)).get();
                 maxPitchF[0].setValidator(v -> Strings.parseFloat(v) >= minPitch);
-            }).padLeft(6f);
+            }).padLeft(6f).left();
         }).row();
         TUElements.divider(t, "@tu-sound-menu.sound-loop", Pal.accent);
         t.table(l -> {
             l.defaults().left();
 
-            l.button("@tu-sound-menu.start", () -> {
+            l.button(Icon.play, () -> {
                 AudioBus prev = sound.bus;
                 sound.setBus(soundRoomBus);
                 loopSoundID = sound.loop(loopVol, loopPitch, 0);
                 sound.setBus(prev);
-            }).wrapLabel(false).disabled(b -> loopSoundID >= 0).uniform().grow();
+            }).disabled(b -> loopSoundID >= 0).uniform().grow();
 
             l.add("@tu-sound-menu.vol").padLeft(6f).growX();
             l.field("" + loopVol, TextFieldFilter.floatsOnly, v -> {
@@ -118,10 +119,10 @@ public class SoundsTable extends STable{
 
             l.row();
 
-            l.button("@tu-sound-menu.stop", () -> {
+            l.button(TUIcons.stop, () -> {
                 Core.audio.stop(loopSoundID);
                 loopSoundID = -1;
-            }).wrapLabel(false).disabled(b -> loopSoundID < 0).uniform().grow();
+            }).disabled(b -> loopSoundID < 0).uniform().grow();
 
             l.add("@tu-sound-menu.pitch").padLeft(6f).growX();
             l.field("" + loopPitch, TextFieldFilter.floatsOnly, v -> {
@@ -166,7 +167,8 @@ public class SoundsTable extends STable{
             t.button(getName(s), () -> {
                 stopSounds();
                 sound = s;
-            }).uniformX().grow();
+            }).uniformX().grow().checked(b -> sound == s)
+                .get().getStyle().checked = Tex.flatDownBase;
 
             if((++count) % cols == 0){
                 t.row();

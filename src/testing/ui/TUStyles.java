@@ -3,6 +3,7 @@ package testing.ui;
 import arc.scene.style.*;
 import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
+import arc.scene.ui.TextButton.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 
@@ -16,6 +17,7 @@ public class TUStyles{
         buttonRight, buttonRightOver, buttonRightDown,
         paneBottom;
     public static ButtonStyle right;
+    public static TextButtonStyle round;
     public static ImageButtonStyle
         tuImageStyle,
         togglei,
@@ -39,6 +41,10 @@ public class TUStyles{
             up = buttonRight;
             down = buttonRightDown;
             over = buttonRightOver;
+        }};
+
+        round = new TextButtonStyle(Styles.defaultt){{
+            checked = up;
         }};
 
         tuImageStyle = new ImageButtonStyle(Styles.logici){{
