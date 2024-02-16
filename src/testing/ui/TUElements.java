@@ -81,13 +81,18 @@ public class TUElements{
         return stack;
     }
 
-    public static void divider(Table t, String label, Color color){
+    public static void divider(Table t, String label, Color color, int colSpan){
         if(label != null){
-            t.add(label).growX().left().color(color);
+            t.add(label).growX().color(color).colspan(colSpan).left();
             t.row();
         }
-        t.image().growX().pad(5f, 0f, 5f, 0f).height(3f).color(color).left();
+        t.image().growX().pad(5f, 0f, 5f, 0f)
+            .height(3f).color(color).colspan(colSpan).left();
         t.row();
+    }
+
+    public static void divider(Table t, String label, Color color){
+        divider(t, label, color, 1);
     }
 
     public static void boxTooltip(Element e, Prov<CharSequence> text){

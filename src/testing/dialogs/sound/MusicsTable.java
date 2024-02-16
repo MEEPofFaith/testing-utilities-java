@@ -30,6 +30,7 @@ public class MusicsTable extends STable{
         Musics.boss1, Musics.boss2
     );
     private static Seq<Music> modMusic;
+    private static ObjectMap<Music, String> musicMods;
 
     private final Table selection = new Table();
     private TextField search;
@@ -44,16 +45,20 @@ public class MusicsTable extends STable{
         if(modMusic == null){ //Only grab musics once
             //For some reason modded music is not included in assets.getAll. Walk through mod files instead.
             modMusic = new Seq<>();
+            musicMods = new ObjectMap<>();
+            String mDir = "music/";
             Vars.mods.eachEnabled(m -> {
                 Fi musicFolder = m.root.child("music");
+                String mName = m.meta.displayName;
                 if(musicFolder.exists() && musicFolder.isDirectory()){
-                    String mDir = "music/";
                     musicFolder.walk(f -> {
                         String ext = f.extension();
                         if(ext.equals("mp3") || ext.equals("ogg")){
                             String path = f.pathWithoutExtension();
                             int folderIndex = f.pathWithoutExtension().indexOf(mDir);
-                            modMusic.addUnique(tree.loadMusic(path.substring(folderIndex + mDir.length())));
+                            Music mus = tree.loadMusic(path.substring(folderIndex + mDir.length()));
+                            modMusic.addUnique(mus);
+                            musicMods.put(mus, mName);
                         }
                     });
                 }
@@ -105,19 +110,44 @@ public class MusicsTable extends STable{
                 TUElements.divider(list, "@tu-sound-menu.modded", Pal.accent);
 
                 list.table(m -> {
-                    musicList(m, mSounds);
+                    modMusicList(m, mSounds);
                 }).growX();
             }
         }).growX().padBottom(10);
     }
 
-    public void musicList(Table t, Seq<Music> sounds){
+    public void musicList(Table t, Seq<Music> musics){
         int cols = 4;
         int count = 0;
-        for(Music s : sounds){
-            t.button(getName(s), () -> {
-                selectedMusic = s;
-            }).uniformX().grow().checked(b -> selectedMusic == s)
+        for(Music m : musics){
+            t.button(getName(m), () -> {
+                selectedMusic = m;
+            }).uniformX().grow().checked(b -> selectedMusic == m)
+                .get().getStyle().checked = Tex.flatDownBase;
+
+            if((++count) % cols == 0){
+                t.row();
+            }
+        }
+    }
+
+    public void modMusicList(Table t, Seq<Music> musics){
+        int cols = 4;
+        int count = 0;
+        String lastMod = null;
+        for(Music m : musics){
+            String curMod = musicMods.get(m);
+            if(!curMod.equals(lastMod)){
+                lastMod = curMod;
+                if(count % cols != 0) t.row();
+                count = 0;
+                TUElements.divider(t, curMod, Color.lightGray, 4);
+                t.row();
+            }
+
+            t.button(getName(m), () -> {
+                selectedMusic = m;
+            }).uniformX().grow().checked(b -> selectedMusic == m)
                 .get().getStyle().checked = Tex.flatDownBase;
 
             if((++count) % cols == 0){
@@ -152,7 +182,7 @@ public class MusicsTable extends STable{
 
             length = musicLength(music);
         }
-        progressBar.musicLength = length;
+        if(progressBar != null) progressBar.musicLength = length;
     }
 
     private void pause(){

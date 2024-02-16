@@ -2,6 +2,8 @@ package testing.dialogs.sound;
 
 import arc.*;
 import arc.audio.*;
+import arc.files.*;
+import arc.graphics.*;
 import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
@@ -15,10 +17,12 @@ import testing.ui.*;
 import testing.util.*;
 
 import static arc.Core.*;
+import static mindustry.Vars.tree;
 
 public class SoundsTable extends STable{
     private static Seq<Sound> vanillaSounds;
     private static Seq<Sound> modSounds;
+    private static ObjectMap<Sound, String> soundMods;
 
     private final AudioBus soundRoomBus;
     private final Table selection = new Table();
@@ -42,9 +46,25 @@ public class SoundsTable extends STable{
                 i++;
             }
 
-            ObjectMap<String, Sound> loaded = Reflect.get(Vars.tree, "loadedSounds");
-            modSounds = loaded.values().toSeq();
-            modSounds.removeAll(vanillaSounds);
+            modSounds = new Seq<>();
+            soundMods = new ObjectMap<>();
+            String mDir = "sounds/";
+            Vars.mods.eachEnabled(m -> {
+                Fi musicFolder = m.root.child("sounds");
+                String mName = m.meta.displayName;
+                if(musicFolder.exists() && musicFolder.isDirectory()){
+                    musicFolder.walk(f -> {
+                        String ext = f.extension();
+                        if(ext.equals("mp3") || ext.equals("ogg")){
+                            String path = f.pathWithoutExtension();
+                            int folderIndex = f.pathWithoutExtension().indexOf(mDir);
+                            Sound sou = tree.loadSound(path.substring(folderIndex + mDir.length()));
+                            modSounds.addUnique(sou);
+                            soundMods.put(sou, mName);
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -154,7 +174,7 @@ public class SoundsTable extends STable{
                 TUElements.divider(list, "@tu-sound-menu.modded", Pal.accent);
 
                 list.table(m -> {
-                    soundList(m, mSounds);
+                    modSoundList(m, mSounds);
                 }).growX();
             }
         }).growX().padBottom(10);
@@ -164,6 +184,32 @@ public class SoundsTable extends STable{
         int cols = 4;
         int count = 0;
         for(Sound s : sounds){
+            t.button(getName(s), () -> {
+                stopSounds();
+                sound = s;
+            }).uniformX().grow().checked(b -> sound == s)
+                .get().getStyle().checked = Tex.flatDownBase;
+
+            if((++count) % cols == 0){
+                t.row();
+            }
+        }
+    }
+
+    public void modSoundList(Table t, Seq<Sound> sounds){
+        int cols = 4;
+        int count = 0;
+        String lastMod = null;
+        for(Sound s : sounds){
+            String curMod = soundMods.get(s);
+            if(!curMod.equals(lastMod)){
+                lastMod = curMod;
+                if(count % cols != 0) t.row();
+                count = 0;
+                TUElements.divider(t, curMod, Color.lightGray, 4);
+                t.row();
+            }
+
             t.button(getName(s), () -> {
                 stopSounds();
                 sound = s;
