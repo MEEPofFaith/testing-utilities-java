@@ -16,12 +16,15 @@ import mindustry.graphics.*;
 import testing.ui.*;
 import testing.util.*;
 
+import java.util.*;
+
 import static arc.Core.*;
-import static mindustry.Vars.tree;
+import static mindustry.Vars.*;
 
 public class SoundsTable extends STable{
     private static Seq<Sound> vanillaSounds;
     private static Seq<Sound> modSounds;
+    private static ObjectMap<Sound, String> overrides;
     private static ObjectMap<Sound, String> soundMods;
 
     private final AudioBus soundRoomBus;
@@ -47,6 +50,7 @@ public class SoundsTable extends STable{
             }
 
             modSounds = new Seq<>();
+            overrides = new ObjectMap<>();
             soundMods = new ObjectMap<>();
             String mDir = "sounds/";
             Vars.mods.eachEnabled(m -> {
@@ -56,15 +60,25 @@ public class SoundsTable extends STable{
                     musicFolder.walk(f -> {
                         String ext = f.extension();
                         if(ext.equals("mp3") || ext.equals("ogg")){
-                            String path = f.pathWithoutExtension();
-                            int folderIndex = f.pathWithoutExtension().indexOf(mDir);
-                            Sound sou = tree.loadSound(path.substring(folderIndex + mDir.length()));
-                            modSounds.addUnique(sou);
-                            soundMods.put(sou, mName);
+                            //Check for override
+                            int vanillaIndex = vanillaSounds.indexOf(s -> getName(s).equals(f.name()));
+                            if(vanillaIndex != -1){
+                                Sound overwritten = vanillaSounds.get(vanillaIndex);
+                                modSounds.addUnique(overwritten);
+                                overrides.put(overwritten, mName);
+                                soundMods.put(overwritten, mName);
+                            }else{ //Add
+                                String path = f.pathWithoutExtension();
+                                int folderIndex = f.pathWithoutExtension().indexOf(mDir);
+                                Sound sou = tree.loadSound(path.substring(folderIndex + mDir.length()));
+                                modSounds.addUnique(sou);
+                                soundMods.put(sou, mName);
+                            }
                         }
                     });
                 }
             });
+            modSounds.sort(Comparator.comparing(o -> soundMods.get(o)));
         }
     }
 
@@ -164,7 +178,7 @@ public class SoundsTable extends STable{
                 TUElements.divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
                 list.table(v -> {
-                    soundList(v, vSounds);
+                    vanillaSoundList(v, vSounds);
                 }).growX();
                 list.row();
             }
@@ -180,15 +194,20 @@ public class SoundsTable extends STable{
         }).growX().padBottom(10);
     }
 
-    public void soundList(Table t, Seq<Sound> sounds){
+    public void vanillaSoundList(Table t, Seq<Sound> sounds){
         int cols = 4;
         int count = 0;
         for(Sound s : sounds){
-            t.button(getName(s), () -> {
+            TextButton sb = t.button(getName(s), () -> {
                 stopSounds();
                 sound = s;
-            }).uniformX().grow().checked(b -> sound == s)
-                .get().getStyle().checked = Tex.flatDownBase;
+            }).uniformX().grow().checked(b -> sound == s).get();
+            sb.getStyle().checked = Tex.flatDownBase;
+
+            if(overrides.containsKey(s)){
+                sb.setDisabled(true);
+                TUElements.boxTooltip(sb, bundle.format("tu-sound-menu.sound-overwritten", overrides.get(s)));
+            }
 
             if((++count) % cols == 0){
                 t.row();

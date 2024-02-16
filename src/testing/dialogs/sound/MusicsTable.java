@@ -19,6 +19,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import testing.ui.*;
 
+import java.util.*;
+
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
@@ -30,6 +32,7 @@ public class MusicsTable extends STable{
         Musics.boss1, Musics.boss2
     );
     private static Seq<Music> modMusic;
+    private static ObjectMap<Music, String> overrides;
     private static ObjectMap<Music, String> musicMods;
 
     private final Table selection = new Table();
@@ -45,6 +48,7 @@ public class MusicsTable extends STable{
         if(modMusic == null){ //Only grab musics once
             //For some reason modded music is not included in assets.getAll. Walk through mod files instead.
             modMusic = new Seq<>();
+            overrides = new ObjectMap<>();
             musicMods = new ObjectMap<>();
             String mDir = "music/";
             Vars.mods.eachEnabled(m -> {
@@ -54,15 +58,25 @@ public class MusicsTable extends STable{
                     musicFolder.walk(f -> {
                         String ext = f.extension();
                         if(ext.equals("mp3") || ext.equals("ogg")){
-                            String path = f.pathWithoutExtension();
-                            int folderIndex = f.pathWithoutExtension().indexOf(mDir);
-                            Music mus = tree.loadMusic(path.substring(folderIndex + mDir.length()));
-                            modMusic.addUnique(mus);
-                            musicMods.put(mus, mName);
+                            //Check for override
+                            int vanillaIndex = vanillaMusic.indexOf(s -> getName(s).equals(f.name()));
+                            if(vanillaIndex != -1){
+                                Music overwritten = vanillaMusic.get(vanillaIndex);
+                                modMusic.addUnique(overwritten);
+                                overrides.put(overwritten, mName);
+                                musicMods.put(overwritten, mName);
+                            }else{ //Add
+                                String path = f.pathWithoutExtension();
+                                int folderIndex = f.pathWithoutExtension().indexOf(mDir);
+                                Music mus = tree.loadMusic(path.substring(folderIndex + mDir.length()));
+                                modMusic.addUnique(mus);
+                                musicMods.put(mus, mName);
+                            }
                         }
                     });
                 }
             });
+            modMusic.sort(Comparator.comparing(o -> musicMods.get(o)));
         }
     }
 
@@ -100,7 +114,7 @@ public class MusicsTable extends STable{
                 TUElements.divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
                 list.table(v -> {
-                    musicList(v, vSounds);
+                    vanillaMusicList(v, vSounds);
                 }).growX();
                 list.row();
             }
@@ -116,14 +130,19 @@ public class MusicsTable extends STable{
         }).growX().padBottom(10);
     }
 
-    public void musicList(Table t, Seq<Music> musics){
+    public void vanillaMusicList(Table t, Seq<Music> musics){
         int cols = 4;
         int count = 0;
         for(Music m : musics){
-            t.button(getName(m), () -> {
+            TextButton mb = t.button(getName(m), () -> {
                 selectedMusic = m;
-            }).uniformX().grow().checked(b -> selectedMusic == m)
-                .get().getStyle().checked = Tex.flatDownBase;
+            }).uniformX().grow().checked(b -> selectedMusic == m).get();
+            mb.getStyle().checked = Tex.flatDownBase;
+
+            if(overrides.containsKey(m)){
+                mb.setDisabled(true);
+                TUElements.boxTooltip(mb, bundle.format("tu-sound-menu.music-overwritten", overrides.get(m)));
+            }
 
             if((++count) % cols == 0){
                 t.row();
