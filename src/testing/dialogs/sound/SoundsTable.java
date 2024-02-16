@@ -142,6 +142,10 @@ public class SoundsTable extends STable{
                 loopSoundID = sound.loop(loopVol, loopPitch, 0);
                 sound.setBus(prev);
             }).disabled(b -> loopSoundID >= 0).uniform().grow();
+            l.button(TUIcons.stop, () -> {
+                Core.audio.stop(loopSoundID);
+                loopSoundID = -1;
+            }).disabled(b -> loopSoundID < 0).uniform().grow();
 
             l.add("@tu-sound-menu.vol").padLeft(6f).growX();
             l.field("" + loopVol, TextFieldFilter.floatsOnly, v -> {
@@ -150,14 +154,6 @@ public class SoundsTable extends STable{
                     Core.audio.setVolume(loopSoundID, loopVol);
                 }
             }).padLeft(6f).growX();
-
-            l.row();
-
-            l.button(TUIcons.stop, () -> {
-                Core.audio.stop(loopSoundID);
-                loopSoundID = -1;
-            }).disabled(b -> loopSoundID < 0).uniform().grow();
-
             l.add("@tu-sound-menu.pitch").padLeft(6f).growX();
             l.field("" + loopPitch, TextFieldFilter.floatsOnly, v -> {
                 loopPitch = Strings.parseFloat(v);
