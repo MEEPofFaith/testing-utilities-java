@@ -81,9 +81,12 @@ public class SoundDialog extends TUBaseDialog{
 
     private void makeUI(){
         all.clear();
-        all.defaults().growX().padLeft(32).padRight(32).center().top();
+        all.defaults().padLeft(32).padRight(32).center().top();
 
-        current.createSelection(all, search);
+        all.table(sel -> {
+            sel.defaults().growX();
+            current.createSelection(sel, search);
+        }).grow().row();
 
         TUElements.divider(all, null, Color.lightGray);
 
@@ -98,7 +101,7 @@ public class SoundDialog extends TUBaseDialog{
                 if(filters == null) filters = new FilterTable();
                 fil.add(filters);
             }).center();
-        }).growX().padLeft(32).padRight(32).top();
+        }).grow().minHeight(180);
     }
 
     @Override

@@ -85,7 +85,7 @@ public class MusicsTable extends STable{
 
         t.label(() -> bundle.get("tu-menu.selection") + getName(selectedMusic)).padBottom(6).left().row();
 
-        t.pane(all -> all.add(selection).growX()).row();
+        t.pane(all -> all.add(selection).growX());
 
         rebuild();
     }
