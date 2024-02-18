@@ -59,7 +59,7 @@ public class MusicsTable extends STable{
                         String ext = f.extension();
                         if(ext.equals("mp3") || ext.equals("ogg")){
                             //Check for override
-                            int vanillaIndex = vanillaMusic.indexOf(s -> getName(s).equals(f.name()));
+                            int vanillaIndex = vanillaMusic.indexOf(s -> getName(s).equals(f.nameWithoutExtension()));
                             if(vanillaIndex != -1){
                                 Music overwritten = vanillaMusic.get(vanillaIndex);
                                 modMusic.addUnique(overwritten);
@@ -178,7 +178,7 @@ public class MusicsTable extends STable{
     public String getName(Music s){
         if(s == null) return "none";
         String full = s.toString();
-        return full.substring(full.lastIndexOf("/") + 1);
+        return full.substring(full.lastIndexOf("/") + 1, full.length() - 4);
     }
 
     private void switchMusic(Music music){

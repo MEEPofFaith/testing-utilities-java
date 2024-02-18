@@ -61,7 +61,7 @@ public class SoundsTable extends STable{
                         String ext = f.extension();
                         if(ext.equals("mp3") || ext.equals("ogg")){
                             //Check for override
-                            int vanillaIndex = vanillaSounds.indexOf(s -> getName(s).equals(f.name()));
+                            int vanillaIndex = vanillaSounds.indexOf(s -> getName(s).equals(f.nameWithoutExtension()));
                             if(vanillaIndex != -1){
                                 Sound overwritten = vanillaSounds.get(vanillaIndex);
                                 modSounds.addUnique(overwritten);
@@ -239,7 +239,7 @@ public class SoundsTable extends STable{
 
     public String getName(Sound s){
         String full = s.toString();
-        return full.substring(full.lastIndexOf("/") + 1);
+        return full.substring(full.lastIndexOf("/") + 1, full.length() - 4);
     }
 
     public void stopSounds(){
