@@ -93,7 +93,7 @@ public class MusicsTable extends STable{
     public void createPlay(Table t){
         TUElements.divider(t, "@tu-sound-menu.music", Pal.accent);
         t.table(s -> {
-            s.label(() -> Core.bundle.get("tu-sound-menu.now-playing") + " " + getName(playingMusic)).left().colspan(3).padBottom(6f);
+            s.label(() -> Core.bundle.format("tu-sound-menu.now-playing", getName(playingMusic))).left().colspan(3).padBottom(6f);
             s.row();
             s.button("@tu-sound-menu.switch", () -> switchMusic(selectedMusic)).wrapLabel(false)
                 .left().colspan(3).disabled(b -> selectedMusic == playingMusic).get().setStyle(TUStyles.round);

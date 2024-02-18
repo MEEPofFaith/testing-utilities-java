@@ -39,15 +39,16 @@ public class SoundDialog extends TUBaseDialog{
                 current.stopSounds();
                 if(current == soundsTable){
                     current = musicsTable;
-                    ib.replaceImage(new Image(TUIcons.musics));
+                    ib.replaceImage(new Image(TUIcons.musics).setScaling(Scaling.fit));
                 }else{
                     current = soundsTable;
-                    ib.replaceImage(new Image(TUIcons.sounds));
+                    ib.replaceImage(new Image(TUIcons.sounds).setScaling(Scaling.fit));
                 }
                 makeUI();
             });
-            s.add(ib).size(TUVars.iconSize);
-            s.image(Icon.zoom).padRight(8);
+            ib.label(() -> current == soundsTable ? "@tu-sound-menu.sound" : "@tu-sound-menu.music").wrapLabel(false).left().padRight(8);
+            s.add(ib).height(TUVars.iconSize);
+            s.image(Icon.zoom).padRight(8).padLeft(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
         }).fillX().padBottom(4).row();
