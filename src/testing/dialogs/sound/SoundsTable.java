@@ -173,9 +173,7 @@ public class SoundsTable extends STable{
             if(vSounds.size > 0){
                 TUElements.divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
-                list.table(v -> {
-                    vanillaSoundList(v, vSounds);
-                }).growX();
+                list.table(v -> vanillaSoundList(v, vSounds)).growX();
                 list.row();
             }
 
@@ -183,9 +181,7 @@ public class SoundsTable extends STable{
             if(mSounds.size > 0){
                 TUElements.divider(list, "@tu-sound-menu.modded", Pal.accent);
 
-                list.table(m -> {
-                    modSoundList(m, mSounds);
-                }).growX();
+                list.table(m -> modSoundList(m, mSounds)).growX();
             }
         }).growX().padBottom(10);
     }

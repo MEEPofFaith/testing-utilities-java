@@ -27,7 +27,7 @@ import testing.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
-import static testing.ui.TUDialogs.teamDialog;
+import static testing.ui.TUDialogs.*;
 import static testing.util.TUVars.*;
 
 public class TerrainPainterFragment{

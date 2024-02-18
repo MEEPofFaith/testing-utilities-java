@@ -25,7 +25,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MusicsTable extends STable{
-    private static Seq<Music> vanillaMusic = Seq.with(
+    private static final Seq<Music> vanillaMusic = Seq.with(
         Musics.menu, Musics.launch, Musics.land, Musics.editor,
         Musics.game1, Musics.game2, Musics.game3, Musics.game4, Musics.fine,
         Musics.game5, Musics.game6, Musics.game7, Musics.game8, Musics.game9,
@@ -113,9 +113,7 @@ public class MusicsTable extends STable{
             if(vSounds.size > 0){
                 TUElements.divider(list, "@tu-sound-menu.vanilla", Pal.accent);
 
-                list.table(v -> {
-                    vanillaMusicList(v, vSounds);
-                }).growX();
+                list.table(v -> vanillaMusicList(v, vSounds)).growX();
                 list.row();
             }
 
@@ -123,9 +121,7 @@ public class MusicsTable extends STable{
             if(mSounds.size > 0){
                 TUElements.divider(list, "@tu-sound-menu.modded", Pal.accent);
 
-                list.table(m -> {
-                    modMusicList(m, mSounds);
-                }).growX();
+                list.table(m -> modMusicList(m, mSounds)).growX();
             }
         }).growX().padBottom(10);
     }
@@ -134,9 +130,8 @@ public class MusicsTable extends STable{
         int cols = 4;
         int count = 0;
         for(Music m : musics){
-            TextButton mb = t.button(getName(m), () -> {
-                selectedMusic = m;
-            }).uniformX().grow().checked(b -> selectedMusic == m).get();
+            TextButton mb = t.button(getName(m), () -> selectedMusic = m)
+                .uniformX().grow().checked(b -> selectedMusic == m).get();
             mb.setStyle(TUStyles.toggleCentert);
 
             if(overrides.containsKey(m)){
@@ -164,9 +159,8 @@ public class MusicsTable extends STable{
                 t.row();
             }
 
-            t.button(getName(m), () -> {
-                selectedMusic = m;
-            }).uniformX().grow().checked(b -> selectedMusic == m)
+            t.button(getName(m), () -> selectedMusic = m)
+                .uniformX().grow().checked(b -> selectedMusic == m)
                 .get().setStyle(TUStyles.toggleCentert);
 
             if((++count) % cols == 0){
