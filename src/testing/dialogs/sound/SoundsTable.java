@@ -198,7 +198,7 @@ public class SoundsTable extends STable{
                 stopSounds();
                 sound = s;
             }).uniformX().grow().checked(b -> sound == s).get();
-            sb.getStyle().checked = Tex.flatDownBase;
+            sb.setStyle(TUStyles.toggleCentert);
 
             if(overrides.containsKey(s)){
                 sb.setDisabled(true);
@@ -229,7 +229,7 @@ public class SoundsTable extends STable{
                 stopSounds();
                 sound = s;
             }).uniformX().grow().checked(b -> sound == s)
-                .get().getStyle().checked = Tex.flatDownBase;
+                .get().setStyle(TUStyles.toggleCentert);
 
             if((++count) % cols == 0){
                 t.row();

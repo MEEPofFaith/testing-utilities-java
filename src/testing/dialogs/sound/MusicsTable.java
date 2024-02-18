@@ -137,7 +137,7 @@ public class MusicsTable extends STable{
             TextButton mb = t.button(getName(m), () -> {
                 selectedMusic = m;
             }).uniformX().grow().checked(b -> selectedMusic == m).get();
-            mb.getStyle().checked = Tex.flatDownBase;
+            mb.setStyle(TUStyles.toggleCentert);
 
             if(overrides.containsKey(m)){
                 mb.setDisabled(true);
@@ -167,7 +167,7 @@ public class MusicsTable extends STable{
             t.button(getName(m), () -> {
                 selectedMusic = m;
             }).uniformX().grow().checked(b -> selectedMusic == m)
-                .get().getStyle().checked = Tex.flatDownBase;
+                .get().setStyle(TUStyles.toggleCentert);
 
             if((++count) % cols == 0){
                 t.row();

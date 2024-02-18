@@ -13,17 +13,17 @@ import static arc.graphics.Color.*;
 public class TUStyles{
     public static Drawable
         buttonLeft, buttonLeftDown, buttonLeftOver,
-        buttonCenter, buttonCenterDown, buttonCenterOver,
+        buttonCenter, buttonCenterDown, buttonCenterOver, buttonCenterDisabled,
         buttonRight, buttonRightOver, buttonRightDown,
         paneBottom;
     public static ButtonStyle right;
-    public static TextButtonStyle round;
+    public static TextButtonStyle round, toggleCentert;
     public static ImageButtonStyle
         tuImageStyle,
         togglei,
         lefti, toggleLefti,
         righti, toggleRighti,
-        centeri, toggleCenteri;
+        centeri;
 
     public static void init(){
         buttonLeft = atlas.getDrawable("test-utils-button-left");
@@ -32,6 +32,7 @@ public class TUStyles{
         buttonCenter = atlas.getDrawable("test-utils-button-center");
         buttonCenterDown = atlas.getDrawable("test-utils-button-center-down");
         buttonCenterOver = atlas.getDrawable("test-utils-button-center-over");
+        buttonCenterDisabled = atlas.getDrawable("test-utils-button-center-disabled");
         buttonRight = atlas.getDrawable("test-utils-button-right");
         buttonRightDown = atlas.getDrawable("test-utils-button-right-down");
         buttonRightOver = atlas.getDrawable("test-utils-button-right-over");
@@ -45,6 +46,14 @@ public class TUStyles{
 
         round = new TextButtonStyle(Styles.defaultt){{
             checked = up;
+        }};
+
+        toggleCentert = new TextButtonStyle(Styles.defaultt){{
+            up = buttonCenter;
+            down = buttonCenterDown;
+            over = buttonCenterOver;
+            checked = buttonCenterOver;
+            disabled = buttonCenterDisabled;
         }};
 
         tuImageStyle = new ImageButtonStyle(Styles.logici){{
@@ -82,10 +91,6 @@ public class TUStyles{
             up = buttonCenter;
             down = buttonCenterDown;
             over = buttonCenterOver;
-        }};
-
-        toggleCenteri = new ImageButtonStyle(centeri){{
-            checked = buttonCenterOver;
         }};
     }
 }
