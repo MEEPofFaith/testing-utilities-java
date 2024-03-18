@@ -270,7 +270,6 @@ public class TerrainPainterFragment{
         Seq<Block> array = content.blocks()
             .select(b ->
                 blockFilter(b)
-                    && (!buildings || !b.isHidden() || settings.getBool("tu-show-hidden"))
                     && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase()))
             );
         if(array.size == 0) return;
@@ -335,6 +334,7 @@ public class TerrainPainterFragment{
             && !(b instanceof TallBlock)
             && !(b instanceof TreeBlock)
             && !(b instanceof ConstructBlock)
-            && !(b instanceof LegacyBlock);
+            && !(b instanceof LegacyBlock)
+            && (!b.isHidden() || settings.getBool("tu-show-hidden"));
     }
 }
