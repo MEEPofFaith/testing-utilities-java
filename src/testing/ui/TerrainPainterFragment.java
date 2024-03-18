@@ -263,15 +263,15 @@ public class TerrainPainterFragment{
         return show;
     }
 
-    private void rebuild(){ //TODO switching between terrain blocks and buildings
+    private void rebuild(){
         selection.clear();
         String text = search.getText();
 
         Seq<Block> array = content.blocks()
             .select(b ->
-                blockFilter(b) &&
-                    (!b.isHidden() || settings.getBool("tu-show-hidden")) &&
-                    (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase()))
+                blockFilter(b)
+                    && (!buildings || !b.isHidden() || settings.getBool("tu-show-hidden"))
+                    && (text.isEmpty() || b.localizedName.toLowerCase().contains(text.toLowerCase()))
             );
         if(array.size == 0) return;
 
@@ -326,16 +326,15 @@ public class TerrainPainterFragment{
                 b instanceof TreeBlock ||
                 b instanceof TallBlock ||
                 b instanceof Cliff
-        ) &&
-            !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn;
+        ) && !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn;
     }
 
     private boolean isBuilding(Block b){
-        return !b.isFloor() && !b.isStatic() &&
-            !(b instanceof Prop) &&
-            !(b instanceof TallBlock) &&
-            !(b instanceof TreeBlock) &&
-            !(b instanceof ConstructBlock) &&
-            !(b instanceof LegacyBlock);
+        return !b.isFloor() && !b.isStatic()
+            && !(b instanceof Prop)
+            && !(b instanceof TallBlock)
+            && !(b instanceof TreeBlock)
+            && !(b instanceof ConstructBlock)
+            && !(b instanceof LegacyBlock);
     }
 }
