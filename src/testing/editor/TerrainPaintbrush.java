@@ -53,7 +53,11 @@ public class TerrainPaintbrush{
                     int tx = World.toTile(input.mouseWorldX()),
                         ty = World.toTile(input.mouseWorldY());
 
-                    //if(!TestUtils.anyClick()){
+                    if(!mobile && input.keyDown(KeyCode.mouseMiddle)){
+                        PainterTool.pick.touched(tx, ty);
+                        return;
+                    }
+
                     if(!TestUtils.click()){
                         hold = 0f;
                         touchUp(tx, ty);
