@@ -236,18 +236,8 @@ public class TerrainPainterFragment{
         //Disable pause menu when open and display message
         ui.paused.shown(() -> {
             if(show){
-                if(settings.getBool("tu-tp-close-warn")){
-                    app.post(() -> {
-                        ui.showCustomConfirm(
-                            "@tu-painter.paused", "@tu-painter.pauseclose",
-                            "@ok", "@cancel",
-                            this::hide,
-                            () -> ui.paused.hide()
-                        );
-                    });
-                }else{
-                    hide();
-                }
+                app.post(() -> ui.paused.hide());
+                hide();
             }
         });
 
