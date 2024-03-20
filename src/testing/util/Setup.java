@@ -86,7 +86,6 @@ public class Setup{
 
         TeamChanger.addButton(temp);
         Health.addButtons(temp);
-        Death.init();
         Death.addButtons(temp);
 
         //Normal UI
