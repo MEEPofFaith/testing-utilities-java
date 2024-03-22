@@ -237,7 +237,11 @@ public class TerrainPainterFragment{
         ui.paused.shown(() -> {
             if(show){
                 app.post(() -> ui.paused.hide());
-                hide();
+                if(mobile){
+                    ui.showInfoPopup("@tu-painter.paused", 7, Align.center, 0, 0, 0,0);
+                }else{
+                    hide();
+                }
             }
         });
 
