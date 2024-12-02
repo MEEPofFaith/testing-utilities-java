@@ -16,10 +16,9 @@ java{
 }
 
 ext{
-    //the build number that this mod is made for
-    mindustryVersion = 'v146'
-    jabelVersion = "93fde537c7"
-    bluiVersion = "v10"
+    useJitpack = Boolean.valueOf(useBE)
+    arcVer = property(useJitpack ? 'archash' : 'mindustryVersion')
+    mindusVer = property(useJitpack ? 'mindustryBEVersion' : 'mindustryVersion')
 
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -34,8 +33,8 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$arcVer"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindusVer"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
@@ -43,10 +42,14 @@ dependencies{
 }
 
 //force arc version
-configurations.all{
-    resolutionStrategy.eachDependency { details ->
-        if(details.requested.group == 'com.github.Anuken.Arc'){
-            details.useVersion "$mindustryVersion"
+configurations.configureEach{
+    resolutionStrategy.eachDependency {
+        if(useJitpack && requested.group == 'com.github.Anuken.Mindustry'){
+            useTarget "com.github.Anuken.MindustryJitpack:$it.requested.name:$mindustryBEVersion"
+        }
+
+        if(requested.group == 'com.github.Anuken.Arc'){
+            useVersion useBE ? "$archash" : "$mindustryVersion"
         }
     }
 }
