@@ -128,16 +128,14 @@ public class StatusDialog extends TUBaseDialog{
     }
 
     void apply(){
-        if(net.client()){ //For 2r2t
-            Utils.runCommand("statuseff @ @", status.name, perma ? "MAX_VALUE" : duration * 60);
-        }else if(player.unit() != null){
-            if(input.shift()){
-                Utils.copyJS("Vars.player.unit().apply(Vars.content.getByID(ContentType.status, @), @);",
-                    status.id, perma ? "Number.MAX_VALUE" : duration * 60
-                );
-                return;
-            }
+        if(input.shift()){
+            Utils.copyJS("Vars.player.unit().apply(Vars.content.getByID(ContentType.status, @), @);",
+                status.id, perma ? "Number.MAX_VALUE" : duration * 60
+            );
+            return;
+        }
 
+        if(player.unit() != null){
             player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
         }
     }
@@ -148,7 +146,9 @@ public class StatusDialog extends TUBaseDialog{
             return;
         }
 
-        player.unit().clearStatuses();
+        if(player.unit() != null){
+            player.unit().clearStatuses();
+        }
     }
 
     public StatusEffect getStatus(){

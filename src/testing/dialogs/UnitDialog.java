@@ -120,7 +120,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> "@tu-unit-menu.transform",
                 "@tu-tooltip.unit-transform"
             ).get();
-            ib.setDisabled(() -> player.unit().type.internal);
+            ib.setDisabled(() -> player.unit().type != null && player.unit().type.internal);
 
             ImageButton db = BLElements.imageButton(
                 b, TUIcons.alpha, TUStyles.toggleRighti, BLVars.buttonSize,
@@ -271,9 +271,7 @@ public class UnitDialog extends TUBaseDialog{
     }
 
     void transform(){
-        if(net.client()){ //For 2r2t
-            Utils.runCommand("transform @", spawnUnit.name);
-        }else if(player.unit() != null){
+        if(player.unit() != null){
             if(input.shift()){
                 Utils.copyJS("""
                     let u = Vars.content.unit(@).spawn(Vars.player.team(), Vars.player);
