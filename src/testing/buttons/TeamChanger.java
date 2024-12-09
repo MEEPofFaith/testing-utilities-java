@@ -1,6 +1,5 @@
 package testing.buttons;
 
-import arc.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import blui.scene.ui.*;
@@ -8,23 +7,13 @@ import blui.ui.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import testing.ui.*;
-import testing.util.*;
 
 import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TeamChanger{
     public static void changeTeam(Team team){
-        if(net.client()){ //For 2r2t
-            Utils.runCommand("team @", team.id);
-        }else{
-            if(Core.input.shift()){
-                Utils.copyJS("Vars.player.team(Team.get(@));", team.id);
-                return;
-            }
-
-            player.team(team);
-        }
+        player.team(team);
     }
 
     public static Cell<Table> teamChanger(Table t){

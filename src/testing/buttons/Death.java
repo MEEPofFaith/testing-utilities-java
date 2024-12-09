@@ -23,30 +23,14 @@ public class Death{
     /** <i><b>SPONTANIUM COMBUSTUM!</b> That's a spell that makes the person who said it <b>e x p l o -</b></i> */
     public static void spontaniumCombustum(){
         Unit u = player.unit();
-        boolean insta = settings.getBool("tu-instakill");
-        if(input.shift()){
-            if(insta){
-                Utils.copyJS("""
-                    let u = Vars.player.unit();
-                    u.elevation = 0;
-                    u.health = -1;
-                    u.dead = true;
-                    u.kill();"""
-                );
-            }else{
-                Utils.copyJS("Vars.player.unit().kill();");
-            }
-            return;
+        if(u == null) return;
+        if(settings.getBool("tu-instakill")){
+            u.elevation(0);
+            u.health(-1);
+            u.dead(true);
         }
-        if(u != null){
-            if(insta){
-                u.elevation(0);
-                u.health(-1);
-                u.dead(true);
-            }
-            u.kill();
-            killLightning();
-        }
+        u.kill();
+        killLightning();
     }
 
     public static void killLightning(){
@@ -62,19 +46,10 @@ public class Death{
     }
 
     public static void mitosis(){
-        if(input.shift()){
-            Utils.copyJS("""
-                let u = Vars.player.unit();
-                u.type.spawn(u.team, u).rotation = u.rotation;"""
-            );
-            return;
-        }
-
         Unit u = player.unit();
-        if(u != null){
-            u.type.spawn(u.team, u).rotation(u.rotation);
-            Fx.spawn.at(u);
-        }
+        if(u == null) return;
+        u.type.spawn(u.team, u).rotation(u.rotation);
+        Fx.spawn.at(u);
     }
 
     public static void seppuku(Table t){

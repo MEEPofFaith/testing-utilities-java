@@ -128,27 +128,15 @@ public class StatusDialog extends TUBaseDialog{
     }
 
     void apply(){
-        if(input.shift()){
-            Utils.copyJS("Vars.player.unit().apply(Vars.content.getByID(ContentType.status, @), @);",
-                status.id, perma ? "Number.MAX_VALUE" : duration * 60
-            );
-            return;
-        }
-
-        if(player.unit() != null){
-            player.unit().apply(status, perma ? Float.MAX_VALUE : duration * 60);
-        }
+        Unit u = player.unit();
+        if(u == null) return;
+        u.apply(status, perma ? Float.MAX_VALUE : duration * 60);
     }
 
     void clearStatus(){
-        if(input.shift()){
-            Utils.copyJS("Vars.player.unit().clearStatuses();");
-            return;
-        }
-
-        if(player.unit() != null){
-            player.unit().clearStatuses();
-        }
+        Unit u = player.unit();
+        if(u == null) return;
+        u.clearStatuses();
     }
 
     public StatusEffect getStatus(){
