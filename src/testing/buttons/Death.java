@@ -25,11 +25,10 @@ public class Death{
         Unit u = player.unit();
         if(u == null) return;
         if(settings.getBool("tu-instakill")){
-            u.elevation(0);
-            u.health(-1);
-            u.dead(true);
+            u.destroy();
+        }else{
+            u.kill();
         }
-        u.kill();
         killLightning();
     }
 
