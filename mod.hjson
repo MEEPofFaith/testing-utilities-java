@@ -20,7 +20,7 @@ description: "Utilities for testing stuff in sandbox. (Load the game with this m
 subtitle: "Easier to use than the console."
 
 #the mod version
-version: 68.3
+version: 68.4
 
 #the minimum game build required to run this mod
 minGameVersion: 25459
@@ -30,7 +30,3 @@ java: true
 
 #doesn't have content; client-sided
 hidden: true
-
-dependencies: [
-  bl-ui-lib
-]

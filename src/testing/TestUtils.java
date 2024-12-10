@@ -28,9 +28,7 @@ public class TestUtils extends Mod{
     public TestUtils(){
         if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
 
-        if(mobile){
-            loadLogger();
-        }
+        if(mobile) loadLogger();
 
         //Add campaign maps to custom maps list
         Seq<String> mapNames = new Seq<>();
