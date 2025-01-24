@@ -120,7 +120,7 @@ public class UnitDialog extends TUBaseDialog{
                 () -> "@tu-unit-menu.transform",
                 "@tu-tooltip.unit-transform"
             ).get();
-            ib.setDisabled(() -> player.unit().type != null && player.unit().type.internal);
+            ib.setDisabled(() -> player.unit() != null && player.unit().type.internal);
 
             ImageButton db = BLElements.imageButton(
                 b, TUIcons.alpha, TUStyles.toggleRighti, BLVars.buttonSize,
