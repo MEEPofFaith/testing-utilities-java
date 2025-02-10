@@ -16,10 +16,6 @@ java{
 }
 
 ext{
-    //the build number that this mod is made for
-    mindustryVersion = 'v145.1'
-    jabelVersion = "93fde537c7"
-    bluiVersion = "v3"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
@@ -38,7 +34,7 @@ dependencies{
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
-    compileOnly "com.github.MEEPofFaith:bottom-left-ui:$bluiVersion"
+    implementation "com.github.MEEPofFaith:BottomLeftUILib:$bluiVersion"
 }
 
 //force arc version
@@ -78,7 +74,7 @@ jar{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
     }
 
-    from(rootDir){
+    from(projectDir){
         include "mod.hjson"
     }
 

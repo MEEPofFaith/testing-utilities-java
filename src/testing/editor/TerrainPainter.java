@@ -201,6 +201,10 @@ public class TerrainPainter{
     }
 
     public void flushCliffs(){
+        flushCliffs(false);
+    }
+
+    public void flushCliffs(boolean indent){
         if(pendingCliffs.isEmpty()) return;
 
         for(Tile tile : pendingCliffs){
@@ -216,8 +220,22 @@ public class TerrainPainter{
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){
-            if(tile.block() == Blocks.cliff && tile.data == 0){
+            if(tile.block() instanceof Cliff && tile.data == 0){
                 tile.setBlock(Blocks.air);
+            }
+        }
+        if(indent){ //Invert in a 3rd pass.
+            for(Tile tile : pendingCliffs){
+                int rotation = tile.data;
+                if(tile.block() instanceof Cliff){
+                    for(int i = 0; i < 8; i++){
+                        Tile other = world.tiles.get(tile.x + Geometry.d8[i].x, tile.y + Geometry.d8[i].y);
+                        if(other != null && other.block() != Blocks.cliff){
+                            rotation ^= (1 << i);
+                        }
+                    }
+                }
+                tile.data = (byte)rotation;
             }
         }
 

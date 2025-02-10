@@ -75,10 +75,10 @@ public class PaintedTileData{
         }
 
         byte data = 0;
-        if(type == Blocks.cliff){
+        if(type instanceof Cliff){
             painter.pendingCliffs.add(tile);
             tile.data = 0;
-        }else if(tBlock == Blocks.cliff){
+        }else if(tBlock instanceof Cliff){
             painter.pendingCliffs.remove(tile);
             data = tile.data;
             tile.data = 0;

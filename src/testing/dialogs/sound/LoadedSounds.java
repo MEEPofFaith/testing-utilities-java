@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class LoadedSounds{
@@ -25,7 +26,6 @@ public class LoadedSounds{
     protected static Seq<Music> modMusic;
     protected static ObjectMap<Music, String> musicOverrides;
     protected static ObjectMap<Music, String> musicMods;
-    protected static Seq<String> musicsInSounds;
 
     protected static void init(){
         if(vanillaSounds != null) return;
@@ -43,12 +43,6 @@ public class LoadedSounds{
         modSounds = new Seq<>();
         soundOverrides = new ObjectMap<>();
         soundMods = new ObjectMap<>();
-
-        //For some reason modded music is not included in assets.getAll. Walk through mod files instead.
-        modMusic = new Seq<>();
-        musicOverrides = new ObjectMap<>();
-        musicMods = new ObjectMap<>();
-        musicsInSounds = new Seq<>();
 
         String sDir = "sounds/";
         Vars.mods.eachEnabled(m -> {
@@ -83,6 +77,13 @@ public class LoadedSounds{
             }
         });
         modSounds.sort(Structs.comparing(o -> soundMods.get(o)));
+
+        if(!settings.getBool("tu-music-enabled", false)) return;
+
+        //For some reason modded music is not included in assets.getAll. Walk through mod files instead.
+        modMusic = new Seq<>();
+        musicOverrides = new ObjectMap<>();
+        musicMods = new ObjectMap<>();
 
         String mDir = "music/";
         Vars.mods.eachEnabled(m -> {

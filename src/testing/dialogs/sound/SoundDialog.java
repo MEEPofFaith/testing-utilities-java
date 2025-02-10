@@ -35,25 +35,28 @@ public class SoundDialog extends TUBaseDialog{
 
     private void build(){
         LoadedSounds.init();
+
         soundsTable = new SoundsTable(soundRoomBus);
         current = soundsTable;
         musicsTable = new MusicsTable();
 
         cont.table(s -> {
-            ImageButton ib = new ImageButton(TUIcons.sounds);
-            ib.changed(() -> {
-                current.stopSounds();
-                if(current == soundsTable){
-                    current = musicsTable;
-                    ib.replaceImage(new Image(TUIcons.musics).setScaling(Scaling.fit));
-                }else{
-                    current = soundsTable;
-                    ib.replaceImage(new Image(TUIcons.sounds).setScaling(Scaling.fit));
-                }
-                makeUI();
-            });
-            ib.label(() -> current == soundsTable ? "@tu-sound-menu.sound" : "@tu-sound-menu.music").wrapLabel(false).left().padRight(8);
-            s.add(ib).height(BLVars.iconSize);
+            if(settings.getBool("tu-music-enabled", false)){
+                ImageButton ib = new ImageButton(TUIcons.sounds);
+                ib.changed(() -> {
+                    current.stopSounds();
+                    if(current == soundsTable){
+                        current = musicsTable;
+                        ib.replaceImage(new Image(TUIcons.musics).setScaling(Scaling.fit));
+                    }else{
+                        current = soundsTable;
+                        ib.replaceImage(new Image(TUIcons.sounds).setScaling(Scaling.fit));
+                    }
+                    makeUI();
+                });
+                ib.label(() -> current == soundsTable ? "@tu-sound-menu.sound" : "@tu-sound-menu.music").wrapLabel(false).left().padRight(8);
+                s.add(ib).height(BLVars.iconSize);
+            }
             s.image(Icon.zoom).padRight(8).padLeft(8);
             search = s.field(null, text -> rebuild()).growX().get();
             search.setMessageText("@players.search");
@@ -73,17 +76,20 @@ public class SoundDialog extends TUBaseDialog{
             if(filters != null) TUFilters.closed();
             audio.setPaused(Sounds.press.bus.id, false);
         });
-        update(() -> {
-            if(isShown()){
-                if(current == musicsTable){
-                    musicsTable.update();
-                }else{
-                    Reflect.set(control.sound, "fade", 0f);
-                    Reflect.invoke(control.sound, "silence");
-                    if(soundControlPlaying() != null) Reflect.invoke(control.sound, "silence"); //Counteract fade in
+
+        if(settings.getBool("tu-music-enabled", false)){
+            update(() -> {
+                if(isShown()){
+                    if(current == musicsTable){
+                        musicsTable.update();
+                    }else{
+                        Reflect.set(control.sound, "fade", 0f);
+                        Reflect.invoke(control.sound, "silence");
+                        if(soundControlPlaying() != null) Reflect.invoke(control.sound, "silence"); //Counteract fade in
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void makeUI(){

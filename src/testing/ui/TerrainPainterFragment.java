@@ -12,6 +12,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import blui.scene.ui.*;
 import blui.ui.*;
 import mindustry.content.*;
 import mindustry.editor.*;
@@ -37,6 +38,8 @@ public class TerrainPainterFragment{
     Table selection = new Table();
     private boolean show = false;
     private boolean buildings = false;
+    private boolean lastIndent = false;
+    private boolean indentCliff = false;
 
     public void build(Group parent){
         Boolp visibility = () -> show && !ui.minimapfrag.shown();
@@ -44,27 +47,22 @@ public class TerrainPainterFragment{
         parent.fill(t -> {
             t.name = "terrainpainterselection";
             t.bottom().right().visible(visibility);
-            t.table(Tex.buttonEdge1, all -> {
+            t.table(Tex.pane, all -> {
                 all.table(s -> {
                     s.image(Icon.zoom).padRight(8);
                     search = s.field(null, text -> rebuild()).growX().get();
                     search.setMessageText("@players.search");
-                    s.button(TUIcons.get(Icon.crafting), Styles.squareTogglei, buttonSize, () -> {
+                    BLElements.imageButton(s, TUIcons.get(Icon.crafting), Styles.squareTogglei, buttonSize, () -> {
                         buildings = !buildings;
                         rebuild();
-                    }).checked(b -> buildings).size(iconSize);
+                    }, null, "@tu-tooltip.painter-buildings").checked(b -> buildings).size(iconSize);
                 }).fillX().padBottom(4);
 
                 all.row();
                 all.label(() -> "[accent]" + painter.drawBlock.localizedName).padBottom(4).row();
 
-                int rows = 9;
-                float h = rows * (4 * 8) + (rows - 1) * 6 + 2 * 3;
-                all.pane(sel -> {
-                    sel.top();
-                    sel.add(selection);
-                }).fillX().height(h);
-            });
+                all.pane(selection).fillX().growY().top();
+            }).growY();
         });
 
         parent.fill(t -> {
@@ -211,12 +209,30 @@ public class TerrainPainterFragment{
                 all.stack(slider, label).width(sliderWidth).padTop(4f);
                 all.row();
 
-                BLElements.imageButton(
-                    all, TUIcons.get(Icon.terrain), Styles.defaulti, buttonSize,
-                    () -> painter.flushCliffs(),
-                    () -> "@tu-painter.cliffs",
-                    "@tu-tooltip.painter-cliffs"
-                ).padTop(4f).disabled(b -> painter.pendingCliffs.isEmpty());
+                HoldImageButton cButton = new HoldImageButton(TUIcons.get(Icon.terrain));
+                cButton.clicked(() -> painter.flushCliffs(indentCliff));
+                cButton.held(() -> indentCliff = !indentCliff);
+                cButton.resizeImage(buttonSize);
+
+                cButton.label(() -> indentCliff ? "@tu-painter.canyons" : "@tu-painter.cliffs").padLeft(6f).expandX();
+
+                cButton.addListener(new Tooltip(tool -> {
+                    Prov<CharSequence> labelText = () -> indentCliff ? "@tu-tooltip.painter-canyons" : "@tu-tooltip.painter-cliffs";
+                    Label tL = tool.background(Tex.button)
+                        .label(labelText).get();
+                    tool.update(() -> {
+                        if(lastIndent != indentCliff){
+                            lastIndent = indentCliff;
+                            tL.setText(labelText.get());
+                            tL.invalidate();
+                            tool.invalidate();
+                            tL.pack();
+                            tool.pack();
+                        }
+                    });
+                }));
+
+                all.add(cButton).padTop(4f).disabled(b -> painter.pendingCliffs.isEmpty());
 
                 all.row();
 
@@ -240,7 +256,7 @@ public class TerrainPainterFragment{
             if(show){
                 app.post(() -> ui.paused.hide());
                 if(mobile){
-                    ui.showInfoPopup("@tu-painter.paused", 7, Align.center, 0, 0, 0,0);
+                    ui.showInfoPopup("@tu-painter.paused", 7, Align.center, 0, 0, 0, 0);
                 }else{
                     hide();
                 }
@@ -271,6 +287,7 @@ public class TerrainPainterFragment{
 
     private void rebuild(){
         selection.clear();
+        selection.top();
         String text = search.getText();
 
         Seq<Block> array = content.blocks()
@@ -281,7 +298,7 @@ public class TerrainPainterFragment{
         if(array.size == 0) return;
 
         selection.table(list -> {
-            list.left();
+            list.top();
 
             int cols = 6;
             int count = 0;
@@ -307,7 +324,7 @@ public class TerrainPainterFragment{
                         painter.drawBlock = b;
                     }
                 });
-                BLElements.boxTooltip(image, b.localizedName);
+                BLElements.flatTooltip(image, b.localizedName);
 
                 if((++count) % cols == 0){
                     list.row();
@@ -336,7 +353,7 @@ public class TerrainPainterFragment{
                 b instanceof TreeBlock ||
                 b instanceof TallBlock ||
                 b instanceof Cliff
-        ) && !b.isAir() && (b.inEditor || b == Blocks.cliff) && b != Blocks.spawn;
+        ) && !b.isAir() && (b.inEditor || b instanceof Cliff) && b != Blocks.spawn;
     }
 
     private boolean isBuilding(Block b){

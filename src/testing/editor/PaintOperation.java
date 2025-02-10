@@ -1,7 +1,6 @@
 package testing.editor;
 
 import arc.struct.*;
-import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.editor.DrawOperation.*;
 import mindustry.game.*;
@@ -13,7 +12,7 @@ import static testing.util.TUVars.*;
 
 /** Based on {@link DrawOperation} */
 public class PaintOperation{
-    private LongSeq array = new LongSeq();
+    private final LongSeq array = new LongSeq();
 
     public boolean isEmpty(){
         return array.isEmpty();
@@ -66,13 +65,13 @@ public class PaintOperation{
             }else if(type == OpType.block.ordinal()){
                 Block block = content.block(to);
 
-                if(block == Blocks.cliff){
+                if(block instanceof Cliff){
                     if(data == 0){
                         painter.pendingCliffs.add(tile); //Pending cliff was added
                     }else{
                         painter.pendingCliffs.remove(tile); //Preexisting cliff was added
                     }
-                }else if(tile.block() == Blocks.cliff){
+                }else if(tile.block() instanceof Cliff){
                     if(tile.data == 0) painter.pendingCliffs.remove(tile); //Pending cliff was removed
                 }
 

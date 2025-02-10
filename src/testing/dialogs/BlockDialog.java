@@ -205,7 +205,7 @@ public class BlockDialog extends TUBaseDialog{
                         block = b;
                     }
                 });
-                BLElements.boxTooltip(image, b.localizedName);
+                BLElements.boxTooltip(image, b.localizedName + (settings.getBool("console") ? "\n[gray]" + b.name : ""));
 
                 if((++count) % cols == 0){
                     list.row();

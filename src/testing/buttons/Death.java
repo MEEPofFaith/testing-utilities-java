@@ -55,8 +55,11 @@ public class Death{
     }
 
     public static void killLightning(){
+        if(!settings.getBool("tu-death-effect", true)) return;
+
         Unit u = player.unit();
         if(u != null){
+            Sounds.spark.at(u);
             for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
                 TUFx.deathLightning.at(u, true);
             }

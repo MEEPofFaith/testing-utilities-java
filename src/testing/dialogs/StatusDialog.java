@@ -118,7 +118,7 @@ public class StatusDialog extends TUBaseDialog{
                         status = s;
                     }
                 });
-                BLElements.boxTooltip(image, s.localizedName);
+                BLElements.boxTooltip(image, s.localizedName + (settings.getBool("console") ? "\n[gray]" + s.name : ""));
 
                 if((++count) % cols == 0){
                     list.row();

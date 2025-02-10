@@ -239,7 +239,7 @@ public class UnitDialog extends TUBaseDialog{
                         spawnUnit = u;
                     }
                 });
-                BLElements.boxTooltip(image, u.localizedName);
+                BLElements.boxTooltip(image, u.localizedName + (settings.getBool("console") ? "\n[gray]" + u.name : ""));
 
                 if((++count) % cols == 0){
                     list.row();
