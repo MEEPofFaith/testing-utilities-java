@@ -110,7 +110,7 @@ public class FieldEditor extends BaseDialog{
         selection.row();
 
         Seq<UnlockableContent> array = content.getBy(selectedType).<UnlockableContent>as().select(u -> shouldShow(u) && (text.isEmpty() || u.localizedName.toLowerCase().contains(text.toLowerCase())));
-        selection.table(list -> {
+        selection.pane(list -> {
             list.left();
 
             float iconMul = 1.25f;
@@ -149,7 +149,7 @@ public class FieldEditor extends BaseDialog{
                     list.row();
                 }
             }
-        }).growX().left().padBottom(10);
+        }).growX().left().padBottom(10).maxHeight(graphics.getHeight() / 3f);
     }
 
     boolean shouldShow(UnlockableContent u){
