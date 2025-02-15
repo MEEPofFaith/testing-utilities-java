@@ -8,7 +8,6 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
@@ -23,7 +22,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    static boolean teleport, hasProc;
+    private static boolean teleport, hasProc;
 
     public TestUtils(){
         if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
@@ -69,27 +68,7 @@ public class TestUtils extends Mod{
         }
         tu.meta.description = tools.toString();
 
-        //Increase zoom range
-        renderer.minZoom = 0.667f; //Zoom out farther
-        renderer.maxZoom = 24f; //Get a closer look at yourself
-        Events.on(WorldLoadEvent.class, e -> {
-            //reset
-            hasProc = Groups.build.contains(b -> b.block.privileged);
-            renderer.minZoom = 0.667f;
-            renderer.maxZoom = 24f;
-        });
-        Events.run(Trigger.update, () -> {
-            //zomm range
-            if(hasProc){
-                if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
-                    renderer.minZoom = 1.5f;
-                    renderer.maxZoom = 6f;
-                }else{
-                    renderer.minZoom = 0.667f;
-                    renderer.maxZoom = 24f;
-                }
-            }
-        });
+        setupZoom();
 
         //Spawn position drawing and sk7725/whynotteleport. (Anything beyond here does not have mobile support.)
         if(mobile) return;
@@ -138,6 +117,28 @@ public class TestUtils extends Mod{
                     );
                 }else{
                     teleport = false;
+                }
+            }
+        });
+    }
+
+    private static void setupZoom(){
+        if(settings.getBool("tu-disable-zoom", false)){
+            settings.put("tu-disable-zoom", false);
+            return;
+        }
+
+        //Increase zoom range
+        renderer.minZoom = 0.667f; //Zoom out farther
+        renderer.maxZoom = 24f; //Zoom in closer
+        Events.run(Trigger.update, () -> {
+            if(state.isGame()){
+                if(control.input.logicCutscene){ //Dynamically change zoom range to not break cutscene zoom
+                    renderer.minZoom = 1.5f;
+                    renderer.maxZoom = 6f;
+                }else{
+                    renderer.minZoom = 0.667f;
+                    renderer.maxZoom = 24f;
                 }
             }
         });
