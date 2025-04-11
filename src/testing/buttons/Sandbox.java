@@ -55,7 +55,7 @@ public class Sandbox{
         CoreBuild core = player.core();
         if(core != null){
             content.items().each(
-                i -> settings.getBool("tu-fill-all") || !state.rules.hiddenBuildItems.contains(i),
+                i -> settings.getBool("tu-fill-all") || i.shownPlanets.contains(state.rules.planet),
                 i -> core.items.set(i, core.storageCapacity)
             );
         }

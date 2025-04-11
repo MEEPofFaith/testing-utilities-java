@@ -113,7 +113,7 @@ public class Death{
         UnitStack dupe = new UnitStack(TUIcons.clone);
         b.replaceImage(dupe);
 
-        b.setDisabled(() -> player.unit() == null || player.unit() == Nulls.unit || player.unit().type.internal);
+        b.setDisabled(() -> player.unit() == null || player.unit().type.internal);
         b.update(() -> {
             updateIcon(dupe);
             dupe.setColor(b.isDisabled() ? Color.gray : Color.white);
@@ -129,7 +129,7 @@ public class Death{
 
     private static void updateIcon(UnitStack stack){
         Unit u = player.unit();
-        if(u != null && u != Nulls.unit && u.type != stack.lastType){
+        if(u != null && u.type != stack.lastType){
             if(u.type.internal){
                 stack.setImage(Icon.none);
             }else{

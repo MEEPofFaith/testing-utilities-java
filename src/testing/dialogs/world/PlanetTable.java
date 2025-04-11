@@ -77,14 +77,12 @@ public class PlanetTable extends Table{
     private void setPlanet(){
         if(planet == null){
             state.rules.env = Vars.defaultEnv;
-            state.rules.attributes.clear();
-            state.rules.hiddenBuildItems.clear();
+            state.rules.planet = Planets.sun;
         }else{
             state.rules.env = planet.defaultEnv;
+            state.rules.planet = planet;
             state.rules.attributes.clear();
             state.rules.attributes.add(planet.defaultAttributes);
-            state.rules.hiddenBuildItems.clear();
-            state.rules.hiddenBuildItems.addAll(planet.hiddenItems);
         }
     }
 
