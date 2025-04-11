@@ -17,10 +17,6 @@ java{
 }
 
 ext{
-    useJitpack = Boolean.valueOf(useBE)
-    arcVer = property(useJitpack ? 'archash' : 'mindustryVersion')
-    mindusVer = property(useJitpack ? 'mindustryBEVersion' : 'mindustryVersion')
-
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
@@ -34,8 +30,8 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$arcVer"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindusVer"
+    compileOnly "com.github.Anuken.Arc:arc-core:$arcVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
@@ -43,14 +39,10 @@ dependencies{
 }
 
 //force arc version
-configurations.configureEach{
-    resolutionStrategy.eachDependency {
-        if(useJitpack && requested.group == 'com.github.Anuken.Mindustry'){
-            useTarget "com.github.Anuken.MindustryJitpack:$it.requested.name:$mindustryBEVersion"
-        }
-
-        if(requested.group == 'com.github.Anuken.Arc'){
-            useVersion useBE ? "$archash" : "$mindustryVersion"
+configurations.all{
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'com.github.Anuken.Arc') {
+            details.useVersion "$mindustryVersion"
         }
     }
 }
