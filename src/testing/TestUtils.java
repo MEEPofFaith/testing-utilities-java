@@ -149,7 +149,7 @@ public class TestUtils extends Mod{
     }
 
     public static boolean canTeleport(){
-        return !mobile && !disableTeleport() && !player.unit().type.internal && input.alt();
+        return !mobile && !disableTeleport() && player.unit() != null && !player.unit().type.internal && input.alt();
     }
 
     public static boolean disableCampaign(){

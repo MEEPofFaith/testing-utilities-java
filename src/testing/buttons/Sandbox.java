@@ -16,11 +16,6 @@ public class Sandbox{
     static boolean fill = true;
 
     public static void toggle(){
-        if(input.shift()){
-            Utils.copyJS("Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;");
-            return;
-        }
-
         Utils.spawnIconEffect(state.rules.infiniteResources ? "survival" : "sandbox");
         state.rules.infiniteResources = !state.rules.infiniteResources;
     }
@@ -34,42 +29,21 @@ public class Sandbox{
     }
 
     public static void fillCore(){
-        if(input.shift()){
-            if(settings.getBool("tu-fill-all")){
-                Utils.copyJS("""
-                    CoreBuild core = player.core();
-                    Vars.content.items().each(i => core.items.set(i, core.storageCapacity));"""
-                );
-            }else{
-                Utils.copyJS("""
-                    CoreBuild core = player.core();
-                    Vars.content.items().each(
-                        i => !state.rules.hiddenBuildItems.contains(i),
-                        i => core.items.set(i, core.storageCapacity)
-                    );"""
-                );
-            }
-            return;
-        }
-
         CoreBuild core = player.core();
         if(core != null){
             content.items().each(
                 i -> settings.getBool("tu-fill-all") || i.shownPlanets.contains(state.rules.planet),
                 i -> core.items.set(i, core.storageCapacity)
             );
+            Utils.spawnIconEffect("core");
         }
-        Utils.spawnIconEffect("core");
     }
 
     public static void dumpCore(){
-        if(input.shift()){
-            Utils.copyJS("Vars.player.core().items.clear();");
-            return;
+        if(player.core() != null){
+            player.core().items.clear();
+            Utils.spawnIconEffect("dump");
         }
-
-        if(player.core() != null) player.core().items.clear();
-        Utils.spawnIconEffect("dump");
     }
 
     public static void toggling(Table t){
