@@ -40,7 +40,7 @@ public class TestUtils extends Mod{
 
             "geothermalStronghold", "cruxscape",
 
-            "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine", "caldera",
+            "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine",
             "stronghold", "crevice", "siege", "crossroads", "karst", "origin"
         );
         mapNames.addAll((String[])Reflect.get(maps.getClass(), "defaultMapNames"));
