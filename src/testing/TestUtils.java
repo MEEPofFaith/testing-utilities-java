@@ -33,12 +33,14 @@ public class TestUtils extends Mod{
         Seq<String> mapNames = new Seq<>();
         mapNames.addAll( //Sectors aren't loaded yet, need to hardcode
             "groundZero",
-            "craters", "biomassFacility", "frozenForest", "ruinousShores", "windsweptIslands", "stainedMountains", "tarFields",
-            "fungalPass", "extractionOutpost", "saltFlats", "overgrowth",
+            "craters", "biomassFacility", "taintedWoods", "frozenForest", "ruinousShores", "facility32m", "windsweptIslands", "stainedMountains", "tarFields",
+            "frontier", "fungalPass", "infestedCanyons", "atolls", "mycelialBastion", "extractionOutpost", "saltFlats", "testingGrounds", "overgrowth",
             "impact0078", "desolateRift", "nuclearComplex", "planetaryTerminal",
-            "coastline", "navalFortress",
+            "coastline", "navalFortress", "weatheredChannels", "seaPort",
 
-            "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine", "caldera-erekir",
+            "geothermalStronghold", "cruxscape",
+
+            "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine", "caldera",
             "stronghold", "crevice", "siege", "crossroads", "karst", "origin"
         );
         mapNames.addAll((String[])Reflect.get(maps.getClass(), "defaultMapNames"));
