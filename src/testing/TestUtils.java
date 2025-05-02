@@ -22,7 +22,7 @@ import static mindustry.Vars.*;
 import static testing.ui.TUDialogs.*;
 
 public class TestUtils extends Mod{
-    private static boolean teleport, hasProc;
+    private static boolean teleport;
 
     public TestUtils(){
         if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
