@@ -19,10 +19,10 @@ description: "Utilities for testing stuff in sandbox. (Load the game with this m
 #short description displayed under the title
 subtitle: "Easier to use than the console."
 
-version: 68.6
+version: 68.7
 
 #the minimum game build required to run this mod
-minGameVersion: 147
+minGameVersion: 150
 
 #this is a java mod
 java: true

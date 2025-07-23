@@ -6,7 +6,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.content.*;
-import mindustry.editor.DrawOperation.*;
 import mindustry.editor.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -126,7 +125,7 @@ public class TerrainPainter{
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
                     if(drawBlock.rotate && data.build() != null && data.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(data.x(), data.y(), (byte)OpType.rotation.ordinal(), (byte)rotation));
+                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation));
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
@@ -216,7 +215,7 @@ public class TerrainPainter{
                     rotation |= (1 << i);
                 }
             }
-            addPaintOp(PaintOp.get(tile.x, tile.y, (byte)OpType.block.ordinal(), Blocks.cliff.id, tile.data));
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data));
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){

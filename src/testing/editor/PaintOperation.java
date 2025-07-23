@@ -2,7 +2,6 @@ package testing.editor;
 
 import arc.struct.*;
 import mindustry.editor.*;
-import mindustry.editor.DrawOperation.*;
 import mindustry.game.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
@@ -12,6 +11,13 @@ import static testing.util.TUVars.*;
 
 /** Based on {@link DrawOperation} */
 public class PaintOperation{
+    static final byte
+        opFloor = 0,
+        opBlock = 1,
+        opRotation = 2,
+        opTeam = 3,
+        opOverlay = 4;
+
     private final LongSeq array = new LongSeq();
 
     public boolean isEmpty(){
@@ -42,47 +48,51 @@ public class PaintOperation{
     }
 
     private short getTile(Tile tile, byte type){
-        if(type == OpType.floor.ordinal()){
-            return tile.floorID();
-        }else if(type == OpType.block.ordinal()){
-            return tile.blockID();
-        }else if(type == OpType.rotation.ordinal()){
-            return tile.build == null ? 0 : (byte)tile.build.rotation;
-        }else if(type == OpType.team.ordinal()){
-            return (byte)tile.getTeamID();
-        }else if(type == OpType.overlay.ordinal()){
-            return tile.overlayID();
-        }
-        throw new IllegalArgumentException("Invalid type.");
+        return switch(type){
+            case opFloor -> tile.floorID();
+            case opOverlay -> tile.overlayID();
+            case opBlock -> tile.blockID();
+            case opRotation -> tile.build == null ? 0 : (byte)tile.build.rotation;
+            case opTeam -> (byte)tile.getTeamID();
+            default -> throw new IllegalArgumentException("Invalid type.");
+        };
     }
 
     private void setTile(Tile tile, byte type, short to, byte data){
         painter.load(() -> {
-            if(type == OpType.floor.ordinal()){
-                if(content.block(to) instanceof Floor floor){
-                    tile.setFloor(floor);
-                }
-            }else if(type == OpType.block.ordinal()){
-                Block block = content.block(to);
-
-                if(block instanceof Cliff){
-                    if(data == 0){
-                        painter.pendingCliffs.add(tile); //Pending cliff was added
-                    }else{
-                        painter.pendingCliffs.remove(tile); //Preexisting cliff was added
+            switch(type){
+                case opFloor -> {
+                    if(content.block(to) instanceof Floor floor){
+                        tile.setFloor(floor);
                     }
-                }else if(tile.block() instanceof Cliff){
-                    if(tile.data == 0) painter.pendingCliffs.remove(tile); //Pending cliff was removed
                 }
+                case opOverlay -> {
+                    if(content.block(to) instanceof Floor floor){
+                        tile.setOverlay(floor);
+                    }
+                }
+                case opBlock -> {
+                    Block block = content.block(to);
 
-                tile.setBlock(block, tile.team(), tile.build == null ? 0 : tile.build.rotation);
-                tile.data = data;
-            }else if(type == OpType.rotation.ordinal()){
-                if(tile.build != null) tile.build.rotation = to;
-            }else if(type == OpType.team.ordinal()){
-                tile.setTeam(Team.get(to));
-            }else if(type == OpType.overlay.ordinal()){
-                tile.setOverlayID(to);
+                    if(block instanceof Cliff){
+                        if(data == 0){
+                            painter.pendingCliffs.add(tile); //Pending cliff was added
+                        }else{
+                            painter.pendingCliffs.remove(tile); //Preexisting cliff was added
+                        }
+                    }else if(tile.block() instanceof Cliff){
+                        if(tile.data == 0) painter.pendingCliffs.remove(tile); //Pending cliff was removed
+                    }
+
+                    tile.setBlock(block, tile.team(), tile.build == null ? 0 : tile.build.rotation);
+                    if(tile.build != null){
+                        tile.build.enabled = true;
+                    }
+                }
+                case opRotation -> {
+                    if(tile.build != null) tile.build.rotation = to;
+                }
+                case opTeam -> tile.setTeam(Team.get(to));
             }
         });
     }

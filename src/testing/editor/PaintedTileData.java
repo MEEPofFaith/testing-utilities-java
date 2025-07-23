@@ -2,7 +2,6 @@ package testing.editor;
 
 import arc.func.*;
 import mindustry.content.*;
-import mindustry.editor.DrawOperation.*;
 import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -30,15 +29,16 @@ public class PaintedTileData{
         if(type instanceof OverlayFloor){
             //don't place on liquids
             if(tFloor.hasSurface() || !type.needsSurface){
-                setOverlayID(type.id);
+                setOverlay(type);
             }
             return;
         }
 
-        if(tFloor == type && overlayID() == 0) return;
-        if(overlayID() != 0) op(OpType.overlay, overlayID());
-        if(tFloor != type) op(OpType.floor, tFloor.id);
+        if(tFloor == type) return;
+        op(PaintOperation.opFloor, tFloor.id);
+
         tile.setFloor(type);
+        type.floorChanged(tile);
     }
 
     /** Sets the floor, preserving overlay.*/
@@ -86,13 +86,13 @@ public class PaintedTileData{
 
         if(!isCenter()){
             PaintedTileData cen = painter.data(tBuild.tile);
-            cen.op(OpType.rotation, (byte)tBuild.rotation);
-            cen.op(OpType.team, (byte)tBuild.team.id);
-            cen.op(OpType.block, tBlock.id, data);
+            cen.op(PaintOperation.opRotation, (byte)tBuild.rotation);
+            cen.op(PaintOperation.opTeam, (byte)tBuild.team.id);
+            cen.op(PaintOperation.opBlock, tBlock.id, data);
         }else{
-            if(tBuild != null) op(OpType.rotation, (byte)tBuild.rotation);
-            if(tBuild != null) op(OpType.team, (byte)tBuild.team.id);
-            op(OpType.block, tBlock.id, data);
+            if(tBuild != null) op(PaintOperation.opRotation, (byte)tBuild.rotation);
+            if(tBuild != null) op(PaintOperation.opTeam, (byte)tBuild.team.id);
+            op(PaintOperation.opBlock, tBlock.id, data);
         }
 
         tile.setBlock(type, team, rotation, entityprov);
@@ -105,7 +105,7 @@ public class PaintedTileData{
         }
 
         if(getTeamID() == team.id) return;
-        op(OpType.team, (byte)getTeamID());
+        op(PaintOperation.opTeam, (byte)getTeamID());
         tile.setTeam(team);
     }
 
@@ -117,10 +117,10 @@ public class PaintedTileData{
 
         Floor tFloor = tile.floor();
         Floor tOverlay = tile.overlay();
-        if(!tFloor.hasSurface() && overlay.asFloor().needsSurface && (overlay instanceof OreBlock || !tFloor.supportsOverlay))
-            return;
+
+        if(!tFloor.hasSurface() && overlay.asFloor().needsSurface && (overlay instanceof OreBlock || !tFloor.supportsOverlay)) return;
         if(tOverlay == overlay) return;
-        op(OpType.overlay, tOverlay.id);
+        op(PaintOperation.opOverlay, tOverlay.id);
         tile.setOverlay(overlay);
     }
 
@@ -188,11 +188,11 @@ public class PaintedTileData{
         setOverlayID((short)0);
     }
 
-    private void op(OpType type, short value){
+    private void op(int type, short value){
         op(type, value, (byte)0);
     }
 
-    private void op(OpType type, short value, byte data){
-        painter.addPaintOp(PaintOp.get(x(), y(), (byte)type.ordinal(), value, data));
+    private void op(int type, short value, byte data){
+        painter.addPaintOp(PaintOp.get(x(), y(), (byte)type, value, data));
     }
 }
