@@ -28,6 +28,7 @@ public class TerrainPainter{
     public int rotation;
     public Block drawBlock = Blocks.boulder;
     public Team drawTeam = Team.sharded;
+    public boolean lockFloor, lockOverlay, lockExtra;
     public byte floorData, overlayData;
     public int extraData;
 
@@ -124,14 +125,18 @@ public class TerrainPainter{
             Cons<PaintedTileData> drawer = data -> {
                 if(!tester.get(data)) return;
 
+                byte floorD = lockFloor ? data.floorData() : floorData;
+                byte overlayD = lockOverlay ? data.overlayData() : overlayData;
+                int extraD = lockExtra ? data.extraData() : extraData;
+
                 if(isFloor){
                     if(forceOverlay){
                         data.setOverlay(drawBlock.asFloor());
-                        data.setData(floorData, overlayData, extraData);
+                        data.setData(floorD, overlayD, extraD);
                     }else{
                         if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
                             data.setFloor(drawBlock.asFloor());
-                            data.setData(floorData, overlayData, extraData);
+                            data.setData(floorD, overlayD, extraD);
                         }
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
@@ -140,7 +145,7 @@ public class TerrainPainter{
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
-                    data.setData(floorData, overlayData, extraData);
+                    data.setData(floorD, overlayD, extraD);
                 }
             };
 
@@ -155,8 +160,14 @@ public class TerrainPainter{
     }
 
     public void drawData(int x, int y){
+        if(lockFloor && lockOverlay && lockExtra) return; //Nothing happens
+
         drawCircle(x, y, brushSize, data -> {
-            data.setData(floorData, overlayData, extraData);
+            data.setData(
+                lockFloor ? data.floorData() : floorData,
+                lockOverlay ? data.overlayData() : overlayData,
+                lockExtra ? data.extraData() : extraData
+            );
         });
     }
 
