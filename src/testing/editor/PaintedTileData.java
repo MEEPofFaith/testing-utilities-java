@@ -132,7 +132,18 @@ public class PaintedTileData{
             return;
         }
 
-        dataOp(floorData, overlayData, extraData);
+        byte tFloor = floorData();
+        byte tOverlay = overlayData();
+        int tExtra = extraData();
+
+        if(tFloor == floorData && tOverlay == overlayData && tExtra == extraData) return;
+        dataOp(tFloor, tOverlay, tExtra);
+
+        tile.floorData = floorData;
+        tile.overlayData = overlayData;
+        tile.extraData = extraData;
+        tile.recache();
+        tile.recacheWall();
     }
 
     private boolean skip(){
@@ -216,10 +227,7 @@ public class PaintedTileData{
     }
 
     private void op(byte type, short value, byte data){
-        painter.addPaintOp(
-            PaintOp.get(x(), y(), type, value, data),
-            PaintData.get(floorData(), overlayData(), extraData())
-        );
+        painter.addPaintOp(PaintOp.get(x(), y(), type, value, data), 0);
     }
 
     private void dataOp(byte floorData, byte overlayData, int extraData){
