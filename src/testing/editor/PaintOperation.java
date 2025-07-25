@@ -16,9 +16,11 @@ public class PaintOperation{
         opBlock = 1,
         opRotation = 2,
         opTeam = 3,
-        opOverlay = 4;
+        opOverlay = 4,
+        opData = 5;
 
     private final LongSeq array = new LongSeq();
+    private final IntSeq extraData = new IntSeq();
 
     public boolean isEmpty(){
         return array.isEmpty();
@@ -43,8 +45,10 @@ public class PaintOperation{
     private void updateTile(int i){
         long l = array.get(i);
         Tile tile = painter.tile(PaintOp.x(l), PaintOp.y(l));
+        int data = tile.extraData;
         array.set(i, PaintOp.get(PaintOp.x(l), PaintOp.y(l), PaintOp.type(l), getTile(tile, PaintOp.type(l)), tile.data));
-        setTile(painter.tile(PaintOp.x(l), PaintOp.y(l)), PaintOp.type(l), PaintOp.value(l), PaintOp.data(l));
+        extraData.set(i, tile.extraData);
+        setTile(tile, PaintOp.type(l), PaintOp.value(l), PaintOp.data(l), data);
     }
 
     private short getTile(Tile tile, byte type){
@@ -54,11 +58,12 @@ public class PaintOperation{
             case opBlock -> tile.blockID();
             case opRotation -> tile.build == null ? 0 : (byte)tile.build.rotation;
             case opTeam -> (byte)tile.getTeamID();
+            case opData -> 0; //In separate array
             default -> throw new IllegalArgumentException("Invalid type.");
         };
     }
 
-    private void setTile(Tile tile, byte type, short to, byte data){
+    private void setTile(Tile tile, byte type, short to, byte data, int extraData){
         painter.load(() -> {
             switch(type){
                 case opFloor -> {
@@ -94,6 +99,7 @@ public class PaintOperation{
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
             }
+            tile.extraData = extraData;
         });
     }
 }
