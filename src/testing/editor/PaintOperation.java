@@ -102,10 +102,12 @@ public class PaintOperation{
                     if(tile.build != null) tile.build.rotation = to;
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
+                case opData -> {
+                    tile.floorData = floorData;
+                    tile.overlayData = overlayData;
+                    tile.extraData = extraData;
+                }
             }
-            tile.floorData = floorData;
-            tile.overlayData = overlayData;
-            tile.extraData = extraData;
         });
     }
 }
