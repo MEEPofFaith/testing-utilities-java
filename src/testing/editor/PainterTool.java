@@ -20,6 +20,7 @@ public enum PainterTool{
 
             Tile tile = painter.tile(x, y);
             painter.setDrawBlock(tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block());
+            painter.setData(tile.floorData, tile.overlayData, tile.extraData);
         }
     },
     line("replace", "orthogonal"){

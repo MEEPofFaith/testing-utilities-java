@@ -92,6 +92,13 @@ public class TerrainPainter{
         Setup.terrainFrag.updateMenu();
     }
 
+    public void setData(byte floor, byte overlay, int extra){
+        floorData = floor;
+        overlayData = overlay;
+        extraData = extra;
+        //TODO update UI
+    }
+
     public void drawBlocksReplace(int x, int y){
         drawBlocks(x, y, data -> data.block() != Blocks.air || drawBlock.isFloor());
     }
