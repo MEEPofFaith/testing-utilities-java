@@ -124,6 +124,15 @@ public class PaintedTileData{
         tile.setOverlay(overlay);
     }
 
+    public void setExtraData(int extraData){
+        if(skip()){
+            tile.extraData = extraData;
+            return;
+        }
+
+        dataOp(extraData);
+    }
+
     private boolean skip(){
         return painter.isLoading() || world.isGenerating();
     }
@@ -176,6 +185,10 @@ public class PaintedTileData{
         return tile.build;
     }
 
+    public int extraData(){
+        return tile.extraData;
+    }
+
     public void setOverlayID(short ore){
         setOverlay(content.block(ore));
     }
@@ -188,11 +201,15 @@ public class PaintedTileData{
         setOverlayID((short)0);
     }
 
-    private void op(int type, short value){
+    private void op(byte type, short value){
         op(type, value, (byte)0);
     }
 
-    private void op(int type, short value, byte data){
-        painter.addPaintOp(PaintOp.get(x(), y(), (byte)type, value, data));
+    private void op(byte type, short value, byte data){
+        painter.addPaintOp(PaintOp.get(x(), y(), type, value, data), extraData());
+    }
+
+    private void dataOp(int data){
+        painter.addPaintOp(PaintOp.get(x(), y(), PaintOperation.opData, (short)0, (byte)0), data);
     }
 }

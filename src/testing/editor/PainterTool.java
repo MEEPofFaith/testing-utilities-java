@@ -46,8 +46,7 @@ public enum PainterTool{
             });
         }
     },
-    //the "under liquid" rendering is too buggy to make public
-    pencil("replace", "square", "drawteams"/*, "underliquid"*/){
+    pencil("replace", "square", "drawteams", "extradata"){
         {
             edit = true;
             draggable = true;
@@ -68,7 +67,8 @@ public enum PainterTool{
                 //draw teams
                 painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
             }else if(mode == 3){
-                painter.drawBlocks(x, y, false, true, data -> data.floor().isLiquid);
+                //draw extraData
+                painter.drawExtraData(x, y, painter.extraData);
             }
 
         }

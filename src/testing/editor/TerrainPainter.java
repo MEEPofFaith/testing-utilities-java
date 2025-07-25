@@ -28,6 +28,7 @@ public class TerrainPainter{
     public int rotation;
     public Block drawBlock = Blocks.boulder;
     public Team drawTeam = Team.sharded;
+    public int extraData;
 
     public boolean isLoading(){
         return loading;
@@ -118,17 +119,20 @@ public class TerrainPainter{
                 if(isFloor){
                     if(forceOverlay){
                         data.setOverlay(drawBlock.asFloor());
+                        data.setExtraData(extraData);
                     }else{
                         if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
                             data.setFloor(drawBlock.asFloor());
+                            data.setExtraData(extraData);
                         }
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
                     if(drawBlock.rotate && data.build() != null && data.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation));
+                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation), data.extraData());
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
+                    data.setExtraData(extraData);
                 }
             };
 
@@ -140,6 +144,12 @@ public class TerrainPainter{
                 drawCircle(x, y, brushSize, drawer);
             }
         }
+    }
+
+    public void drawExtraData(int x, int y, int extraData){
+        drawCircle(x, y, brushSize, data -> {
+            data.setExtraData(extraData);
+        });
     }
 
     boolean hasOverlap(int x, int y){
@@ -215,7 +225,7 @@ public class TerrainPainter{
                     rotation |= (1 << i);
                 }
             }
-            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data));
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data), tile.extraData);
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){
@@ -272,11 +282,11 @@ public class TerrainPainter{
         currentOp = null;
     }
 
-    public void addPaintOp(long data){
+    public void addPaintOp(long data, int extraData){
         if(loading) return;
 
         if(currentOp == null) currentOp = new PaintOperation();
-        currentOp.addOperation(data);
+        currentOp.addOperation(data, extraData);
     }
 
     public PaintedTileData data(int x, int y){

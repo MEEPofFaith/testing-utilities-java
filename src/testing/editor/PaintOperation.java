@@ -26,8 +26,9 @@ public class PaintOperation{
         return array.isEmpty();
     }
 
-    public void addOperation(long op){
+    public void addOperation(long op, int data){
         array.add(op);
+        extraData.add(data);
     }
 
     public void undo(){
