@@ -28,6 +28,7 @@ public class TerrainPainter{
     public int rotation;
     public Block drawBlock = Blocks.boulder;
     public Team drawTeam = Team.sharded;
+    public byte floorData, overlayData;
     public int extraData;
 
     public boolean isLoading(){
@@ -119,11 +120,11 @@ public class TerrainPainter{
                 if(isFloor){
                     if(forceOverlay){
                         data.setOverlay(drawBlock.asFloor());
-                        data.setExtraData(extraData);
+                        data.setData(floorData, overlayData, extraData);
                     }else{
                         if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
                             data.setFloor(drawBlock.asFloor());
-                            data.setExtraData(extraData);
+                            data.setData(floorData, overlayData, extraData);
                         }
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
@@ -132,7 +133,7 @@ public class TerrainPainter{
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
-                    data.setExtraData(extraData);
+                    data.setData(floorData, overlayData, extraData);
                 }
             };
 
@@ -146,9 +147,9 @@ public class TerrainPainter{
         }
     }
 
-    public void drawExtraData(int x, int y, int extraData){
+    public void drawData(int x, int y){
         drawCircle(x, y, brushSize, data -> {
-            data.setExtraData(extraData);
+            data.setData(floorData, overlayData, extraData);
         });
     }
 
@@ -282,11 +283,11 @@ public class TerrainPainter{
         currentOp = null;
     }
 
-    public void addPaintOp(long data, int extraData){
+    public void addPaintOp(long op, long data){
         if(loading) return;
 
         if(currentOp == null) currentOp = new PaintOperation();
-        currentOp.addOperation(data, extraData);
+        currentOp.addOperation(op, data);
     }
 
     public PaintedTileData data(int x, int y){

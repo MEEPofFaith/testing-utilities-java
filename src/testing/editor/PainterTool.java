@@ -46,7 +46,7 @@ public enum PainterTool{
             });
         }
     },
-    pencil("replace", "square", "drawteams", "extradata"){
+    pencil("replace", "square", "drawteams", "data"){
         {
             edit = true;
             draggable = true;
@@ -67,8 +67,8 @@ public enum PainterTool{
                 //draw teams
                 painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
             }else if(mode == 3){
-                //draw extraData
-                painter.drawExtraData(x, y, painter.extraData);
+                //draw data
+                painter.drawData(x, y);
             }
 
         }

@@ -20,15 +20,15 @@ public class PaintOperation{
         opData = 5;
 
     private final LongSeq array = new LongSeq();
-    private final IntSeq extraData = new IntSeq();
+    private final LongSeq dataArray = new LongSeq();
 
     public boolean isEmpty(){
         return array.isEmpty();
     }
 
-    public void addOperation(long op, int data){
+    public void addOperation(long op, long data){
         array.add(op);
-        extraData.add(data);
+        dataArray.add(data);
     }
 
     public void undo(){
@@ -44,12 +44,15 @@ public class PaintOperation{
     }
 
     private void updateTile(int i){
-        long l = array.get(i);
-        Tile tile = painter.tile(PaintOp.x(l), PaintOp.y(l));
-        int data = tile.extraData;
-        array.set(i, PaintOp.get(PaintOp.x(l), PaintOp.y(l), PaintOp.type(l), getTile(tile, PaintOp.type(l)), tile.data));
-        extraData.set(i, tile.extraData);
-        setTile(tile, PaintOp.type(l), PaintOp.value(l), PaintOp.data(l), data);
+        long op = array.get(i);
+        long data = dataArray.get(i);
+        Tile tile = painter.tile(PaintOp.x(op), PaintOp.y(op));
+        array.set(i, PaintOp.get(PaintOp.x(op), PaintOp.y(op), PaintOp.type(op), getTile(tile, PaintOp.type(op)), tile.data));
+        dataArray.set(i, PaintData.get(tile.floorData, tile.overlayData, tile.extraData));
+        setTile(tile,
+            PaintOp.type(op), PaintOp.value(op), PaintOp.data(op),
+            PaintData.floor(data), PaintData.overlay(data), PaintData.extra(data)
+        );
     }
 
     private short getTile(Tile tile, byte type){
@@ -64,7 +67,7 @@ public class PaintOperation{
         };
     }
 
-    private void setTile(Tile tile, byte type, short to, byte data, int extraData){
+    private void setTile(Tile tile, byte type, short to, byte data, byte floorData, byte overlayData, int extraData){
         painter.load(() -> {
             switch(type){
                 case opFloor -> {
@@ -100,6 +103,8 @@ public class PaintOperation{
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
             }
+            tile.floorData = floorData;
+            tile.overlayData = overlayData;
             tile.extraData = extraData;
         });
     }

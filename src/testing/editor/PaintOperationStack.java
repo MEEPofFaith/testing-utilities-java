@@ -6,7 +6,7 @@ import mindustry.editor.*;
 /** Based on {@link OperationStack} */
 public class PaintOperationStack{
     private static final int maxSize = 10;
-    private Seq<PaintOperation> stack = new Seq<>();
+    private final Seq<PaintOperation> stack = new Seq<>();
     private int index = 0;
 
     public PaintOperationStack(){
