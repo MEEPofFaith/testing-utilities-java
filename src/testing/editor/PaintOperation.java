@@ -26,8 +26,11 @@ public class PaintOperation{
         return array.isEmpty();
     }
 
-    public void addOperation(long op, long data){
+    public void addOperation(long op){
         array.add(op);
+    }
+
+    public void addData(long data){
         dataArray.add(data);
     }
 
@@ -102,12 +105,10 @@ public class PaintOperation{
                     if(tile.build != null) tile.build.rotation = to;
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
-                case opData -> {
-                    tile.floorData = floorData;
-                    tile.overlayData = overlayData;
-                    tile.extraData = extraData;
-                }
             }
+            tile.floorData = floorData;
+            tile.overlayData = overlayData;
+            tile.extraData = extraData;
         });
     }
 }

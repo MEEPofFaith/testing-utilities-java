@@ -141,7 +141,8 @@ public class TerrainPainter{
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
                     if(drawBlock.rotate && data.build() != null && data.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation), data.extraData());
+                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation));
+                        addDataOp(PaintData.get(data.floorData(), data.overlayData(), data.extraData()));
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
@@ -244,7 +245,8 @@ public class TerrainPainter{
                     rotation |= (1 << i);
                 }
             }
-            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data), tile.extraData);
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data));
+            addDataOp(PaintData.get(tile.floorData, tile.overlayData, tile.extraData));
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){
@@ -301,11 +303,18 @@ public class TerrainPainter{
         currentOp = null;
     }
 
-    public void addPaintOp(long op, long data){
+    public void addPaintOp(long op){
         if(loading) return;
 
         if(currentOp == null) currentOp = new PaintOperation();
-        currentOp.addOperation(op, data);
+        currentOp.addOperation(op);
+    }
+
+    public void addDataOp(long data){
+        if(loading) return;
+
+        if(currentOp == null) currentOp = new PaintOperation();
+        currentOp.addData(data);
     }
 
     public PaintedTileData data(int x, int y){

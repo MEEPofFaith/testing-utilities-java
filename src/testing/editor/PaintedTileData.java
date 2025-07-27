@@ -8,6 +8,7 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 import static testing.util.TUVars.*;
 
@@ -22,6 +23,7 @@ public class PaintedTileData{
     public void setFloor(Floor type){
         if(skip()){
             tile.setFloor(type);
+            type.placeEnded(tile, null, 0, type.lastConfig);
             return;
         }
 
@@ -38,6 +40,7 @@ public class PaintedTileData{
         op(PaintOperation.opFloor, tFloor.id);
 
         tile.setFloor(type);
+        setConfig(type, 0);
         type.floorChanged(tile);
     }
 
@@ -65,6 +68,7 @@ public class PaintedTileData{
     public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
         if(skip()){
             tile.setBlock(type, team, rotation, entityprov);
+            type.placeEnded(tile, null, 0, type.lastConfig);
             return;
         }
 
@@ -96,6 +100,7 @@ public class PaintedTileData{
         }
 
         tile.setBlock(type, team, rotation, entityprov);
+        setConfig(type, rotation);
     }
     
     public void setTeam(Team team){
@@ -112,6 +117,7 @@ public class PaintedTileData{
     public void setOverlay(Block overlay){
         if(skip()){
             tile.setOverlay(overlay);
+            overlay.placeEnded(tile, null, 0, overlay.lastConfig);
             return;
         }
 
@@ -122,9 +128,17 @@ public class PaintedTileData{
         if(tOverlay == overlay) return;
         op(PaintOperation.opOverlay, tOverlay.id);
         tile.setOverlay(overlay);
+        setConfig(overlay, 0);
+    }
+
+    public void setConfig(Block block, int rotation){
+        dataOp(tile.floorData, tile.overlayData, tile.extraData);
+        block.placeEnded(tile, null, rotation, block.lastConfig);
     }
 
     public void setData(byte floorData, byte overlayData, int extraData){
+        if(!settings.getBool("tu-data-painting", false)) return;
+
         if(skip()){
             tile.floorData = floorData;
             tile.overlayData = overlayData;
@@ -137,6 +151,7 @@ public class PaintedTileData{
         int tExtra = extraData();
 
         if(tFloor == floorData && tOverlay == overlayData && tExtra == extraData) return;
+        op(PaintOperation.opData, (short)0);
         dataOp(tFloor, tOverlay, tExtra);
 
         tile.floorData = floorData;
@@ -227,12 +242,11 @@ public class PaintedTileData{
     }
 
     private void op(byte type, short value, byte data){
-        painter.addPaintOp(PaintOp.get(x(), y(), type, value, data), 0);
+        painter.addPaintOp(PaintOp.get(x(), y(), type, value, data));
     }
 
     private void dataOp(byte floorData, byte overlayData, int extraData){
-        painter.addPaintOp(
-            PaintOp.get(x(), y(), PaintOperation.opData, (short)0, (byte)0),
+        painter.addDataOp(
             PaintData.get(floorData, overlayData, extraData)
         );
     }

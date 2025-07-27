@@ -47,7 +47,8 @@ public enum PainterTool{
             });
         }
     },
-    pencil("replace", "square", "drawteams", "data"){
+    //Painting data is unintuitive
+    pencil("replace", "square", "drawteams"/*, "data"*/){
         {
             edit = true;
             draggable = true;

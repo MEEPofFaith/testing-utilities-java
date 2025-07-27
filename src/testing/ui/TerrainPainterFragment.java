@@ -209,6 +209,77 @@ public class TerrainPainterFragment{
                 all.stack(slider, label).width(sliderWidth).padTop(4f);
                 all.row();
 
+                boolean[] lastDataPainting = {settings.getBool("tu-data-painting", false)};
+                all.collapser(d -> {
+                    ImageButton lockFloor = d.button(painter.lockFloor ? Icon.lock : Icon.lockOpen, () -> {}).get();
+                    lockFloor.changed(() -> {
+                        painter.lockFloor = !painter.lockFloor;
+                        lockFloor.image(painter.lockFloor ? Icon.lock : Icon.lockOpen);
+                    });
+                    lockFloor.setChecked(painter.lockFloor);
+                    TextField floorField = d.field(String.valueOf(painter.floorData), s -> painter.floorData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
+                    floorField.setMessageText("Floor");
+                    floorField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    d.row();
+
+                    ImageButton lockOverlay = d.button(painter.lockOverlay ? Icon.lock : Icon.lockOpen, () -> {}).get();
+                    lockOverlay.changed(() -> {
+                        painter.lockOverlay = !painter.lockOverlay;
+                        lockFloor.image(painter.lockOverlay ? Icon.lock : Icon.lockOpen);
+                    });
+                    lockOverlay.setChecked(painter.lockOverlay);
+                    TextField overlayField = d.field(String.valueOf(painter.overlayData), s -> painter.overlayData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
+                    overlayField.setMessageText("Overlay");
+                    overlayField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    d.row();
+
+                    ImageButton lockExtra = d.button(painter.lockExtra ? Icon.lock : Icon.lockOpen, () -> {}).get();
+                    lockExtra.changed(() -> {
+                        painter.lockExtra = !painter.lockExtra;
+                        lockFloor.image(painter.lockExtra ? Icon.lock : Icon.lockOpen);
+                    });
+                    lockExtra.setChecked(painter.lockExtra);
+                    TextField extraField = d.field(String.valueOf(painter.extraData), s -> painter.extraData = Strings.parseInt(s, 0)).growX().get();
+                    extraField.setMessageText("Extra");
+                    extraField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    d.button(c -> {
+                        c.margin(4f);
+                        c.left();
+                        c.table(Tex.pane, in -> {
+                            in.image(Tex.whiteui).update(i -> i.color.set(painter.extraData | 0xff)).grow();
+                        }).margin(4).size(50f).padRight(10);
+                    }, Styles.cleart, () -> {
+                        ui.picker.show(
+                            new Color(painter.extraData | 0xff), false,
+                            col -> {
+                                painter.extraData = col.rgba8888();
+                                extraField.setText(String.valueOf(painter.extraData));
+                            }
+                        );
+                    }).right();
+                }, () -> settings.getBool("tu-data-painting", false)).growX().with(c -> c.setEnforceMinSize(true)).update(col -> {
+                    boolean setting = settings.getBool("tu-data-painting");
+                    if(lastDataPainting[0] != setting){
+                        col.invalidateHierarchy();
+                        lastDataPainting[0] = setting;
+                    }
+                });
+                all.row();
+
+                Table[] configTable = {null};
+                Block[] lastBlock = {null};
+                all.collapser(c -> configTable[0] = c, () -> painter.drawBlock.editorConfigurable).with(c -> c.setEnforceMinSize(true)).update(col -> {
+                    if(lastBlock[0] != painter.drawBlock){
+                        configTable[0].clear();
+                        if(painter.drawBlock != null){
+                            painter.drawBlock.buildEditorConfig(configTable[0]);
+                            col.invalidateHierarchy();
+                        }
+                        lastBlock[0] = painter.drawBlock;
+                    }
+                });
+                all.row();
+
                 HoldImageButton cButton = new HoldImageButton(TUIcons.get(Icon.terrain));
                 cButton.clicked(() -> painter.flushCliffs(indentCliff));
                 cButton.held(() -> indentCliff = !indentCliff);
