@@ -251,4 +251,8 @@ public class TerrainPaintbrush{
     public void setTool(PainterTool tool){
         this.tool = tool;
     }
+
+    public boolean dataTool(){
+        return tool.data && tool.mode == tool.altModes.length - 1;
+    }
 }

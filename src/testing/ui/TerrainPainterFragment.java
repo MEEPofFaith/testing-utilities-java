@@ -8,9 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.Button.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -113,7 +111,7 @@ public class TerrainPainterFragment{
                                     int mode = i;
                                     String name = tool.altModes[i];
 
-                                    Cell<Button> altButton = table.button(b -> {
+                                    table.button(b -> {
                                         b.left();
                                         b.marginLeft(6);
                                         b.setStyle(Styles.flatTogglet);
@@ -124,11 +122,6 @@ public class TerrainPainterFragment{
                                         tool.mode = (tool.mode == mode ? -1 : mode);
                                         table.remove();
                                     }).update(b -> b.setChecked(tool.mode == mode));
-                                    if(tool.data && i == tool.altModes.length - 1){
-                                        altButton.disabled(b -> !settings.getBool("tu-data-painting", false));
-                                        ButtonStyle style = altButton.get().getStyle();
-                                        style.disabled = ((TextureRegionDrawable)Tex.whiteui).tint(Pal.darkerGray);
-                                    }
                                     table.row();
                                 }
 
@@ -217,7 +210,7 @@ public class TerrainPainterFragment{
                 all.stack(slider, label).width(sliderWidth).padTop(4f);
                 all.row();
 
-                boolean[] lastDataPainting = {settings.getBool("tu-data-painting", false)};
+                boolean[] lastDataPainting = {paintbrush.dataTool()};
                 all.collapser(d -> {
                     ImageButton lockFloor = d.button(painter.lockFloor ? Icon.lock : Icon.lockOpen, () -> {}).get();
                     lockFloor.changed(() -> painter.lockFloor = !painter.lockFloor);
@@ -261,8 +254,8 @@ public class TerrainPainterFragment{
                     }).right();
 
                     updateFields();
-                }, () -> settings.getBool("tu-data-painting", false)).growX().with(c -> c.setEnforceMinSize(true)).update(col -> {
-                    boolean setting = settings.getBool("tu-data-painting");
+                }, () -> paintbrush.dataTool()).growX().with(c -> c.setEnforceMinSize(true)).update(col -> {
+                    boolean setting = paintbrush.dataTool();
                     if(lastDataPainting[0] != setting){
                         col.invalidateHierarchy();
                         lastDataPainting[0] = setting;
@@ -272,7 +265,7 @@ public class TerrainPainterFragment{
 
                 Table[] configTable = {null};
                 Block[] lastBlock = {null};
-                all.collapser(c -> configTable[0] = c, () -> painter.drawBlock.editorConfigurable && !settings.getBool("tu-data-painting", false)).with(c -> c.setEnforceMinSize(true)).update(col -> {
+                all.collapser(c -> configTable[0] = c, () -> painter.drawBlock.editorConfigurable && !paintbrush.dataTool()).with(c -> c.setEnforceMinSize(true)).update(col -> {
                     if(lastBlock[0] != painter.drawBlock){
                         configTable[0].clear();
                         if(painter.drawBlock != null){

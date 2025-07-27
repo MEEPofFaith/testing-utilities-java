@@ -277,7 +277,7 @@ public enum PainterTool{
     public boolean edit;
     /** Whether this tool should be dragged across the canvas when the mouse moves.*/
     public boolean draggable;
-    /** Whether the last alt tool is related to data and thus should only be shown when enabled. */
+    /** Whether the last alt tool is related to data painting. */
     public final boolean data;
     PainterTool(){
         this(new String[]{});

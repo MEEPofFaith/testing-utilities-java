@@ -125,18 +125,12 @@ public class TerrainPainter{
             Cons<PaintedTileData> drawer = data -> {
                 if(!tester.get(data)) return;
 
-                byte floorD = lockFloor ? data.floorData() : floorData;
-                byte overlayD = lockOverlay ? data.overlayData() : overlayData;
-                int extraD = lockExtra ? data.extraData() : extraData;
-
                 if(isFloor){
                     if(forceOverlay){
                         data.setOverlay(drawBlock.asFloor(), rotation);
-                        data.setData(floorD, overlayD, extraD);
                     }else{
                         if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
                             data.setFloor(drawBlock.asFloor(), rotation);
-                            data.setData(floorD, overlayD, extraD);
                         }
                     }
                 }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
@@ -146,7 +140,6 @@ public class TerrainPainter{
                     }
 
                     data.setBlock(drawBlock, drawTeam, rotation);
-                    data.setData(floorD, overlayD, extraD);
                 }
             };
 

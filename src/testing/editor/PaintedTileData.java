@@ -8,7 +8,6 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
-import static arc.Core.settings;
 import static mindustry.Vars.*;
 import static testing.util.TUVars.*;
 
@@ -137,8 +136,6 @@ public class PaintedTileData{
     }
 
     public void setData(byte floorData, byte overlayData, int extraData){
-        if(!settings.getBool("tu-data-painting", false)) return;
-
         if(skip()){
             tile.floorData = floorData;
             tile.overlayData = overlayData;
