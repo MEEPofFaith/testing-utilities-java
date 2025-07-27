@@ -42,6 +42,7 @@ public class TerrainPainterFragment{
     private boolean buildings = false;
     private boolean lastIndent = false;
     private boolean indentCliff = false;
+    private TextField floorField, overlayField, extraField;
 
     public void build(Group parent){
         Boolp visibility = () -> show && !ui.minimapfrag.shown();
@@ -222,8 +223,8 @@ public class TerrainPainterFragment{
                     lockFloor.changed(() -> painter.lockFloor = !painter.lockFloor);
                     lockFloor.getStyle().imageChecked = Icon.lock;
                     lockFloor.setChecked(painter.lockFloor);
-                    TextField floorField = d.field(String.valueOf(painter.floorData), s -> painter.floorData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
-                    floorField.setMessageText("Floor");
+                    floorField = d.field("", s -> painter.floorData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
+                    floorField.setMessageText("$tu-painter.floordata");
                     floorField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
                     d.row();
 
@@ -231,8 +232,8 @@ public class TerrainPainterFragment{
                     lockOverlay.changed(() -> painter.lockOverlay = !painter.lockOverlay);
                     lockOverlay.getStyle().imageChecked = Icon.lock;
                     lockOverlay.setChecked(painter.lockOverlay);
-                    TextField overlayField = d.field(String.valueOf(painter.overlayData), s -> painter.overlayData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
-                    overlayField.setMessageText("Overlay");
+                    overlayField = d.field("", s -> painter.overlayData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
+                    overlayField.setMessageText("$tu-painter.overlaydata");
                     overlayField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
                     d.row();
 
@@ -240,8 +241,8 @@ public class TerrainPainterFragment{
                     lockExtra.changed(() -> painter.lockExtra = !painter.lockExtra);
                     lockExtra.getStyle().imageChecked = Icon.lock;
                     lockExtra.setChecked(painter.lockExtra);
-                    TextField extraField = d.field(String.valueOf(painter.extraData), s -> painter.extraData = Strings.parseInt(s, 0)).growX().get();
-                    extraField.setMessageText("Extra");
+                    extraField = d.field("", s -> painter.extraData = Strings.parseInt(s, 0)).growX().get();
+                    extraField.setMessageText("$tu-painter.extradata");
                     extraField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
                     d.button(c -> {
                         c.margin(4f);
@@ -258,6 +259,8 @@ public class TerrainPainterFragment{
                             }
                         );
                     }).right();
+
+                    updateFields();
                 }, () -> settings.getBool("tu-data-painting", false)).growX().with(c -> c.setEnforceMinSize(true)).update(col -> {
                     boolean setting = settings.getBool("tu-data-painting");
                     if(lastDataPainting[0] != setting){
@@ -355,6 +358,12 @@ public class TerrainPainterFragment{
 
     public boolean shown(){
         return show;
+    }
+
+    public void updateFields(){
+        floorField.setText(painter.floorData != 0 ? String.valueOf(painter.floorData) : "");
+        overlayField.setText(painter.overlayData != 0 ? String.valueOf(painter.overlayData) : "");
+        extraField.setText(painter.extraData != 0 ? String.valueOf(painter.extraData) : "");
     }
 
     private void rebuild(){
