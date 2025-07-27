@@ -53,7 +53,7 @@ public enum PainterTool{
             });
         }
     },
-    pencil(true, "replace", "square", "drawteams", "data"){
+    pencil(true, "replace", "square", "drawteams", "drawdata"){
         {
             edit = true;
             draggable = true;
