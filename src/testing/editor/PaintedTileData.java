@@ -20,7 +20,7 @@ public class PaintedTileData{
         this.tile = tile;
     }
 
-    public void setFloor(Floor type){
+    public void setFloor(Floor type, int rotation){
         if(skip()){
             tile.setFloor(type);
             type.placeEnded(tile, null, 0, type.lastConfig);
@@ -31,7 +31,7 @@ public class PaintedTileData{
         if(type instanceof OverlayFloor){
             //don't place on liquids
             if(tFloor.hasSurface() || !type.needsSurface){
-                setOverlay(type);
+                setOverlay(type, rotation);
             }
             return;
         }
@@ -40,16 +40,16 @@ public class PaintedTileData{
         op(PaintOperation.opFloor, tFloor.id);
 
         tile.setFloor(type);
-        setConfig(type, 0);
+        setConfig(type, rotation);
         type.floorChanged(tile);
     }
 
     /** Sets the floor, preserving overlay.*/
-    public void setFloorUnder(Floor floor){
+    public void setFloorUnder(Floor floor, int rotation){
         Block overlay = overlay();
-        setFloor(floor);
+        setFloor(floor, rotation);
         if(overlay() != overlay){
-            setOverlay(overlay);
+            setOverlay(overlay, rotation);
         }
     }
 
@@ -114,7 +114,7 @@ public class PaintedTileData{
         tile.setTeam(team);
     }
 
-    public void setOverlay(Block overlay){
+    public void setOverlay(Block overlay, int rotation){
         if(skip()){
             tile.setOverlay(overlay);
             overlay.placeEnded(tile, null, 0, overlay.lastConfig);
@@ -128,7 +128,7 @@ public class PaintedTileData{
         if(tOverlay == overlay) return;
         op(PaintOperation.opOverlay, tOverlay.id);
         tile.setOverlay(overlay);
-        setConfig(overlay, 0);
+        setConfig(overlay, rotation);
     }
 
     public void setConfig(Block block, int rotation){
@@ -226,7 +226,7 @@ public class PaintedTileData{
     }
 
     public void setOverlayID(short ore){
-        setOverlay(content.block(ore));
+        setOverlay(content.block(ore), 0);
     }
 
     public void remove(){
