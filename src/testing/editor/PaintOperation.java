@@ -106,9 +106,14 @@ public class PaintOperation{
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
             }
+            boolean dataChanged = tile.floorData != floorData || tile.overlayData != overlayData || tile.extraData != extraData;
             tile.floorData = floorData;
             tile.overlayData = overlayData;
             tile.extraData = extraData;
+            if(dataChanged){
+                tile.recache();
+                tile.recacheWall();
+            }
         });
     }
 }
