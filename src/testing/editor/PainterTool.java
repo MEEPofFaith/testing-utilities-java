@@ -14,13 +14,19 @@ import static testing.util.TUVars.*;
 
 /** Mimics {@link EditorTool} */
 public enum PainterTool{
-    pick(){
+    pick("pickdata"){
         public void touched(int x, int y){
             if(!Structs.inBounds(x, y, painter.width(), painter.height())) return;
 
             Tile tile = painter.tile(x, y);
-            painter.setDrawBlock(tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block());
-            painter.setData(tile.floorData, tile.overlayData, tile.extraData);
+            switch(mode){
+                case -1 -> { //Normal; Pick Block
+                    painter.setDrawBlock(tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block());
+                }
+                case 0 -> { //Pick Data
+                    painter.setData(tile.floorData, tile.overlayData, tile.extraData);
+                }
+            }
         }
     },
     line("replace", "orthogonal"){
@@ -56,23 +62,23 @@ public enum PainterTool{
 
         @Override
         public void touched(int x, int y){
-            if(mode == -1){
-                //normal mode
-                painter.drawBlocks(x, y);
-            }else if(mode == 0){
-                //replace mode
-                painter.drawBlocksReplace(x, y);
-            }else if(mode == 1){
-                //square mode
-                painter.drawBlocks(x, y, true, false, data -> true);
-            }else if(mode == 2){
-                //draw teams
-                painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
-            }else if(mode == 3){
-                //draw data
-                painter.drawData(x, y);
+            switch(mode){
+                case -1 -> { //normal mode
+                    painter.drawBlocks(x, y);
+                }
+                case 0 -> { //replace mode
+                    painter.drawBlocksReplace(x, y);
+                }
+                case 1 -> { //square mode
+                    painter.drawBlocks(x, y, true, false, data -> true);
+                }
+                case 2 -> { //draw teams
+                    painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
+                }
+                case 3 -> { //draw data
+                    painter.drawData(x, y);
+                }
             }
-
         }
     },
     eraser("eraseores"){
