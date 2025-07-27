@@ -99,19 +99,21 @@ task deploy(type: Jar){
     }
 }
 
-task move doLast{
-    println "Yeeting the mod jar to the shadow realm..."
+task install {
+    mustRunAfter jar
 
-    String os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
-    if(os.contains("windows")) {
-        ant.move file: "${buildDir}\\libs\\${project.archivesBaseName}Desktop.jar",
-                todir: "${System.env.USERPROFILE}\\AppData\\Roaming\\Mindustry\\mods"
-    }else if(os.contains("linux")) { //from Router
-        ant.move file: "${buildDir}/libs/${project.archivesBaseName}Desktop.jar",
-                todir: "${System.env.USERPROFILE}/.local/share/Mindustry/mods"
-    }else{
-        println "Yeah I don't know how to do this on a Mac can someone tell me?"
+    doLast {
+        println "Yeeting the mod jar to the shadow realm..."
+
+        String os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+        if (os.contains("windows")) {
+            ant.move file: "${buildDir}\\libs\\${project.archivesBaseName}Desktop.jar",
+                    todir: "${System.env.USERPROFILE}\\AppData\\Roaming\\Mindustry\\mods"
+        } else if (os.contains("linux")) { //from Router
+            ant.move file: "${buildDir}/libs/${project.archivesBaseName}Desktop.jar",
+                    todir: "${System.env.USERPROFILE}/.local/share/Mindustry/mods"
+        } else {
+            println "Yeah I don't know how to do this on a Mac can someone tell me?"
+        }
     }
 }
-
-task jarMove dependsOn "jar", "move"
