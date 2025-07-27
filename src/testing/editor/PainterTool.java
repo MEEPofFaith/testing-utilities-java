@@ -14,7 +14,7 @@ import static testing.util.TUVars.*;
 
 /** Mimics {@link EditorTool} */
 public enum PainterTool{
-    pick("pickdata"){
+    pick(true, "pickdata"){
         public void touched(int x, int y){
             if(!Structs.inBounds(x, y, painter.width(), painter.height())) return;
 
@@ -53,8 +53,7 @@ public enum PainterTool{
             });
         }
     },
-    //Painting data is unintuitive
-    pencil("replace", "square", "drawteams"/*, "data"*/){
+    pencil(true, "replace", "square", "drawteams", "data"){
         {
             edit = true;
             draggable = true;
@@ -276,12 +275,19 @@ public enum PainterTool{
     public boolean edit;
     /** Whether this tool should be dragged across the canvas when the mouse moves.*/
     public boolean draggable;
+    /** Whether the last alt tool is related to data and thus should only be shown when enabled. */
+    public final boolean data;
     PainterTool(){
         this(new String[]{});
     }
 
-    PainterTool(String... altModes){
+    PainterTool(boolean data, String... altModes){
+        this.data = data;
         this.altModes = altModes;
+    }
+
+    PainterTool(String... altModes){
+        this(false, altModes);
     }
 
     public void touched(int x, int y){}

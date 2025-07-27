@@ -8,7 +8,9 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.Button.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -110,7 +112,7 @@ public class TerrainPainterFragment{
                                     int mode = i;
                                     String name = tool.altModes[i];
 
-                                    table.button(b -> {
+                                    Cell<Button> altButton = table.button(b -> {
                                         b.left();
                                         b.marginLeft(6);
                                         b.setStyle(Styles.flatTogglet);
@@ -121,6 +123,11 @@ public class TerrainPainterFragment{
                                         tool.mode = (tool.mode == mode ? -1 : mode);
                                         table.remove();
                                     }).update(b -> b.setChecked(tool.mode == mode));
+                                    if(tool.data && i == tool.altModes.length - 1){
+                                        altButton.disabled(b -> !settings.getBool("tu-data-painting", false));
+                                        ButtonStyle style = altButton.get().getStyle();
+                                        style.disabled = ((TextureRegionDrawable)Tex.whiteui).tint(Pal.darkerGray);
+                                    }
                                     table.row();
                                 }
 
@@ -212,10 +219,8 @@ public class TerrainPainterFragment{
                 boolean[] lastDataPainting = {settings.getBool("tu-data-painting", false)};
                 all.collapser(d -> {
                     ImageButton lockFloor = d.button(painter.lockFloor ? Icon.lock : Icon.lockOpen, () -> {}).get();
-                    lockFloor.changed(() -> {
-                        painter.lockFloor = !painter.lockFloor;
-                        lockFloor.image(painter.lockFloor ? Icon.lock : Icon.lockOpen);
-                    });
+                    lockFloor.changed(() -> painter.lockFloor = !painter.lockFloor);
+                    lockFloor.getStyle().imageChecked = Icon.lock;
                     lockFloor.setChecked(painter.lockFloor);
                     TextField floorField = d.field(String.valueOf(painter.floorData), s -> painter.floorData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
                     floorField.setMessageText("Floor");
@@ -223,10 +228,8 @@ public class TerrainPainterFragment{
                     d.row();
 
                     ImageButton lockOverlay = d.button(painter.lockOverlay ? Icon.lock : Icon.lockOpen, () -> {}).get();
-                    lockOverlay.changed(() -> {
-                        painter.lockOverlay = !painter.lockOverlay;
-                        lockFloor.image(painter.lockOverlay ? Icon.lock : Icon.lockOpen);
-                    });
+                    lockOverlay.changed(() -> painter.lockOverlay = !painter.lockOverlay);
+                    lockOverlay.getStyle().imageChecked = Icon.lock;
                     lockOverlay.setChecked(painter.lockOverlay);
                     TextField overlayField = d.field(String.valueOf(painter.overlayData), s -> painter.overlayData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
                     overlayField.setMessageText("Overlay");
@@ -234,10 +237,8 @@ public class TerrainPainterFragment{
                     d.row();
 
                     ImageButton lockExtra = d.button(painter.lockExtra ? Icon.lock : Icon.lockOpen, () -> {}).get();
-                    lockExtra.changed(() -> {
-                        painter.lockExtra = !painter.lockExtra;
-                        lockFloor.image(painter.lockExtra ? Icon.lock : Icon.lockOpen);
-                    });
+                    lockExtra.changed(() -> painter.lockExtra = !painter.lockExtra);
+                    lockExtra.getStyle().imageChecked = Icon.lock;
                     lockExtra.setChecked(painter.lockExtra);
                     TextField extraField = d.field(String.valueOf(painter.extraData), s -> painter.extraData = Strings.parseInt(s, 0)).growX().get();
                     extraField.setMessageText("Extra");
@@ -268,7 +269,7 @@ public class TerrainPainterFragment{
 
                 Table[] configTable = {null};
                 Block[] lastBlock = {null};
-                all.collapser(c -> configTable[0] = c, () -> painter.drawBlock.editorConfigurable).with(c -> c.setEnforceMinSize(true)).update(col -> {
+                all.collapser(c -> configTable[0] = c, () -> painter.drawBlock.editorConfigurable && !settings.getBool("tu-data-painting", false)).with(c -> c.setEnforceMinSize(true)).update(col -> {
                     if(lastBlock[0] != painter.drawBlock){
                         configTable[0].clear();
                         if(painter.drawBlock != null){
