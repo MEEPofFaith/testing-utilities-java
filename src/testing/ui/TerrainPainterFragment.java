@@ -126,8 +126,8 @@ public class TerrainPainterFragment{
                                 }
 
                                 table.update(() -> {
-                                    Vec2 v = button.localToStageCoordinates(Tmp.v1.setZero());
-                                    table.setPosition(v.x, v.y, Align.topLeft);
+                                    Vec2 v = button.localToStageCoordinates(Tmp.v1.setZero()).add(0, button.getHeight());
+                                    table.setPosition(v.x, v.y, Align.bottomLeft);
                                     if(!shown()){
                                         table.remove();
                                         lastTable[0] = null;
