@@ -17,10 +17,10 @@ public class PaintOperation{
         opRotation = 2,
         opTeam = 3,
         opOverlay = 4,
-        opData = 5;
+        opData = 5,
+        opExtraData = 6;
 
     private final LongSeq array = new LongSeq();
-    private final LongSeq dataArray = new LongSeq();
 
     public boolean isEmpty(){
         return array.isEmpty();
@@ -28,10 +28,6 @@ public class PaintOperation{
 
     public void addOperation(long op){
         array.add(op);
-    }
-
-    public void addData(long data){
-        dataArray.add(data);
     }
 
     public void undo(){
@@ -48,29 +44,25 @@ public class PaintOperation{
 
     private void updateTile(int i){
         long op = array.get(i);
-        long data = dataArray.get(i);
         Tile tile = painter.tile(PaintOp.x(op), PaintOp.y(op));
-        array.set(i, PaintOp.get(PaintOp.x(op), PaintOp.y(op), PaintOp.type(op), getTile(tile, PaintOp.type(op)), tile.data));
-        dataArray.set(i, PaintData.get(tile.floorData, tile.overlayData, tile.extraData));
-        setTile(tile,
-            PaintOp.type(op), PaintOp.value(op), PaintOp.data(op),
-            PaintData.floor(data), PaintData.overlay(data), PaintData.extra(data)
-        );
+        array.set(i, PaintOp.get(PaintOp.x(op), PaintOp.y(op), PaintOp.type(op), getTile(tile, PaintOp.type(op))));
+        setTile(tile, PaintOp.type(op), PaintOp.value(op));
     }
 
-    private short getTile(Tile tile, byte type){
+    private int getTile(Tile tile, byte type){
         return switch(type){
             case opFloor -> tile.floorID();
             case opOverlay -> tile.overlayID();
             case opBlock -> tile.blockID();
             case opRotation -> tile.build == null ? 0 : (byte)tile.build.rotation;
             case opTeam -> (byte)tile.getTeamID();
-            case opData -> 0; //In separate array
+            case opData -> PaintData.get(tile.data, tile.floorData, tile.overlayData);
+            case opExtraData -> tile.extraData;
             default -> throw new IllegalArgumentException("Invalid type.");
         };
     }
 
-    private void setTile(Tile tile, byte type, short to, byte data, byte floorData, byte overlayData, int extraData){
+    private void setTile(Tile tile, byte type, int to){
         painter.load(() -> {
             switch(type){
                 case opFloor -> {
@@ -87,13 +79,9 @@ public class PaintOperation{
                     Block block = content.block(to);
 
                     if(block instanceof Cliff){
-                        if(data == 0){
-                            painter.pendingCliffs.add(tile); //Pending cliff was added
-                        }else{
-                            painter.pendingCliffs.remove(tile); //Preexisting cliff was added
-                        }
-                    }else if(tile.block() instanceof Cliff){
-                        if(tile.data == 0) painter.pendingCliffs.remove(tile); //Pending cliff was removed
+                        painter.pendingCliffs.add(tile); //Pending cliff was added
+                    }else if(tile.block() instanceof Cliff && tile.data == 0){
+                        painter.pendingCliffs.remove(tile); //Pending cliff was removed
                     }
 
                     tile.setBlock(block, tile.team(), tile.build == null ? 0 : tile.build.rotation);
@@ -105,14 +93,20 @@ public class PaintOperation{
                     if(tile.build != null) tile.build.rotation = to;
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
-            }
-            boolean dataChanged = tile.floorData != floorData || tile.overlayData != overlayData || tile.extraData != extraData;
-            tile.floorData = floorData;
-            tile.overlayData = overlayData;
-            tile.extraData = extraData;
-            if(dataChanged){
-                tile.recache();
-                tile.recacheWall();
+                case opData -> {
+                    tile.data = PaintData.data(to);
+                    tile.floorData = PaintData.floor(to);
+                    tile.overlayData = PaintData.overlay(to);
+
+                    tile.recache();
+                    tile.recacheWall();
+                }
+                case opExtraData -> {
+                    tile.extraData = to;
+
+                    tile.recache();
+                    tile.recacheWall();
+                }
             }
         });
     }

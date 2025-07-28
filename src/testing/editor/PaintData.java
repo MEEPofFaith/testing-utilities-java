@@ -1,23 +1,23 @@
 package testing.editor;
 
 public class PaintData{
-    private static final long floorMask = 0xFFL;
-    private static final long overlayMask = 0xFFL << 8;
-    private static final long extraMask = 0xFFFFFFFFL << 16;
+    private static final int dataMask = 0xFF;
+    private static final int floorMask = 0xFF << 8;
+    private static final int overlayMask = 0xFF << 16;
+
+    public static byte data(long l){
+        return (byte)(l & dataMask);
+    }
 
     public static byte floor(long l){
-        return (byte)(l & floorMask);
+        return (byte)((l & floorMask) >>> 8);
     }
 
     public static byte overlay(long l){
-        return (byte)((l & overlayMask) >>> 8);
+        return (byte)((l & overlayMask) >>> 16);
     }
 
-    public static int extra(long l){
-        return (int)((l & extraMask) >>> 16);
-    }
-
-    public static long get(byte floorData, byte overlayData, int extraData){
-        return (long)floorData & floorMask | (long)overlayData << 8 & overlayMask | (long)extraData << 16 & extraMask;
+    public static int get(byte data, byte floorData, byte overlayData){
+        return (int)data & dataMask | (int)floorData << 8 & floorMask | (int)overlayData << 16 & overlayMask;
     }
 }

@@ -77,25 +77,22 @@ public class PaintedTileData{
             return;
         }
 
-        byte data = 0;
         if(type instanceof Cliff){
             painter.pendingCliffs.add(tile);
             tile.data = 0;
         }else if(tBlock instanceof Cliff){
             painter.pendingCliffs.remove(tile);
-            data = tile.data;
-            tile.data = 0;
         }
 
         if(!isCenter()){
             PaintedTileData cen = painter.data(tBuild.tile);
             cen.op(PaintOperation.opRotation, (byte)tBuild.rotation);
             cen.op(PaintOperation.opTeam, (byte)tBuild.team.id);
-            cen.op(PaintOperation.opBlock, tBlock.id, data);
+            cen.op(PaintOperation.opBlock, tBlock.id);
         }else{
             if(tBuild != null) op(PaintOperation.opRotation, (byte)tBuild.rotation);
             if(tBuild != null) op(PaintOperation.opTeam, (byte)tBuild.team.id);
-            op(PaintOperation.opBlock, tBlock.id, data);
+            op(PaintOperation.opBlock, tBlock.id);
         }
 
         tile.setBlock(type, team, rotation, entityprov);
@@ -131,28 +128,44 @@ public class PaintedTileData{
     }
 
     public void setConfig(Block block, int rotation){
-        dataOp(tile.floorData, tile.overlayData, tile.extraData);
-        block.placeEnded(tile, null, rotation, block.lastConfig);
+        if(block.saveData){
+            block.placeEnded(tile, null, rotation, block.lastConfig);
+        }
     }
 
-    public void setData(byte floorData, byte overlayData, int extraData){
+    public void setData(byte data, byte floorData, byte overlayData){
         if(skip()){
+            tile.data = data;
             tile.floorData = floorData;
             tile.overlayData = overlayData;
+            return;
+        }
+
+        byte tData = data();
+        byte tFloor = floorData();
+        byte tOverlay = overlayData();
+
+        if(tData == data && tFloor == floorData && tOverlay == overlayData) return;
+        op(PaintOperation.opData, PaintData.get(tData, tFloor, tOverlay));
+
+        tile.data = data;
+        tile.floorData = floorData;
+        tile.overlayData = overlayData;
+        tile.recache();
+        tile.recacheWall();
+    }
+
+    public void setExtraData(int extraData){
+        if(skip()){
             tile.extraData = extraData;
             return;
         }
 
-        byte tFloor = floorData();
-        byte tOverlay = overlayData();
-        int tExtra = extraData();
+        int tExtraData = extraData();
 
-        if(tFloor == floorData && tOverlay == overlayData && tExtra == extraData) return;
-        op(PaintOperation.opData, (short)0);
-        dataOp(tFloor, tOverlay, tExtra);
+        if(tExtraData == extraData) return;
+        op(PaintOperation.opExtraData, tExtraData);
 
-        tile.floorData = floorData;
-        tile.overlayData = overlayData;
         tile.extraData = extraData;
         tile.recache();
         tile.recacheWall();
@@ -164,6 +177,10 @@ public class PaintedTileData{
     
     public boolean isCenter(){
         return tile.isCenter();
+    }
+
+    public boolean shouldSaveData(){
+        return tile.shouldSaveData();
     }
 
     public short x(){
@@ -210,6 +227,10 @@ public class PaintedTileData{
         return tile.build;
     }
 
+    public byte data(){
+        return tile.data;
+    }
+
     public byte floorData(){
         return tile.floorData;
     }
@@ -234,17 +255,7 @@ public class PaintedTileData{
         setOverlayID((short)0);
     }
 
-    private void op(byte type, short value){
-        op(type, value, (byte)0);
-    }
-
-    private void op(byte type, short value, byte data){
-        painter.addPaintOp(PaintOp.get(x(), y(), type, value, data));
-    }
-
-    private void dataOp(byte floorData, byte overlayData, int extraData){
-        painter.addDataOp(
-            PaintData.get(floorData, overlayData, extraData)
-        );
+    private void op(byte type, int value){
+        painter.addPaintOp(PaintOp.get(x(), y(), type, value));
     }
 }

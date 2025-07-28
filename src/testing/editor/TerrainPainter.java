@@ -122,24 +122,28 @@ public class TerrainPainter{
         }else{
             boolean isFloor = drawBlock.isFloor() && drawBlock != Blocks.air;
 
-            Cons<PaintedTileData> drawer = data -> {
-                if(!tester.get(data)) return;
+            Cons<PaintedTileData> drawer = tile -> {
+                if(!tester.get(tile)) return;
+
+                if(drawBlock.saveData || tile.shouldSaveData()){
+                    addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opData, PaintData.get(tile.data(), tile.floorData(), tile.overlayData())));
+                    addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opExtraData, tile.extraData()));
+                }
 
                 if(isFloor){
                     if(forceOverlay){
-                        data.setOverlay(drawBlock.asFloor(), rotation);
+                        tile.setOverlay(drawBlock.asFloor(), rotation);
                     }else{
-                        if(!(drawBlock.asFloor().wallOre && !data.block().solid)){
-                            data.setFloor(drawBlock.asFloor(), rotation);
+                        if(!(drawBlock.asFloor().wallOre && !tile.block().solid)){
+                            tile.setFloor(drawBlock.asFloor(), rotation);
                         }
                     }
-                }else if(!(data.block().isMultiblock() && !drawBlock.isMultiblock())){
-                    if(drawBlock.rotate && data.build() != null && data.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(data.x(), data.y(), PaintOperation.opRotation, (byte)rotation));
-                        addDataOp(PaintData.get(data.floorData(), data.overlayData(), data.extraData()));
+                }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
+                    if(drawBlock.rotate && tile.build() != null && tile.build().rotation != rotation){
+                        addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opRotation, (byte)rotation));
                     }
 
-                    data.setBlock(drawBlock, drawTeam, rotation);
+                    tile.setBlock(drawBlock, drawTeam, rotation);
                 }
             };
 
@@ -158,10 +162,11 @@ public class TerrainPainter{
 
         drawCircle(x, y, brushSize, data -> {
             data.setData(
+                data.data(),
                 lockFloor ? data.floorData() : floorData,
-                lockOverlay ? data.overlayData() : overlayData,
-                lockExtra ? data.extraData() : extraData
+                lockOverlay ? data.overlayData() : overlayData
             );
+            if(!lockExtra) data.setExtraData(extraData);
         });
     }
 
@@ -238,8 +243,9 @@ public class TerrainPainter{
                     rotation |= (1 << i);
                 }
             }
-            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, Blocks.cliff.id, tile.data));
-            addDataOp(PaintData.get(tile.floorData, tile.overlayData, tile.extraData));
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, tile.blockID()));
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opData, PaintData.get(tile.data, tile.floorData, tile.overlayData)));
+
             tile.data = (byte)rotation;
         }
         for(Tile tile : pendingCliffs){
@@ -301,13 +307,6 @@ public class TerrainPainter{
 
         if(currentOp == null) currentOp = new PaintOperation();
         currentOp.addOperation(op);
-    }
-
-    public void addDataOp(long data){
-        if(loading) return;
-
-        if(currentOp == null) currentOp = new PaintOperation();
-        currentOp.addData(data);
     }
 
     public PaintedTileData data(int x, int y){
