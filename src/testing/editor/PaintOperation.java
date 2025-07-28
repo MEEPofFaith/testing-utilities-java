@@ -18,7 +18,7 @@ public class PaintOperation{
         opTeam = 3,
         opOverlay = 4,
         opData = 5,
-        opExtraData = 6; //Note: First 8 bits get truncated.
+        opExtraData = 6;
 
     private final LongSeq array = new LongSeq();
 
@@ -58,7 +58,7 @@ public class PaintOperation{
             case opTeam -> (byte)tile.getTeamID();
             case opData -> PaintOpData.get(tile.data, tile.floorData, tile.overlayData);
             case opExtraData -> tile.extraData;
-            default -> throw new IllegalArgumentException("Invalid type.");
+            default -> throw new IllegalArgumentException("Invalid type: " + type);
         };
     }
 
