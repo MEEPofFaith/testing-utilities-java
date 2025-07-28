@@ -126,7 +126,7 @@ public class TerrainPainter{
                 if(!tester.get(tile)) return;
 
                 if(drawBlock.saveData || tile.shouldSaveData()){
-                    addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opData, PaintData.get(tile.data(), tile.floorData(), tile.overlayData())));
+                    addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opData, PaintOpData.get(tile.data(), tile.floorData(), tile.overlayData())));
                     addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opExtraData, tile.extraData()));
                 }
 
@@ -244,7 +244,7 @@ public class TerrainPainter{
                 }
             }
             addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opBlock, tile.blockID()));
-            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opData, PaintData.get(tile.data, tile.floorData, tile.overlayData)));
+            addPaintOp(PaintOp.get(tile.x, tile.y, PaintOperation.opData, PaintOpData.get(tile.data, tile.floorData, tile.overlayData)));
 
             tile.data = (byte)rotation;
         }

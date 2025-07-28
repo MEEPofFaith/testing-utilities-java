@@ -2,7 +2,7 @@ package testing.editor;
 
 import mindustry.gen.*;
 
-/** Based on {@link TileOp}. Stores an extra byte for tile data. */
+/** Based on {@link TileOp}. */
 public class PaintOp{
     private static final long xMask = 0xffffL;
     private static final long yMask = 0xffffL << 16;

@@ -1,6 +1,6 @@
 package testing.editor;
 
-public class PaintData{
+public class PaintOpData{
     private static final int dataMask = 0xFF;
     private static final int floorMask = 0xFF << 8;
     private static final int overlayMask = 0xFF << 16;

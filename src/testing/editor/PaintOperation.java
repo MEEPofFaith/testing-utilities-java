@@ -18,7 +18,7 @@ public class PaintOperation{
         opTeam = 3,
         opOverlay = 4,
         opData = 5,
-        opExtraData = 6;
+        opExtraData = 6; //Note: First 8 bits get truncated.
 
     private final LongSeq array = new LongSeq();
 
@@ -45,7 +45,7 @@ public class PaintOperation{
     private void updateTile(int i){
         long op = array.get(i);
         Tile tile = painter.tile(PaintOp.x(op), PaintOp.y(op));
-        array.set(i, PaintOp.get(PaintOp.x(op), PaintOp.y(op), PaintOp.type(op), getTile(tile, PaintOp.type(op))));
+        array.set(i, PaintOp.get(tile.x, tile.y, PaintOp.type(op), getTile(tile, PaintOp.type(op))));
         setTile(tile, PaintOp.type(op), PaintOp.value(op));
     }
 
@@ -56,7 +56,7 @@ public class PaintOperation{
             case opBlock -> tile.blockID();
             case opRotation -> tile.build == null ? 0 : (byte)tile.build.rotation;
             case opTeam -> (byte)tile.getTeamID();
-            case opData -> PaintData.get(tile.data, tile.floorData, tile.overlayData);
+            case opData -> PaintOpData.get(tile.data, tile.floorData, tile.overlayData);
             case opExtraData -> tile.extraData;
             default -> throw new IllegalArgumentException("Invalid type.");
         };
@@ -94,9 +94,9 @@ public class PaintOperation{
                 }
                 case opTeam -> tile.setTeam(Team.get(to));
                 case opData -> {
-                    tile.data = PaintData.data(to);
-                    tile.floorData = PaintData.floor(to);
-                    tile.overlayData = PaintData.overlay(to);
+                    tile.data = PaintOpData.data(to);
+                    tile.floorData = PaintOpData.floor(to);
+                    tile.overlayData = PaintOpData.overlay(to);
 
                     tile.recache();
                     tile.recacheWall();

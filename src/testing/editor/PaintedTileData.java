@@ -146,7 +146,7 @@ public class PaintedTileData{
         byte tOverlay = overlayData();
 
         if(tData == data && tFloor == floorData && tOverlay == overlayData) return;
-        op(PaintOperation.opData, PaintData.get(tData, tFloor, tOverlay));
+        op(PaintOperation.opData, PaintOpData.get(tData, tFloor, tOverlay));
 
         tile.data = data;
         tile.floorData = floorData;
