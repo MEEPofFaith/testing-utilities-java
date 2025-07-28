@@ -35,12 +35,12 @@ public class PaintedTileData{
             return;
         }
 
-        if(tFloor == type) return;
-        op(PaintOperation.opFloor, tFloor.id);
-
-        tile.setFloor(type);
+        if(tFloor != type){
+            op(PaintOperation.opFloor, tFloor.id);
+            tile.setFloor(type);
+            type.floorChanged(tile);
+        }
         setConfig(type, rotation);
-        type.floorChanged(tile);
     }
 
     /** Sets the floor, preserving overlay.*/
@@ -73,29 +73,28 @@ public class PaintedTileData{
 
         Block tBlock = block();
         Building tBuild = tile.build;
-        if(tBlock == type && (tBuild == null || tBuild.rotation == rotation)){
-            return;
+        if(tBlock != type || !(tBuild == null || tBuild.rotation == rotation)){
+            if(type instanceof Cliff){
+                painter.pendingCliffs.add(tile);
+                tile.data = 0;
+            }else if(tBlock instanceof Cliff){
+                painter.pendingCliffs.remove(tile);
+            }
+
+            if(!isCenter()){
+                PaintedTileData cen = painter.data(tBuild.tile);
+                cen.op(PaintOperation.opRotation, (byte)tBuild.rotation);
+                cen.op(PaintOperation.opTeam, (byte)tBuild.team.id);
+                cen.op(PaintOperation.opBlock, tBlock.id);
+            }else{
+                if(tBuild != null) op(PaintOperation.opRotation, (byte)tBuild.rotation);
+                if(tBuild != null) op(PaintOperation.opTeam, (byte)tBuild.team.id);
+                op(PaintOperation.opBlock, tBlock.id);
+            }
+
+            tile.setBlock(type, team, rotation, entityprov);
         }
 
-        if(type instanceof Cliff){
-            painter.pendingCliffs.add(tile);
-            tile.data = 0;
-        }else if(tBlock instanceof Cliff){
-            painter.pendingCliffs.remove(tile);
-        }
-
-        if(!isCenter()){
-            PaintedTileData cen = painter.data(tBuild.tile);
-            cen.op(PaintOperation.opRotation, (byte)tBuild.rotation);
-            cen.op(PaintOperation.opTeam, (byte)tBuild.team.id);
-            cen.op(PaintOperation.opBlock, tBlock.id);
-        }else{
-            if(tBuild != null) op(PaintOperation.opRotation, (byte)tBuild.rotation);
-            if(tBuild != null) op(PaintOperation.opTeam, (byte)tBuild.team.id);
-            op(PaintOperation.opBlock, tBlock.id);
-        }
-
-        tile.setBlock(type, team, rotation, entityprov);
         setConfig(type, rotation);
     }
     
@@ -121,15 +120,18 @@ public class PaintedTileData{
         Floor tOverlay = tile.overlay();
 
         if(!tFloor.hasSurface() && overlay.asFloor().needsSurface && (overlay instanceof OreBlock || !tFloor.supportsOverlay)) return;
-        if(tOverlay == overlay) return;
-        op(PaintOperation.opOverlay, tOverlay.id);
-        tile.setOverlay(overlay);
+        if(tOverlay != overlay){
+            op(PaintOperation.opOverlay, tOverlay.id);
+            tile.setOverlay(overlay);
+        }
         setConfig(overlay, rotation);
     }
 
     public void setConfig(Block block, int rotation){
         if(block.saveData){
             block.placeEnded(tile, null, rotation, block.lastConfig);
+            tile.recache();
+            tile.recacheWall();
         }
     }
 
