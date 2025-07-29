@@ -99,7 +99,7 @@ public class TerrainPainter{
         overlayData = overlay;
         extraData = extra;
 
-        //TODO update UI
+        Setup.terrainFrag.updateFields();
     }
 
     public void drawBlocksReplace(int x, int y){

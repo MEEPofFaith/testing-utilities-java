@@ -9,7 +9,6 @@ import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.world.*;
-import testing.util.*;
 
 import static testing.util.TUVars.*;
 
@@ -26,7 +25,6 @@ public enum PainterTool{
                 }
                 case 0 -> { //Pick Data
                     painter.setData(tile.data, tile.floorData, tile.overlayData, tile.extraData);
-                    Setup.terrainFrag.updateFields();
                 }
             }
         }

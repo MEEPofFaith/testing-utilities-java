@@ -367,6 +367,7 @@ public class TerrainPainterFragment{
     }
 
     public void updateFields(){
+        dataField.setText(painter.dataData != 0 ? String.valueOf(painter.dataData) : "");
         floorField.setText(painter.floorData != 0 ? String.valueOf(painter.floorData) : "");
         overlayField.setText(painter.overlayData != 0 ? String.valueOf(painter.overlayData) : "");
         extraField.setText(painter.extraData != 0 ? String.valueOf(painter.extraData) : "");
