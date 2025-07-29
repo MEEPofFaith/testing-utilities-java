@@ -153,14 +153,14 @@ public class TerrainPainter{
                     }
                 }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
                     if(drawBlock.rotate && tile.build() != null && tile.build().rotation != rotation){
-                        addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opRotation, (byte)rotation));
+                        addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opRotation, rotation));
                     }
 
                     tile.setBlock(drawBlock, drawTeam, rotation);
                     changed = !drawBlock.synthetic();
 
                     if(drawBlock.synthetic()){
-                        addPaintOp(TileOp.get(tile.x(), tile.y(), PaintOperation.opTeam, (byte)drawTeam.id));
+                        addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opTeam, drawTeam.id));
                     }
                 }
 
