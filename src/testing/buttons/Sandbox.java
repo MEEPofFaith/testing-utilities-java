@@ -32,7 +32,7 @@ public class Sandbox{
         CoreBuild core = player.core();
         if(core != null){
             content.items().each(
-                i -> settings.getBool("tu-fill-all") || i.shownPlanets.contains(state.rules.planet),
+                i -> settings.getBool("tu-fill-all") || i.isOnPlanet(state.rules.planet),
                 i -> core.items.set(i, core.storageCapacity)
             );
             Utils.spawnIconEffect("core");
