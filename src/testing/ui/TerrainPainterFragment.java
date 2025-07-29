@@ -219,6 +219,7 @@ public class TerrainPainterFragment{
                     dataField = d.field("", s -> painter.dataData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
                     dataField.setMessageText("$tu-painter.data");
                     dataField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    BLElements.flatTooltip(dataField, "$tu-painter.data.description");
                     d.row();
 
                     ImageButton lockFloor = d.button(painter.lockFloor ? Icon.lock : Icon.lockOpen, () -> {}).get();
@@ -228,6 +229,7 @@ public class TerrainPainterFragment{
                     floorField = d.field("", s -> painter.floorData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
                     floorField.setMessageText("$tu-painter.floordata");
                     floorField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    BLElements.flatTooltip(floorField, "$tu-painter.floordata.description");
                     d.row();
 
                     ImageButton lockOverlay = d.button(painter.lockOverlay ? Icon.lock : Icon.lockOpen, () -> {}).get();
@@ -237,6 +239,7 @@ public class TerrainPainterFragment{
                     overlayField = d.field("", s -> painter.overlayData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
                     overlayField.setMessageText("$tu-painter.overlaydata");
                     overlayField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    BLElements.flatTooltip(overlayField, "$tu-painter.overlaydata.description");
                     d.row();
 
                     ImageButton lockExtra = d.button(painter.lockExtra ? Icon.lock : Icon.lockOpen, () -> {}).get();
@@ -246,6 +249,7 @@ public class TerrainPainterFragment{
                     extraField = d.field("", s -> painter.extraData = Strings.parseInt(s, 0)).growX().get();
                     extraField.setMessageText("$tu-painter.extradata");
                     extraField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    BLElements.flatTooltip(extraField, "$tu-painter.extradata.description");
                     d.button(c -> {
                         c.margin(4f);
                         c.left();
