@@ -135,12 +135,12 @@ public enum PainterTool{
                     Block dest = tile.overlay();
                     if(dest == painter.drawBlock) return;
                     tester = d -> d.overlay() == dest && (d.floor().hasSurface() || !d.floor().needsSurface);
-                    setter = d -> d.setOverlay(painter.drawBlock, painter.rotation);
+                    setter = d -> d.setOverlay(painter.drawBlock);
                 }else if(painter.drawBlock.isFloor()){
                     Block dest = tile.floor();
                     if(dest == painter.drawBlock) return;
                     tester = d -> d.floor() == dest;
-                    setter = d -> d.setFloorUnder(painter.drawBlock.asFloor(), painter.rotation);
+                    setter = d -> d.setFloorUnder(painter.drawBlock.asFloor());
                 }else{
                     Block dest = tile.block();
                     if(dest == painter.drawBlock) return;
@@ -169,7 +169,7 @@ public enum PainterTool{
                 }else if(tile.overlay() != Blocks.air){
                     Block dest = tile.overlay();
                     tester = d -> d.overlay() == dest;
-                    setter = d -> d.setOverlay(Blocks.air, 0);
+                    setter = d -> d.setOverlay(Blocks.air);
                 }else{
                     //trying to erase floor (no)
                     tester = null;
@@ -258,7 +258,7 @@ public enum PainterTool{
             if(painter.drawBlock.isFloor()){
                 painter.drawCircle(x, y, painter.brushSize, data -> {
                     if(Mathf.chance(chance)){
-                        data.setFloor(painter.drawBlock.asFloor(), painter.rotation);
+                        data.setFloor(painter.drawBlock.asFloor());
                     }
                 });
             }else if(mode == 0){ //replace-only mode, doesn't affect air

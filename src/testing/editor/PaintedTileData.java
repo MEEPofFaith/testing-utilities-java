@@ -19,10 +19,9 @@ public class PaintedTileData{
         this.tile = tile;
     }
 
-    public void setFloor(Floor type, int rotation){
+    public void setFloor(Floor type){
         if(skip()){
             tile.setFloor(type);
-            type.placeEnded(tile, null, 0, type.lastConfig);
             return;
         }
 
@@ -30,7 +29,7 @@ public class PaintedTileData{
         if(type instanceof OverlayFloor){
             //don't place on liquids
             if(tFloor.hasSurface() || !type.needsSurface){
-                setOverlay(type, rotation);
+                setOverlay(type);
             }
             return;
         }
@@ -40,15 +39,14 @@ public class PaintedTileData{
             tile.setFloor(type);
             type.floorChanged(tile);
         }
-        setConfig(type, rotation);
     }
 
     /** Sets the floor, preserving overlay.*/
-    public void setFloorUnder(Floor floor, int rotation){
+    public void setFloorUnder(Floor floor){
         Block overlay = overlay();
-        setFloor(floor, rotation);
+        setFloor(floor);
         if(overlay() != overlay){
-            setOverlay(overlay, rotation);
+            setOverlay(overlay);
         }
     }
 
@@ -67,7 +65,6 @@ public class PaintedTileData{
     public void setBlock(Block type, Team team, int rotation, Prov<Building> entityprov){
         if(skip()){
             tile.setBlock(type, team, rotation, entityprov);
-            type.placeEnded(tile, null, 0, type.lastConfig);
             return;
         }
 
@@ -94,8 +91,6 @@ public class PaintedTileData{
 
             tile.setBlock(type, team, rotation, entityprov);
         }
-
-        setConfig(type, rotation);
     }
     
     public void setTeam(Team team){
@@ -109,10 +104,9 @@ public class PaintedTileData{
         tile.setTeam(team);
     }
 
-    public void setOverlay(Block overlay, int rotation){
+    public void setOverlay(Block overlay){
         if(skip()){
             tile.setOverlay(overlay);
-            overlay.placeEnded(tile, null, 0, overlay.lastConfig);
             return;
         }
 
@@ -123,15 +117,6 @@ public class PaintedTileData{
         if(tOverlay != overlay){
             op(PaintOperation.opOverlay, tOverlay.id);
             tile.setOverlay(overlay);
-        }
-        setConfig(overlay, rotation);
-    }
-
-    public void setConfig(Block block, int rotation){
-        if(block.saveData){
-            block.placeEnded(tile, null, rotation, block.lastConfig);
-            tile.recache();
-            tile.recacheWall();
         }
     }
 
@@ -246,7 +231,7 @@ public class PaintedTileData{
     }
 
     public void setOverlayID(short ore){
-        setOverlay(content.block(ore), 0);
+        setOverlay(content.block(ore));
     }
 
     public void remove(){

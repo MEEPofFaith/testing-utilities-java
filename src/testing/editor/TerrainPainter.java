@@ -9,6 +9,7 @@ import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import testing.util.*;
@@ -16,7 +17,7 @@ import testing.util.*;
 import static mindustry.Vars.*;
 import static testing.util.TUVars.*;
 
-/** Based on {@link MapEditor}. Made to operate in a live map instead of the editor. */
+/** Based on {@link MapEditor}. Made to operate in a live map instead of the map editor. */
 public class TerrainPainter{
     private final PaintOperationStack stack = new PaintOperationStack();
     private PaintOperation currentOp;
@@ -124,6 +125,7 @@ public class TerrainPainter{
 
             Cons<PaintedTileData> drawer = tile -> {
                 if(!tester.get(tile)) return;
+                boolean changed = false;
 
                 boolean didDataOp = false;
                 int oldData1 = 0, oldData2 = 0;
@@ -141,10 +143,12 @@ public class TerrainPainter{
 
                 if(isFloor){
                     if(forceOverlay){
-                        tile.setOverlay(drawBlock.asFloor(), rotation);
+                        tile.setOverlay(drawBlock.asFloor());
+                        changed = true;
                     }else{
                         if(!(drawBlock.asFloor().wallOre && !tile.block().solid)){
-                            tile.setFloor(drawBlock.asFloor(), rotation);
+                            tile.setFloor(drawBlock.asFloor());
+                            changed = true;
                         }
                     }
                 }else if(!(tile.block().isMultiblock() && !drawBlock.isMultiblock())){
@@ -153,6 +157,17 @@ public class TerrainPainter{
                     }
 
                     tile.setBlock(drawBlock, drawTeam, rotation);
+                    changed = !drawBlock.synthetic();
+
+                    if(drawBlock.synthetic()){
+                        addPaintOp(TileOp.get(tile.x(), tile.y(), PaintOperation.opTeam, (byte)drawTeam.id));
+                    }
+                }
+
+                if(changed && drawBlock.saveConfig){
+                    drawBlock.placeEnded(tile.tile, null, rotation, drawBlock.lastConfig);
+                    tile.tile.recache();
+                    tile.tile.recacheWall();
                 }
 
                 //data and block did not change, undo the data ops
