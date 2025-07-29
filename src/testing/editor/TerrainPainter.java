@@ -93,10 +93,12 @@ public class TerrainPainter{
         Setup.terrainFrag.updateMenu();
     }
 
-    public void setData(byte floor, byte overlay, int extra){
+    public void setData(byte data, byte floor, byte overlay, int extra){
+        dataData = data;
         floorData = floor;
         overlayData = overlay;
         extraData = extra;
+
         //TODO update UI
     }
 

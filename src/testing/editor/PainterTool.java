@@ -25,7 +25,7 @@ public enum PainterTool{
                     painter.setDrawBlock(tile.block() == Blocks.air || !tile.block().inEditor ? tile.overlay() == Blocks.air ? tile.floor() : tile.overlay() : tile.block());
                 }
                 case 0 -> { //Pick Data
-                    painter.setData(tile.floorData, tile.overlayData, tile.extraData);
+                    painter.setData(tile.data, tile.floorData, tile.overlayData, tile.extraData);
                     Setup.terrainFrag.updateFields();
                 }
             }
