@@ -125,10 +125,19 @@ public class TerrainPainter{
             Cons<PaintedTileData> drawer = tile -> {
                 if(!tester.get(tile)) return;
 
+                boolean didDataOp = false;
+                int oldData1 = 0, oldData2 = 0;
+
                 if(drawBlock.saveData || tile.shouldSaveData()){
                     addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opData, PaintOpData.get(tile.data(), tile.floorData(), tile.overlayData())));
                     addPaintOp(PaintOp.get(tile.x(), tile.y(), PaintOperation.opExtraData, tile.extraData()));
+
+                    oldData1 = PaintOpData.get(tile.data(), tile.floorData(), tile.overlayData());
+                    oldData2 = tile.extraData();
+                    didDataOp = true;
                 }
+
+                int preDataOps = ops();
 
                 if(isFloor){
                     if(forceOverlay){
@@ -144,6 +153,11 @@ public class TerrainPainter{
                     }
 
                     tile.setBlock(drawBlock, drawTeam, rotation);
+                }
+
+                //data and block did not change, undo the data ops
+                if(didDataOp && ops() == preDataOps && oldData1 == PaintOpData.get(tile.data(), tile.floorData(), tile.overlayData()) && oldData2 == tile.extraData()){
+                    removeLastOps(2);
                 }
             };
 
@@ -307,6 +321,17 @@ public class TerrainPainter{
 
         if(currentOp == null) currentOp = new PaintOperation();
         currentOp.addOperation(op);
+    }
+
+    public int ops(){
+        if(currentOp == null) return 0;
+        return currentOp.size();
+    }
+
+    public void removeLastOps(int amount){
+        if(currentOp == null || loading) return;
+
+        currentOp.remove(amount);
     }
 
     public PaintedTileData data(int x, int y){
