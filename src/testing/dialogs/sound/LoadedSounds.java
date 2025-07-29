@@ -7,7 +7,7 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 
-import static arc.Core.settings;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class LoadedSounds{
