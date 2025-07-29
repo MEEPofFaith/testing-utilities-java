@@ -9,7 +9,6 @@ import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import testing.util.*;
@@ -29,8 +28,8 @@ public class TerrainPainter{
     public int rotation;
     public Block drawBlock = Blocks.boulder;
     public Team drawTeam = Team.sharded;
-    public boolean lockFloor, lockOverlay, lockExtra;
-    public byte floorData, overlayData;
+    public boolean lockData, lockFloor, lockOverlay, lockExtra;
+    public byte dataData, floorData, overlayData;
     public int extraData;
 
     public boolean isLoading(){
@@ -189,13 +188,13 @@ public class TerrainPainter{
     public void drawData(int x, int y){
         if(lockFloor && lockOverlay && lockExtra) return; //Nothing happens
 
-        drawCircle(x, y, brushSize, data -> {
-            data.setData(
-                data.data(),
-                lockFloor ? data.floorData() : floorData,
-                lockOverlay ? data.overlayData() : overlayData
+        drawCircle(x, y, brushSize, tile -> {
+            tile.setData(
+                lockData ? tile.data() : dataData,
+                lockFloor ? tile.floorData() : floorData,
+                lockOverlay ? tile.overlayData() : overlayData
             );
-            if(!lockExtra) data.setExtraData(extraData);
+            if(!lockExtra) tile.setExtraData(extraData);
         });
     }
 

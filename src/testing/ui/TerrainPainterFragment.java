@@ -40,7 +40,7 @@ public class TerrainPainterFragment{
     private boolean buildings = false;
     private boolean lastIndent = false;
     private boolean indentCliff = false;
-    private TextField floorField, overlayField, extraField;
+    private TextField dataField, floorField, overlayField, extraField;
 
     public void build(Group parent){
         Boolp visibility = () -> show && !ui.minimapfrag.shown();
@@ -212,6 +212,15 @@ public class TerrainPainterFragment{
 
                 boolean[] lastDataPainting = {paintbrush.dataTool()};
                 all.collapser(d -> {
+                    ImageButton lockData = d.button(painter.lockData ? Icon.lock : Icon.lockOpen, () -> {}).get();
+                    lockData.changed(() -> painter.lockData = !painter.lockData);
+                    lockData.getStyle().imageChecked = Icon.lock;
+                    lockData.setChecked(painter.lockData);
+                    dataField = d.field("", s -> painter.dataData = (byte)Strings.parseInt(s, 0)).growX().colspan(2).get();
+                    dataField.setMessageText("$tu-painter.data");
+                    dataField.setValidator(s -> s.isEmpty() || Strings.canParseInt(s));
+                    d.row();
+
                     ImageButton lockFloor = d.button(painter.lockFloor ? Icon.lock : Icon.lockOpen, () -> {}).get();
                     lockFloor.changed(() -> painter.lockFloor = !painter.lockFloor);
                     lockFloor.getStyle().imageChecked = Icon.lock;
