@@ -37,7 +37,7 @@ public class TUSettings{
             t.checkPref("tu-music-enabled", false);
             t.checkPref("tu-allow-filters", false);
 
-            if(OS.username.startsWith("MEEP")){
+            if(!mobile){
                 t.pref(new Separator(8));
                 t.checkPref("tu-mobile-test", false);
             }
