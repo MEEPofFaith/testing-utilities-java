@@ -28,7 +28,6 @@ public class MusicsTable extends STable{
     private MusicProgressBar progressBar;
     private boolean paused;
     private float targetTime = 0f;
-    private boolean queued = false;
     private Music selectedMusic = Musics.menu;
     protected Music playingMusic = null;
 
@@ -171,19 +170,12 @@ public class MusicsTable extends STable{
         if(playingMusic == null) return;
         playingMusic.setVolume(1f);
         playingMusic.setLooping(false);
-        if(!paused && !queued) targetTime = playingMusic.getPosition();
+        if(!paused) targetTime = playingMusic.getPosition();
     }
 
     private void setTime(Music m){
         if(!m.isPlaying() && !paused) m.play();
         m.setPosition(targetTime);
-        if(!queued && !Mathf.equal(m.getPosition(), targetTime)){
-            queued = true;
-            app.post(() -> {
-                queued = false;
-                setTime(m);
-            });
-        }
     }
 
     public static float musicLength(Music music){
@@ -232,7 +224,7 @@ public class MusicsTable extends STable{
                     if(musicsTable.playingMusic == null) musicsTable.play(musicsTable.selectedMusic);
 
                     float width = bar.getWidth();
-                    float prog = x / width;
+                    float prog = Mathf.clamp(x / width);
                     Music m = musicsTable.playingMusic;
                     musicsTable.targetTime = prog * musicLength;
                     musicsTable.setTime(m);
