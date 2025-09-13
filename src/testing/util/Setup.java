@@ -23,6 +23,7 @@ public class Setup{
 
     public static TerrainPainterFragment terrainFrag;
     private static Table timeSlider;
+    private static boolean tcOutdated = false;
 
     public static void init(){
         TUDialogs.load();
@@ -121,6 +122,13 @@ public class Setup{
     private static Table yoinkTimeSlider(){
         if(timeSlider == null){
             timeSlider = Vars.ui.hudGroup.find("tc-slidertable");
+
+            if(timeSlider == null){
+                timeSlider = new Table();
+                tcOutdated = true;
+                Vars.ui.showErrorMessage("@mod.tc-outdated");
+            }
+
             timeSlider.visible(() -> true);
 
             Vars.ui.hudGroup.find("tc-foldedtable").visible(() -> false);
@@ -130,7 +138,7 @@ public class Setup{
 
     public static boolean timeControlEnabled(){
         LoadedMod timeControl = Vars.mods.getMod("time-control");
-        return timeControl != null && timeControl.isSupported() && timeControl.enabled();
+        return !tcOutdated && timeControl != null && timeControl.isSupported() && timeControl.enabled();
     }
 
     private static String fix(float f){
