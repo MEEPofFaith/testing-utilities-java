@@ -120,6 +120,7 @@ public class LoadedSounds{
     }
 
     protected static String getSoundName(Sound s){
+        if(s == Sounds.none) return "---";
         String full = s.toString();
         return full.substring(full.lastIndexOf("/") + 1, full.length() - 4);
     }

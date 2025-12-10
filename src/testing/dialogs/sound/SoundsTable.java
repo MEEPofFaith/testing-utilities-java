@@ -22,7 +22,7 @@ public class SoundsTable extends STable{
     private final AudioBus soundRoomBus;
     private final Table selection = new Table();
     private TextField search;
-    private Sound sound = Sounds.pew;
+    private Sound sound = Sounds.none;
     private int loopSoundID = -1;
 
     private float minVol = 1, maxVol = 1, minPitch = 0.8f, maxPitch = 1.2f;
