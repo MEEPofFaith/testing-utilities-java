@@ -67,14 +67,14 @@ public class SoundDialog extends TUBaseDialog{
 
         shown(() -> {
             //Pause the ui audio bus while open so that button press sounds doesn't play.
-            audio.setPaused(Sounds.press.bus.id, true);
+            audio.setPaused(Sounds.uiButton.bus.id, true);
             if(filters != null) filters.shown();
         });
         hidden(() -> {
             soundsTable.stopSounds();
             musicsTable.stopSounds();
             if(filters != null) TUFilters.closed();
-            audio.setPaused(Sounds.press.bus.id, false);
+            audio.setPaused(Sounds.uiButton.bus.id, false);
         });
 
         if(settings.getBool("tu-music-enabled", false)){

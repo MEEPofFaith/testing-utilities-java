@@ -37,7 +37,7 @@ public class Death{
 
         Unit u = player.unit();
         if(u != null){
-            Sounds.spark.at(u);
+            Sounds.shootArc.at(u);
             for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
                 TUFx.deathLightning.at(u, true);
             }
