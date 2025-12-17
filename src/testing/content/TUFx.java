@@ -6,7 +6,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
@@ -29,14 +28,13 @@ public class TUFx{
     }).layer(Layer.flyingUnit + 1),
 
     deathLightning = new Effect(20f, 300f, e -> {
-        if(!(e.data instanceof Unit u)) return;
         rand.setSeed(e.id);
-        Tmp.v1.setToRandomDirection(rand).setLength(u.hitSize * 0.75f * Mathf.sqrt(rand.random(1f)));
-        Tmp.v2.trns(rand.random(-45f, 45f) + 90f, u.hitSize * (1f + rand.random(1f)));
-        float tx = u.x + Tmp.v1.x, ty = u.y + Tmp.v1.y,
+        Tmp.v1.setToRandomDirection(rand).setLength(e.rotation * 0.75f * Mathf.sqrt(rand.random(1f)));
+        Tmp.v2.trns(rand.random(-45f, 45f) + 90f, e.rotation * (1f + rand.random(1f)));
+        float tx = e.x + Tmp.v1.x, ty = e.y + Tmp.v1.y,
             ex = tx + Tmp.v2.x, ey = ty + Tmp.v2.y,
             dst = Mathf.dst(ex, ey, tx, ty);
-        Tmp.v1.set(u).sub(ex, ey).nor();
+        Tmp.v1.set(e.x, e.y).sub(ex, ey).nor();
 
         float normx = Tmp.v1.x, normy = Tmp.v1.y;
         float range = 6f;

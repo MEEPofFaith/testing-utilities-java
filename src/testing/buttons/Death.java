@@ -39,7 +39,7 @@ public class Death{
         if(u != null){
             Sounds.shootArc.at(u);
             for(int i = 0; i < Math.max(1f, u.hitSize / 4f); i++){
-                TUFx.deathLightning.at(u, true);
+                TUFx.deathLightning.at(u.x, u.y, u.hitSize);
             }
         }
     }
