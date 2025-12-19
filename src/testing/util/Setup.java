@@ -127,6 +127,7 @@ public class Setup{
                 timeSlider = new Table();
                 tcOutdated = true;
                 Vars.ui.showErrorMessage("@mod.tc-outdated");
+                return timeSlider;
             }
 
             timeSlider.visible(() -> true);
