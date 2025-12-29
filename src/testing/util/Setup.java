@@ -24,6 +24,7 @@ public class Setup{
     public static TerrainPainterFragment terrainFrag;
     private static Table timeSlider;
     private static boolean tcOutdated = false;
+    private static float startX = Float.MIN_VALUE, startY;
 
     public static void init(){
         TUDialogs.load();
@@ -110,7 +111,11 @@ public class Setup{
         miniPos.getCell(pos).top().right();
 
         terrainFrag = new TerrainPainterFragment();
-        Core.app.post(() -> terrainFrag.build(ui.hudGroup)); //Wait for BLUI to set up.
+        Core.app.post(() -> { //Wait for BLUI to set up.
+            terrainFrag.build(ui.hudGroup);
+            setOffsetX(settings.getFloat("tu-offset-x"));
+            setOffsetY(settings.getFloat("tu-offset-y"));
+        });
 
         Events.on(WorldLoadEvent.class, e -> {
             if(posLabelAligned) return;
@@ -141,6 +146,26 @@ public class Setup{
     public static boolean timeControlEnabled(){
         LoadedMod timeControl = Vars.mods.getMod("time-control");
         return !tcOutdated && timeControl != null && timeControl.isSupported() && timeControl.enabled();
+    }
+
+    private static float startX(){
+        if(startX == Float.MIN_VALUE) startX = ui.hudGroup.find("blui").x;
+        return startX;
+    }
+
+    private static float startY(){
+        if(startY == Float.MIN_VALUE) startY = ui.hudGroup.find("blui").y;
+        return startY;
+    }
+
+    public static void setOffsetX(float x){
+        Table blui = ui.hudGroup.find("blui");
+        blui.setPosition(startX() + x, blui.y);
+    }
+
+    public static void setOffsetY(float y){
+        Table blui = ui.hudGroup.find("blui");
+        blui.setPosition(blui.x, startY() + y);
     }
 
     private static String fix(float f){
