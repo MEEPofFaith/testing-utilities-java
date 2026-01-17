@@ -123,7 +123,7 @@ public class Setup{
             Events.on(ClientLoadEvent.class, e -> {
                 content.sectors().each(sector -> {
                     //Filter out campaign saves
-                    if(!files.internal("maps/" + sector.name + "." + mapExtension).exists()) return;
+                    if(!tree.get("maps/" + sector.generator.map.file.name()).exists()) return;
 
                     Map map = sector.generator.map;
                     Reflect.set(map, "custom", false);
