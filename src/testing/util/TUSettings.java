@@ -24,6 +24,7 @@ public class TUSettings{
             t.pref(new Banner("test-utils-settings-banner", -1));
             t.pref(new FloatTextSetting("tu-offset-x", Setup::setOffsetX));
             t.pref(new FloatTextSetting("tu-offset-y", Setup::setOffsetY));
+            t.checkPref("tu-load-vanilla", true);
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-death-effect", true);
             t.checkPref("tu-despawns", true);

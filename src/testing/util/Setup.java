@@ -9,6 +9,7 @@ import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.maps.*;
 import mindustry.mod.Mods.*;
 import mindustry.world.*;
 import testing.*;
@@ -116,6 +117,23 @@ public class Setup{
             setOffsetX(settings.getFloat("tu-offset-x"));
             setOffsetY(settings.getFloat("tu-offset-y"));
         });
+
+        //Add campaign maps to custom maps list
+        if(settings.getBool("setting.tu-load-vanilla", true)){
+            Events.on(ClientLoadEvent.class, e -> {
+                content.sectors().each(sector -> {
+                    //Filter out campaign saves
+                    if(!files.internal("maps/" + sector.name + "." + mapExtension).exists()) return;
+
+                    Map map = sector.generator.map;
+                    Reflect.set(map, "custom", false);
+                    maps.all().add(map);
+                    maps.queueNewPreview(map);
+                });
+                maps.all().sort();
+                Reflect.invoke(maps, "createAllPreviews");
+            });
+        }
 
         Events.on(WorldLoadEvent.class, e -> {
             if(posLabelAligned) return;
