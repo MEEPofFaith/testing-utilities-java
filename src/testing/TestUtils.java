@@ -5,7 +5,6 @@ import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.graphics.*;
@@ -28,23 +27,6 @@ public class TestUtils extends Mod{
         if(settings.getBool("tu-mobile-test", false)) mobile = testMobile = true;
 
         if(mobile) loadLogger();
-
-        //Add campaign maps to custom maps list
-        Seq<String> mapNames = new Seq<>();
-        mapNames.addAll( //Sectors aren't loaded yet, need to hardcode
-            "groundZero",
-            "craters", "biomassFacility", "taintedWoods", "frozenForest", "ruinousShores", "facility32m", "windsweptIslands", "stainedMountains", "tarFields",
-            "frontier", "fungalPass", "infestedCanyons", "atolls", "mycelialBastion", "extractionOutpost", "saltFlats", "testingGrounds", "overgrowth",
-            "impact0078", "desolateRift", "nuclearComplex", "planetaryTerminal",
-            "coastline", "navalFortress", "weatheredChannels", "seaPort",
-
-            "geothermalStronghold", "cruxscape",
-
-            "onset", "aegis", "lake", "intersect", "basin", "atlas", "split", "marsh", "peaks", "ravine",
-            "stronghold", "crevice", "siege", "crossroads", "karst", "origin"
-        );
-        mapNames.addAll((String[])Reflect.get(maps.getClass(), "defaultMapNames"));
-        Reflect.set(maps.getClass(), "defaultMapNames", mapNames.toArray(String.class));
     }
 
     @Override
