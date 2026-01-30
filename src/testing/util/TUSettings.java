@@ -44,7 +44,7 @@ public class TUSettings{
             t.checkPref("tu-music-enabled", false);
             t.checkPref("tu-allow-filters", false);
 
-            if(!mobile){
+            if(!mobile || settings.getBool("tu-mobile-test", false)){
                 t.pref(new Separator(8));
                 t.checkPref("tu-mobile-test", false);
             }
