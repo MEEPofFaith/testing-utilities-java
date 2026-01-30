@@ -16,10 +16,10 @@ public class Health{
         if(u == null) return;
         if(u instanceof BlockUnitc bu){
             Building b = bu.tile();
-            b.maxHealth(invincibility ? Float.POSITIVE_INFINITY : b.block.health);
+            b.maxHealth(invincibility ? Float.MAX_VALUE : b.block.health);
             b.health = b.maxHealth;
         }else{
-            u.maxHealth(invincibility ? Float.POSITIVE_INFINITY : u.type.health);
+            u.maxHealth(invincibility ? Float.MAX_VALUE : u.type.health);
             u.health = u.maxHealth;
         }
     }
