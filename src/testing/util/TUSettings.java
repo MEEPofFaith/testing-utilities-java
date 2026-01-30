@@ -22,8 +22,10 @@ public class TUSettings{
     public static void init(){
         ui.settings.addCategory(bundle.get("setting.tu-title"), "test-utils-settings-icon", t -> {
             t.pref(new Banner("test-utils-settings-banner", -1));
+            t.checkPref("tu-vertical", mobile);
             t.pref(new FloatTextSetting("tu-offset-x", Setup::setOffsetX));
             t.pref(new FloatTextSetting("tu-offset-y", Setup::setOffsetY));
+            t.pref(new Separator(8));
             t.checkPref("tu-load-vanilla", true);
             t.checkPref("tu-instakill", true);
             t.checkPref("tu-death-effect", true);

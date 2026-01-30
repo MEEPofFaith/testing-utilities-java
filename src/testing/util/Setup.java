@@ -31,28 +31,13 @@ public class Setup{
         TUDialogs.load();
 
         BLSetup.addTable(table -> {
-            if(mobile && settings.getBool("console")){
-                table.table(Tex.buttonEdge3, Console::addButtons);
-                table.row();
+            if(settings.getBool("tu-vertical", mobile)){
+                vertTables(table);
+            }else{
+                horiTables(table);
             }
-            table.table(Tex.buttonEdge3, t -> {
-                Spawn.addButtons(t);
-                Environment.worldButton(t);
-                Effect.statusButton(t);
-                Sandbox.addButtons(t);
-            });
-            table.row();
 
-            boolean timeControl = timeControlEnabled();
-
-            table.table(timeControl ? Tex.buttonEdge3 : Tex.pane, t -> {
-                TeamChanger.addButton(t);
-                Health.addButtons(t);
-                Death.addButtons(t);
-                LightSwitch.lightButton(t);
-            });
-
-            if(timeControl){
+            if(timeControlEnabled()){
                 table.row();
                 table.add(yoinkTimeSlider());
             }
@@ -140,6 +125,43 @@ public class Setup{
             pos.setAlignment(Align.right, Align.right);
             posLabelAligned = true;
         });
+    }
+
+    private static void horiTables(Table table){
+        if(mobile && settings.getBool("console")){
+            table.table(Tex.buttonEdge3, Console::addButtons).row();
+        }
+        table.table(Tex.buttonEdge3, t -> {
+            Spawn.addButtons(t);
+            Environment.worldButton(t);
+            Effect.statusButton(t);
+            Sandbox.addButtons(t);
+        }).row();
+
+        table.table(timeControlEnabled() ? Tex.buttonEdge3 : Tex.pane, t -> {
+            TeamChanger.addButton(t);
+            Health.addButtons(t);
+            Death.addButtons(t);
+            LightSwitch.lightButton(t);
+        });
+    }
+
+    private static void vertTables(Table table){
+        table.table(Tex.buttonEdge3, Spawn::addButtons).row();
+        table.table(Tex.pane, t -> {
+            Environment.worldButton(t);
+            LightSwitch.lightButton(t);
+        }).row();
+        table.table(Tex.buttonEdge3, Sandbox::addButtons).row();
+        table.table(TUStyles.buttonRight, t -> {
+            Health.addButtons(t);
+            Effect.statusButton(t);
+        }).row();
+        table.table(Tex.buttonEdge3, Death::addButtons).row();
+        table.table(Tex.buttonEdge3, TeamChanger::addButton).row();
+        if(mobile && settings.getBool("console")){
+            table.table(timeControlEnabled() ? Tex.buttonEdge3 : Tex.pane, Console::addButtons);
+        }
     }
 
     private static Table yoinkTimeSlider(){

@@ -2,6 +2,7 @@ package testing.buttons;
 
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import blui.*;
 import blui.scene.ui.*;
 import blui.ui.*;
 import mindustry.game.*;
@@ -49,6 +50,6 @@ public class TeamChanger{
     }
 
     public static void addButton(Table t){
-        teamChanger(t).width(100);
+        teamChanger(t).width(100).minHeight(BLVars.iconSize);
     }
 }
