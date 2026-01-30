@@ -25,7 +25,7 @@ public class Setup{
     public static TerrainPainterFragment terrainFrag;
     private static Table timeSlider;
     private static boolean tcOutdated = false;
-    private static float startX = Float.MIN_VALUE, startY;
+    private static float startX = Float.MIN_VALUE, startY = Float.MIN_VALUE;
 
     public static void init(){
         TUDialogs.load();
@@ -200,12 +200,12 @@ public class Setup{
 
     public static void setOffsetX(float x){
         Table blui = ui.hudGroup.find("blui");
-        blui.setPosition(startX() + x, blui.y);
+        blui.x = startX() + x;
     }
 
     public static void setOffsetY(float y){
         Table blui = ui.hudGroup.find("blui");
-        blui.setPosition(blui.x, startY() + y);
+        blui.y = startY() + y;
     }
 
     private static String fix(float f){
