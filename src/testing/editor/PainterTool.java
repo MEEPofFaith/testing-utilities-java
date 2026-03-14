@@ -9,6 +9,7 @@ import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.world.*;
+import mindustry.world.blocks.environment.*;
 
 import static testing.util.TUVars.*;
 
@@ -53,7 +54,7 @@ public enum PainterTool{
             });
         }
     },
-    pencil(true, "replace", "square", "drawteams", "drawdata"){
+    pencil(true, "replace", "square", "drawteams", "underliquid", "drawdata"){
         {
             edit = true;
             draggable = true;
@@ -74,7 +75,12 @@ public enum PainterTool{
                 case 2 -> { //draw teams
                     painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
                 }
-                case 3 -> { //draw data
+                case 3 -> { //Draw under liquid
+                    if(!(painter.drawBlock instanceof Floor f && f.isLiquid)){
+                        painter.drawBlocks(x, y, false, true, tile -> tile.floor().isLiquid);
+                    }
+                }
+                case 4 -> { //draw data
                     painter.drawData(x, y);
                 }
             }
