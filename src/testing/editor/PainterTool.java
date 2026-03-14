@@ -54,7 +54,7 @@ public enum PainterTool{
             });
         }
     },
-    pencil(true, "replace", "square", "drawteams", "underliquid", "drawdata"){
+    pencil(true, "replace", "square", "drawteams", "underliquid", "forceoverlay", "drawdata"){
         {
             edit = true;
             draggable = true;
@@ -63,26 +63,23 @@ public enum PainterTool{
         @Override
         public void touched(int x, int y){
             switch(mode){
-                case -1 -> { //normal mode
+                case -1 -> //normal mode
                     painter.drawBlocks(x, y);
-                }
-                case 0 -> { //replace mode
+                case 0 -> //replace mode
                     painter.drawBlocksReplace(x, y);
-                }
-                case 1 -> { //square mode
+                case 1 -> //square mode
                     painter.drawBlocks(x, y, true, false, data -> true);
-                }
-                case 2 -> { //draw teams
+                case 2 -> //draw teams
                     painter.drawCircle(x, y, painter.brushSize, data -> data.setTeam(painter.drawTeam));
-                }
-                case 3 -> { //Draw under liquid
+                case 3 -> { //draw under liquid
                     if(!(painter.drawBlock instanceof Floor f && f.isLiquid)){
                         painter.drawBlocks(x, y, false, true, tile -> tile.floor().isLiquid);
                     }
                 }
-                case 4 -> { //draw data
+                case 4 -> //force overlay
+                    painter.drawBlocks(x, y, false, true, tile -> true);
+                case 5 -> //draw data
                     painter.drawData(x, y);
-                }
             }
         }
     },
