@@ -1,33 +1,26 @@
 package testing.util;
 
-import arc.Core;
-import arc.Events;
-import arc.scene.ui.Label;
-import arc.scene.ui.layout.Table;
-import arc.util.Align;
-import arc.util.Log;
-import arc.util.Reflect;
-import arc.util.Strings;
-import blui.ui.BLSetup;
-import mindustry.Vars;
-import mindustry.content.SectorPresets;
-import mindustry.core.World;
-import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.EventType.WorldLoadEvent;
-import mindustry.gen.Tex;
-import mindustry.maps.Map;
-import mindustry.mod.Mods.LoadedMod;
-import mindustry.type.SectorPreset;
-import mindustry.world.Tile;
-import testing.TestUtils;
+import arc.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
+import arc.util.*;
+import blui.ui.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.game.EventType.*;
+import mindustry.gen.*;
+import mindustry.maps.*;
+import mindustry.mod.Mods.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import testing.*;
 import testing.buttons.*;
-import testing.ui.TUDialogs;
-import testing.ui.TUStyles;
-import testing.ui.TerrainPainterFragment;
+import testing.ui.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
-import static arc.Core.settings;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Setup{
