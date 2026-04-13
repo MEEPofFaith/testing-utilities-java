@@ -1,22 +1,33 @@
 package testing.util;
 
-import arc.*;
-import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
-import arc.util.*;
-import blui.ui.*;
-import mindustry.*;
-import mindustry.core.*;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.maps.*;
-import mindustry.mod.Mods.*;
-import mindustry.world.*;
-import testing.*;
+import arc.Core;
+import arc.Events;
+import arc.scene.ui.Label;
+import arc.scene.ui.layout.Table;
+import arc.util.Align;
+import arc.util.Log;
+import arc.util.Reflect;
+import arc.util.Strings;
+import blui.ui.BLSetup;
+import mindustry.Vars;
+import mindustry.content.SectorPresets;
+import mindustry.core.World;
+import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.EventType.WorldLoadEvent;
+import mindustry.gen.Tex;
+import mindustry.maps.Map;
+import mindustry.mod.Mods.LoadedMod;
+import mindustry.type.SectorPreset;
+import mindustry.world.Tile;
+import testing.TestUtils;
 import testing.buttons.*;
-import testing.ui.*;
+import testing.ui.TUDialogs;
+import testing.ui.TUStyles;
+import testing.ui.TerrainPainterFragment;
 
-import static arc.Core.*;
+import java.lang.reflect.Field;
+
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class Setup{
@@ -106,15 +117,14 @@ public class Setup{
         //Add campaign maps to custom maps list
         if(settings.getBool("setting.tu-load-vanilla", true)){
             Events.on(ClientLoadEvent.class, e -> {
-                content.sectors().each(sector -> {
-                    //Filter out campaign saves
-                    if(!tree.get("maps/" + sector.generator.map.file.name()).exists()) return;
-
-                    Map map = sector.generator.map;
+                Field[] sectors = SectorPresets.class.getFields();
+                for(Field f : sectors){
+                    SectorPreset preset = Reflect.get(f);
+                    Map map = preset.generator.map;
                     Reflect.set(map, "custom", false);
                     maps.all().add(map);
                     maps.queueNewPreview(map);
-                });
+                }
                 maps.all().sort();
                 Reflect.invoke(maps, "createAllPreviews");
             });
