@@ -49,8 +49,6 @@ public class TUSettings{
                 t.checkPref("tu-mobile-test", false);
             }
         });
-
-        if(mobile) ui.settings.game.checkPref("console", true);
     }
 
     /** Not a setting, but rather adds an image to the settings menu. */

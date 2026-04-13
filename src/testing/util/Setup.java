@@ -128,9 +128,6 @@ public class Setup{
     }
 
     private static void horiTables(Table table){
-        if(mobile && settings.getBool("console")){
-            table.table(Tex.buttonEdge3, Console::addButtons).row();
-        }
         table.table(Tex.buttonEdge3, t -> {
             Spawn.addButtons(t);
             Environment.worldButton(t);
@@ -159,9 +156,6 @@ public class Setup{
         }).row();
         table.table(Tex.buttonEdge3, Death::addButtons).row();
         table.table(Tex.buttonEdge3, TeamChanger::addButton).row();
-        if(mobile && settings.getBool("console")){
-            table.table(timeControlEnabled() ? Tex.buttonEdge3 : Tex.pane, Console::addButtons);
-        }
     }
 
     private static Table yoinkTimeSlider(){
