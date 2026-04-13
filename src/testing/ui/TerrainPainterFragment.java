@@ -332,18 +332,8 @@ public class TerrainPainterFragment{
             if(show) ui.hudfrag.shown = false;
         });
 
-        //Disable pause menu when open and display message
-        ui.paused.shown(() -> {
-            if(show){
-                app.post(() -> ui.paused.hide());
-                if(mobile){
-                    ui.showInfoPopup("@tu-painter.paused", 7, Align.center, 0, 0, 0, 0);
-                }else{
-                    hide();
-                }
-            }
-        });
-
+        //Close on pause
+        ui.paused.shown(this::hide);
         Events.on(GameOverEvent.class, e -> hide());
     }
 
