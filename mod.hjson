@@ -22,7 +22,7 @@ subtitle: "Easier to use than the console."
 version: 69.9
 
 #the minimum game build required to run this mod
-minGameVersion: 157
+minGameVersion: 158.1
 
 #this is a java mod
 java: true
