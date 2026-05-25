@@ -104,7 +104,7 @@ public class Setup{
         });
 
         //Add campaign maps to custom maps list
-        if(settings.getBool("setting.tu-load-vanilla", true)){
+        if(settings.getBool("tu-load-vanilla", true)){
             Events.on(ClientLoadEvent.class, e -> {
                 content.sectors().each(s -> {
                     Log.info(s);
