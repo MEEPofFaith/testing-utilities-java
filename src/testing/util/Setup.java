@@ -107,7 +107,6 @@ public class Setup{
         if(settings.getBool("tu-load-vanilla", true)){
             Events.on(ClientLoadEvent.class, e -> {
                 content.sectors().each(s -> {
-                    Log.info(s);
                     Map map = s.generator.map;
                     Reflect.set(map, "custom", false);
                     maps.all().add(map);
