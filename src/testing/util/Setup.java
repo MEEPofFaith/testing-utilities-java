@@ -6,19 +6,15 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import blui.ui.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.maps.*;
 import mindustry.mod.Mods.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import testing.*;
 import testing.buttons.*;
 import testing.ui.*;
-
-import java.lang.reflect.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -110,14 +106,13 @@ public class Setup{
         //Add campaign maps to custom maps list
         if(settings.getBool("setting.tu-load-vanilla", true)){
             Events.on(ClientLoadEvent.class, e -> {
-                Field[] sectors = SectorPresets.class.getFields();
-                for(Field f : sectors){
-                    SectorPreset preset = Reflect.get(f);
-                    Map map = preset.generator.map;
+                content.sectors().each(s -> {
+                    Log.info(s);
+                    Map map = s.generator.map;
                     Reflect.set(map, "custom", false);
                     maps.all().add(map);
                     maps.queueNewPreview(map);
-                }
+                });
                 maps.all().sort();
                 Reflect.invoke(maps, "createAllPreviews");
             });
